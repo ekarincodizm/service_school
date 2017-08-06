@@ -55,6 +55,7 @@ class AuthUseController extends Controller {
 		$users = User::where ( 'USER_LOGIN', '=', '' . $userName . '' )->where( 'USE_FLAG', '=', 'Y' )->get ();
 		
 		foreach ( $users as $user ) {
+			
 			if (password_verify ( $password, $user->USER_PASSWORD )) {
 				return $users;
 			}
