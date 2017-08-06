@@ -33,7 +33,7 @@ class SubjectController extends Controller {
 			DB::rollBack ();
 			return response ()->json ( [ 
 					'status' => 'error',
-					'errorDetail' => $e
+					'errorDetail' => $e->getMessage()
 			] );
 		}
 	}
@@ -52,7 +52,7 @@ class SubjectController extends Controller {
 		} catch ( \Exception $e ) {
 			return response ()->json ( [
 					'status' => 'error',
-					'errorDetail' => $e
+					'errorDetail' => $e->getMessage()
 			] );
 		}
 	}
@@ -81,7 +81,7 @@ class SubjectController extends Controller {
 			DB::rollBack ();
 			return response ()->json ( [
 					'status' => 'error',
-					'errorDetail' => $e
+					'errorDetail' => $e->getMessage()
 			] );
 		}
 	}
@@ -108,7 +108,7 @@ class SubjectController extends Controller {
 			DB::rollBack ();
 			return response ()->json ( [
 					'status' => 'error',
-					'errorDetail' => $e
+					'errorDetail' => $e->getMessage()
 			] );
 		}
 	}
