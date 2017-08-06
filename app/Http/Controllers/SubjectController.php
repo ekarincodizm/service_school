@@ -18,9 +18,9 @@ class SubjectController extends Controller {
 			$subject = new Subject();
 			$subject->SUBJECT_NAME = $subjectName;
 			$subject->CREATE_DATE = new \DateTime();
-			$subject->CREATE_BY = '-';
+			$subject->CREATE_BY = $request->userLoginId;
 			$subject->UPDATE_DATE = new \DateTime();
-			$subject->UPDATE_BY = '-';
+			$subject->UPDATE_BY = $request->userLoginId;
 			$subject->save();
 			
 			DB::commit(); 
@@ -68,7 +68,7 @@ class SubjectController extends Controller {
 			$subject = Subject::find($subjectId);
 			$subject->SUBJECT_NAME = $subjectName;
 			$subject->UPDATE_DATE = new \DateTime();
- 			$subject->UPDATE_BY = '-';
+ 			$subject->UPDATE_BY = $request->userLoginId;
 			$subject->save();
 			
 			DB::commit();
@@ -94,7 +94,7 @@ class SubjectController extends Controller {
 			DB::beginTransaction();
 			$subject = Subject::find($subjectId);
 			$subject->UPDATE_DATE = new \DateTime();
-			$subject->UPDATE_BY = '-';
+			$subject->UPDATE_BY = $request->userLoginId;
 			$subject->USE_FLAG = 'N';
 			$subject->save();
 			
