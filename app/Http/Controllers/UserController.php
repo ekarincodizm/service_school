@@ -4,10 +4,38 @@ namespace App\Http\Controllers;
 use App\Model\User;
 use Illuminate\Http\Request;
 use DB;
+use App\Http\Controllers\Auth\AuthUseController;
 
 class UserController extends Controller
 {
 	public function getIndex() {
+	}
+	
+	public function postLogin(Request $request) {
+		try{
+			$username = $request->input ( 'userLogin' );
+			$password = $request->input ( 'userPassword' );
+
+			AuthUseController::login ( $username, $password );
+			
+			if (AuthUseController::check ()) {
+				return response ()->json ( [
+						'status' => 'ok',
+						'userSession' => AuthUseController::usserSection()
+				] );
+			} else {
+				return response ()->json ( [
+						'status' => 'error',
+						'errorDetail' => 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'
+				] );
+			}
+		}catch ( \Exception $e ) {
+
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
 	}
 	
 	public function postSearchUser(Request $request) {
@@ -71,9 +99,9 @@ class UserController extends Controller
 			$user->USER_LOGIN = $request->userLogin;
 			$user->USER_PASSWORD = password_hash ( $request->userPassword, PASSWORD_BCRYPT );
 			$user->CREATE_DATE = new \DateTime();
-			$user->CREATE_BY = '-';
+			$user->CREATE_BY = $request->userLoginId;
 			$user->UPDATE_DATE = new \DateTime();
-			$user->UPDATE_BY = '-';
+			$user->UPDATE_BY = $request->userLoginId;
 			$user->save();
 			
 			DB::commit(); 
@@ -121,7 +149,7 @@ class UserController extends Controller
 			//$user->CREATE_DATE = new \DateTime();
 			//$user->CREATE_BY = '-';
 			$user->UPDATE_DATE = new \DateTime();
-			$user->UPDATE_BY = '-';
+			$user->UPDATE_BY = $request->userLoginId;
 			$user->save();
 			
 			DB::commit(); 
@@ -149,7 +177,7 @@ class UserController extends Controller
 			//$user->CREATE_DATE = new \DateTime();
 			//$user->CREATE_BY = '-';
 			$user->UPDATE_DATE = new \DateTime();
-			$user->UPDATE_BY = '-';
+			$user->UPDATE_BY = $request->userLoginId;;
 			$user->save();
 			
 			DB::commit(); 
