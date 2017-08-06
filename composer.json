@@ -17,7 +17,7 @@
 		"phpunit/phpunit" : "~4.0",
 		"symfony/css-selector" : "2.8.*|3.0.*",
 		"symfony/dom-crawler" : "2.8.*|3.0.*",
-		"nesbot/carbon" : "^1.22",
+		"nesbot/carbon" : "^1.22"
 	},
 	"autoload" : {
 		"classmap" : [
