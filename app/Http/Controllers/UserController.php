@@ -95,7 +95,8 @@ class UserController extends Controller
 		$userCount;
 		$user;
 		try {
-			$userCount = User::where('USE_FLAG','Y')->where('USE_ID','<>',$request->userId)->where('USER_LOGIN', $request->userLogin)->count();
+			
+			$userCount = User::where('USE_FLAG','Y')->where('USER_ID','<>',$request->userId)->where('USER_LOGIN', $request->userLogin)->count();
 
 			if($userCount > 0){
 				return response ()->json ( [
@@ -112,7 +113,11 @@ class UserController extends Controller
 			$user->USER_PHONE = $request->userPhone;
 			$user->USER_EMAIL = $request->userEmail;
 			$user->USER_LOGIN = $request->userLogin;
-			//$user->USER_PASSWORD = password_hash ( $request->userPassword, PASSWORD_BCRYPT );
+
+			if($request->userUpdatePassword){
+				$user->USER_PASSWORD = password_hash ( $request->userPassword, PASSWORD_BCRYPT );
+			}
+
 			//$user->CREATE_DATE = new \DateTime();
 			//$user->CREATE_BY = '-';
 			$user->UPDATE_DATE = new \DateTime();
