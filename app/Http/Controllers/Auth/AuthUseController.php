@@ -11,7 +11,7 @@ class AuthUseController extends Controller {
 		$authUser = new AuthUseController ();
 		
 		$users = $authUser->findUser ( $userName, $password );
-		
+
 		if (isset ( $users )) {
 			
 			session ( [ 

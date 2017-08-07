@@ -9,6 +9,9 @@ use App\Http\Controllers\Auth\AuthUseController;
 class UserController extends Controller
 {
 	public function getIndex() {
+		return response ()->json ( [
+						'status' => 'ok',
+				] );
 	}
 	
 	public function postLogin(Request $request) {
