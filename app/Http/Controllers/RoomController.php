@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Model\StudentAccount;
 use App\Model\StudentParent;
 use App\Model\Room;
+use App\Model\RoomType;
 use DB;
 use App\Http\Controllers\UtilController\DateUtil;
 
@@ -117,6 +118,21 @@ class RoomController extends Controller{
 					'status' => 'ok'
 			] );
 			
+			
+		} catch ( \Exception $e ) {
+
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
+	}
+
+	public function postSearchRoomType(Request $request) {
+		try {
+
+			$roomType = RoomType::where('USE_FLAG', 'Y')->get();
+			return response()->json($roomType);
 			
 		} catch ( \Exception $e ) {
 

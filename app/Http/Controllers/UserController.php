@@ -145,7 +145,7 @@ class UserController extends Controller
 			$user->USER_EMAIL = $request->userEmail;
 			$user->USER_LOGIN = $request->userLogin;
 
-			if($request->userUpdatePassword){
+			if($request->userUpdatePassword == 'true'){
 				$user->USER_PASSWORD = password_hash ( $request->userPassword, PASSWORD_BCRYPT );
 			}
 
