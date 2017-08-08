@@ -21,8 +21,13 @@ class StudentController extends Controller
 			$studentForm = json_decode($request->studentModel);
             $parentForm = json_decode($request->parentModel);
             $year = DateUtil::getCurrentThaiYear2Digit();
-            $studentIdOld = StudentAccount::where('SA_STUDENT_ID','LIKE',$year.'%')->max('SA_STUDENT_ID');        
-            $studentId =  $studentIdOld+1;
+            $studentIdOld = StudentAccount::where('SA_STUDENT_ID','LIKE',$year.'%')->max('SA_STUDENT_ID'); 
+			if($studentIdOld == null || $studentIdOld == 0){
+				$studentId = $year.'00001';
+			}else{
+				$studentId =  $studentIdOld+1;
+			}
+            
 			DB::beginTransaction();
 			$student = new StudentAccount();
 			$student->SA_TITLE_NAME_TH = $studentForm->studentPrefixTH;
@@ -75,6 +80,7 @@ class StudentController extends Controller
 			] );
 			
 		} catch ( \Exception $e ) {
+			error_log($e);
 			DB::rollBack ();
 			return response ()->json ( [ 
 					'status' => 'error',
