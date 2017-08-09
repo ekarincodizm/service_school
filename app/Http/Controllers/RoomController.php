@@ -66,7 +66,7 @@ class RoomController extends Controller{
 			
 			
 		} catch ( \Exception $e ) {
-
+			DB::rollBack ();
 			return response ()->json ( [
 					'status' => 'error',
 					'errorDetail' => $e->getMessage()
@@ -93,7 +93,7 @@ class RoomController extends Controller{
 			
 			
 		} catch ( \Exception $e ) {
-
+			DB::rollBack ();
 			return response ()->json ( [
 					'status' => 'error',
 					'errorDetail' => $e->getMessage()
@@ -120,7 +120,7 @@ class RoomController extends Controller{
 			
 			
 		} catch ( \Exception $e ) {
-
+			DB::rollBack ();
 			return response ()->json ( [
 					'status' => 'error',
 					'errorDetail' => $e->getMessage()
@@ -135,7 +135,7 @@ class RoomController extends Controller{
 			return response()->json($roomType);
 			
 		} catch ( \Exception $e ) {
-
+			DB::rollBack ();
 			return response ()->json ( [
 					'status' => 'error',
 					'errorDetail' => $e->getMessage()
