@@ -39,7 +39,7 @@ class StudentController extends Controller
             $student->SA_LAST_NAME_EN = $studentForm->studentLastNameEN;
             $student->SA_NICK_NAME_EN = $studentForm->studentNickNameEN;
 			$birthday = str_replace("-","",$studentForm->birthday);
-			$birthday = substr($birthday,0,4).''.substr($birthday,6,2).''.substr($birthday,4,2);
+			$birthday = substr($birthday,0,4).''.substr($birthday,4,2).''.substr($birthday,6,2);
             $student->SA_BIRTH_DATE = $birthday;
             $student->SA_NATIONALITY = $studentForm->nationality;
             $student->SA_ETHNIC = $studentForm->ethnic;
@@ -133,7 +133,7 @@ class StudentController extends Controller
             $student->SA_LAST_NAME_EN = $studentForm->studentLastNameEN;
             $student->SA_NICK_NAME_EN = $studentForm->studentNickNameEN;
 			$birthday = str_replace("-","",$studentForm->birthday);
-			$birthday = substr($birthday,0,4).''.substr($birthday,6,2).''.substr($birthday,4,2);
+			$birthday = substr($birthday,0,4).''.substr($birthday,4,2).''.substr($birthday,6,2);
             $student->SA_BIRTH_DATE = $birthday;
             $student->SA_NATIONALITY = $studentForm->nationality;
             $student->SA_ETHNIC = $studentForm->ethnic;
