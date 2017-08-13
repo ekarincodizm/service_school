@@ -50,5 +50,16 @@ class AddressController extends Controller
 						'amphur' => $amphur,
 				] );
 	}
+	public function postFullAddress(Request $request) {
+		$province = Province::find($request->parentProvince);
+		$amphur = Amphur::find($request->parentAmphur);
+		$district = District::find($request->parentDistrict);
+		$address = 'ต.'.$district->DISTRICT_NAME.' อ.'.$amphur->AMPHUR_NAME.' จ.'.$province->PROVINCE_NAME.' '.$amphur->POSTCODE;
+		
+		return response ()->json ( [
+						'status' => 'ok',
+						'address' => $address,
+				] );
+	}
     
 }
