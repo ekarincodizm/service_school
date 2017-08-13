@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Model\ClassRoom;
+use App\Model\Room;
 use App\Model\RoomType;
+use App\Model\BillDetail;
+use App\Model\Subject;
 use App\Http\Controllers\UtilController\DateUtil;
 use DB;
 
@@ -94,6 +97,31 @@ class ClassRoomController extends Controller{
 		}
 	}
 
+	public function postSearchClassRoom(Request $request) {
+		try {
 
+			$classRooms = ClassRoom::all();
+
+			$classRoomForms = [];
+
+			foreach ($classRooms as $classRoom) {
+				$classRoomForm['classroom'] = $classRoom;
+				$classRoomForm['room'] = Room::find($classRoom->ROOM_ID);
+				$classRoomForm['subject'] = Subject::find($classRoom->SUBJECT_ID);
+				$classRoomForm['roomType'] = RoomType::find($classRoom->RT_ID);
+				$classRoomForm['studentCount'] = BillDetail::where('CR_ID', $classRoom->CR_ID)->where('USE_FLAG', 'Y')->count();
+				array_push($classRoomForms, $classRoomForm);	
+			}
+			
+			return response()->json($classRoomForms);
+			
+		} catch ( \Exception $e ) {
+
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
+	}
 
 }
