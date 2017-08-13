@@ -27,25 +27,13 @@ class ClassRoomController extends Controller{
 			DB::beginTransaction();
 
 			//Check Duplicate
-			$classRoomDup = ClassRoom::where(
-				function ($query) use ($request) {
-					$query
-					->whereBetween('CR_START_DATE', [$request->startDateString, $request->endDateString])
-					->orWhereBetween('CR_END_DATE', [$request->startDateString, $request->endDateString]);
-            	}
-			)->orWhere(
-				function ($query) use ($request)  {
-					$query
-					->where('CR_START_DATE', '>=', $request->startDateString)
-					->where('CR_END_DATE', '<=', $request->endDateString);
-            	}
-			)->orWhere(
-				function ($query) use ($request)  {
-					$query
-					->where('CR_START_DATE', '<=', $request->startDateString)
-					->where('CR_END_DATE', '>=', $request->endDateString);
-            	}
-			)->where('ROOM_ID', $request->roomId)
+			$classRoomDup = ClassRoom::whereRaw(
+				'((CR_START_DATE BETWEEN '.$request->startDateString.' AND '.$request->endDateString.' 
+				 OR CR_END_DATE BETWEEN '.$request->startDateString.' AND '.$request->endDateString.') '.
+				'OR (CR_START_DATE >= '.$request->startDateString.' AND CR_END_DATE <= '.$request->endDateString.') '.
+				'OR (CR_START_DATE <= '.$request->startDateString.' AND CR_END_DATE >= '.$request->endDateString.')) '
+			)
+			->where('ROOM_ID', $request->roomId)
 			->where('USE_FLAG', 'Y')
 			->get();
 
@@ -100,7 +88,23 @@ class ClassRoomController extends Controller{
 	public function postSearchClassRoom(Request $request) {
 		try {
 
-			$classRooms = ClassRoom::all();
+			$classRooms = ClassRoom::where('USE_FLAG', 'Y');
+
+			if(count($request->roomTypeIdSearch) > 0){
+				$classRooms->whereIn('RT_ID', $request->roomTypeIdSearch);
+			}else{
+				$classRooms->where('1','2');
+			}
+
+			if($request->roomId != ''){
+				$classRooms->where('ROOM_ID', $request->roomId);
+			}
+
+			if($request->subjectId != ''){
+				$classRooms->where('SUBJECT_ID', $request->subjectId);
+			}
+
+			$classRooms = $classRooms->get();
 
 			$classRoomForms = [];
 
@@ -117,6 +121,98 @@ class ClassRoomController extends Controller{
 			
 		} catch ( \Exception $e ) {
 
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
+	}
+
+	public function postUpdateClassRoom(Request $request) {
+		try {
+
+			DB::beginTransaction();
+
+			//Check Duplicate
+			$classRoomDup = ClassRoom::whereRaw(
+				'((CR_START_DATE BETWEEN '.$request->startDateString.' AND '.$request->endDateString.' 
+				 OR CR_END_DATE BETWEEN '.$request->startDateString.' AND '.$request->endDateString.') '.
+				'OR (CR_START_DATE >= '.$request->startDateString.' AND CR_END_DATE <= '.$request->endDateString.') '.
+				'OR (CR_START_DATE <= '.$request->startDateString.' AND CR_END_DATE >= '.$request->endDateString.')) '
+			)
+			->where('CR_ID', '<>', $request->classRoomId)
+			->where('ROOM_ID', $request->roomId)
+			->where('USE_FLAG', 'Y')
+			->get();
+
+			if(count($classRoomDup)>0){
+				return response ()->json ( [
+					'status' => 'warning',
+					'warningMessage' => 'ห้องนี้ได้ถูกใช้ในช่วงเวลาที่เลือกแล้ว กรุณาตรวจสอบข้อมูลใหม่อีกครั้ง'
+				] );
+			}
+
+            $roomType = RoomType::find($request->roomTypeId);
+
+			$classRoom = ClassRoom::find($request->classRoomId);
+			$classRoom->SUBJECT_ID = $request->subjectId;
+			$classRoom->ROOM_ID = $request->roomId;
+            $classRoom->RT_ID = $request->roomTypeId;
+            $classRoom->CR_NAME = $request->classRoomName;
+            $classRoom->CR_MAX_STUDENT = $request->maxStudent;
+            $classRoom->CR_PRICE = $request->price;
+           
+            if($roomType->RT_GRADE_FLAG == 'G'){
+                $classRoom->CR_TERM_FLAG = 'Y';
+            }else{
+                $classRoom->CR_TERM_FLAG = 'N';
+            }
+
+            $classRoom->CR_START_DATE = $request->startDateString;
+            $classRoom->CR_END_DATE = $request->endDateString;
+
+            // $classRoom->CREATE_DATE = new \DateTime();
+			// $classRoom->CREATE_BY = $request->userLoginId;
+			$classRoom->UPDATE_DATE = new \DateTime();
+			$classRoom->UPDATE_BY = $request->userLoginId;
+			$classRoom->save();
+
+            DB::commit(); 
+			
+			return response ()->json ( [
+					'status' => 'ok'
+			] );
+			
+			
+		} catch ( \Exception $e ) {
+			DB::rollBack ();
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
+	}
+
+	public function postRemoveClassRoom(Request $request) {
+		try {
+
+			DB::beginTransaction();
+            
+			$room = ClassRoom::find($request->classRoomId);
+			$room->UPDATE_DATE = new \DateTime();
+			$room->UPDATE_BY = $request->userLoginId;
+            $room->USE_FLAG = 'N';
+			$room->save();
+
+            DB::commit(); 
+			
+			return response ()->json ( [
+					'status' => 'ok'
+			] );
+			
+			
+		} catch ( \Exception $e ) {
+			DB::rollBack ();
 			return response ()->json ( [
 					'status' => 'error',
 					'errorDetail' => $e->getMessage()
