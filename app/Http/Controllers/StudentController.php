@@ -106,7 +106,7 @@ class StudentController extends Controller
 	public function postSearchParent(Request $request) {
 		try {
 			$studentForm = json_decode($request->studentModel);
-			$parents = StudentParent::where('SA_ID',$studentForm->studentId)->get();
+			$parents = StudentParent::where('SA_ID',$studentForm->studentId)->where('USE_FLAG' , 'Y')->get();
 			$addressList;
 			$postCodeList;
 			foreach ($parents as $key=> $parent){
@@ -165,7 +165,7 @@ class StudentController extends Controller
 	public function postUpdateStudent(Request $request) {
 		try {
 			$studentForm = json_decode($request->studentModel);
-            $parentForm = json_decode($request->parentModel);
+            $parentForms = $request->parentModel;
 			
 			DB::beginTransaction();
 			$student = StudentAccount::find($studentForm->studentId);
@@ -185,26 +185,60 @@ class StudentController extends Controller
             $student->SA_RELIGION = $studentForm->religion;
             $student->SA_PARENT_STATUS = $studentForm->parentStatus;
             $student->SA_FATHER_NAME = $studentForm->fatherName;
-            $student->SA_FATHER_ADDRESS = $studentForm->fatherAddress;
+			
+			$student->SA_FATHER_ADDRESS = $studentForm->fatherAddress;
+			$student->SA_FATHER_PROVINCE = $studentForm->fatherProvince;
+			$student->SA_FATHER_AMPHUR = $studentForm->fatherAmphur;
+			$student->SA_FATHER_DISTRICT = $studentForm->fatherDistrict;
             $student->SA_FATHER_TEL = $studentForm->fatherTel;
             $student->SA_MOTHER_NAME = $studentForm->motherName;
             $student->SA_MOTHER_ADDRESS = $studentForm->motherAddress;
+			$student->SA_MOTHER_PROVINCE = $studentForm->motherProvince;
+			$student->SA_MOTHER_AMPHUR = $studentForm->motherAmphur;
+			$student->SA_MOTHER_DISTRICT = $studentForm->motherDistrict;
+
             $student->SA_MOTHER_TEL = $studentForm->motherTel;
 			$student->UPDATE_DATE = new \DateTime();
 			$student->UPDATE_BY = $request->userLoginId;
 			$student->save();
+			$tmpList = array();
+			foreach ($parentForms as $parentForm) {
+				$tmp = json_decode($parentForm);
+				$tmpId = $tmp->parentId;
+				if($tmpId != null && $tmpId != ''){
+					array_push($tmpList, $tmpId);
+				}
+				
+			}
 
-			$parent = StudentParent::find($parentForm->parentId);
-            $parent->SA_ID = $student->SA_ID;
-            $parent->SP_TITLE_NAME = $parentForm->parentPrefix;
-            $parent->SP_FIRST_NAME = $parentForm->parentFirstName;
-            $parent->SP_LAST_NAME = $parentForm->parentLastName;
-            $parent->SP_RELATION = $parentForm->parentAddress;
-            $parent->SP_ADDRESS = $parentForm->parentTel;
-            $parent->SP_TEL = $parentForm->relationship;
-			$parent->UPDATE_DATE = new \DateTime();
-			$parent->UPDATE_BY = $request->userLoginId;
-            $parent->save();
+			StudentParent::where('SA_ID',$student->SA_ID)->whereNotIn('SP_ID', $tmpList)->update(['USE_FLAG' => 'N','UPDATE_BY'=>$request->userLoginId,'UPDATE_DATE'=>new \DateTime()]);
+
+			foreach ($parentForms as $parentForm) {
+				$tmp = json_decode($parentForm);
+				$tmpId = $tmp->parentId;
+				if($tmpId != null && $tmpId != ''){
+					$parent = StudentParent::find($tmpId);
+				}else{
+					$parent = new StudentParent();
+				}
+				
+				$parent->SA_ID = $student->SA_ID;
+				$parent->SP_TITLE_NAME = $tmp->parentPrefix;
+				$parent->SP_FIRST_NAME = $tmp->parentFirstName;
+				$parent->SP_LAST_NAME = $tmp->parentLastName;
+				$parent->SP_RELATION = $tmp->parentAddress;
+				$parent->SP_ADDRESS = $tmp->parentTel;
+				$parent->SP_PROVINCE = $tmp->parentProvince;
+				$parent->SP_AMPHUR = $tmp->parentAmphur;
+				$parent->SP_DISTRICT = $tmp->parentDistrict;
+				$parent->SP_TEL = $tmp->relationship;
+				$parent->CREATE_DATE = new \DateTime();
+				$parent->CREATE_BY = $request->userLoginId;
+				$parent->UPDATE_DATE = new \DateTime();
+				$parent->UPDATE_BY = $request->userLoginId;
+				$parent->save();
+			}
+
 			
 			DB::commit();
 			
@@ -213,6 +247,7 @@ class StudentController extends Controller
 			] );
 			
 		} catch ( \Exception $e ) {
+			// error_log($e);
 			DB::rollBack ();
 			return response ()->json ( [
 					'status' => 'error',
