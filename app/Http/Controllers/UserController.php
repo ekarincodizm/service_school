@@ -16,6 +16,7 @@ class UserController extends Controller
 	
 	public function postLogin(Request $request) {
 		try{
+			
 			$username = $request->input ( 'userLogin' );
 			$password = $request->input ( 'userPassword' );
 

@@ -170,9 +170,9 @@ class StudentController extends Controller
 			$postdata = file_get_contents("php://input");
 			 
 			
-			$studentForm = json_decode($postdata)->studentModel;
-            $parentForms = json_decode($postdata)->parentModel;
-			error_log($studentForm->studentPicType);
+			 $studentForm = json_decode($postdata)->studentModel;
+             $parentForms = json_decode($postdata)->parentModel;
+			
 			DB::beginTransaction();
 			$student = StudentAccount::find($studentForm->studentId);
 			$student->SA_TITLE_NAME_TH = $studentForm->studentPrefixTH;
@@ -212,7 +212,7 @@ class StudentController extends Controller
 			$student->save();
 			$tmpList = array();
 			foreach ($parentForms as $parentForm) {
-				$tmp = json_decode($parentForm);
+				$tmp = $parentForm;
 				$tmpId = $tmp->parentId;
 				if($tmpId != null && $tmpId != ''){
 					array_push($tmpList, $tmpId);
@@ -223,7 +223,7 @@ class StudentController extends Controller
 			StudentParent::where('SA_ID',$student->SA_ID)->whereNotIn('SP_ID', $tmpList)->update(['USE_FLAG' => 'N','UPDATE_BY'=>$request->userLoginId,'UPDATE_DATE'=>new \DateTime()]);
 
 			foreach ($parentForms as $parentForm) {
-				$tmp = json_decode($parentForm);
+				$tmp = $parentForm;
 				$tmpId = $tmp->parentId;
 				if($tmpId != null && $tmpId != ''){
 					$parent = StudentParent::find($tmpId);
@@ -249,7 +249,7 @@ class StudentController extends Controller
 			}
 			
 			DB::commit();
-			error_log($postdata);
+			
 			return response ()->json ( [
 					'status' => 'ok'
 			] );
