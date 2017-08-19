@@ -21,15 +21,19 @@ class StudentController extends Controller
 		$student;
         $parent;
 		try {
-			$studentForm = json_decode($request->studentModel);
-            $parentForms = $request->parentModel;
+			$postdata = file_get_contents("php://input");
+			$studentForm = json_decode($postdata)->studentModel;
+            $parentForms = json_decode($postdata)->parentModel;
+			$userId = json_decode($postdata)->userId;
             $year = DateUtil::getCurrentThaiYear2Digit();
+
             $studentIdOld = StudentAccount::where('SA_STUDENT_ID','LIKE',$year.'%')->max('SA_STUDENT_ID'); 
 			if($studentIdOld == null || $studentIdOld == 0){
 				$studentId = $year.'00001';
 			}else{
 				$studentId =  $studentIdOld+1;
 			}
+
 			DB::beginTransaction();
 			$student = new StudentAccount();
 			$student->SA_TITLE_NAME_TH = $studentForm->studentPrefixTH;
@@ -63,13 +67,13 @@ class StudentController extends Controller
 			$student->SA_PICTURE	= $studentForm->studentPic;
 			$student->SA_PICTURE_TYPE	= $studentForm->studentPicType;
 			$student->CREATE_DATE = new \DateTime();
-			$student->CREATE_BY = $request->userLoginId;
+			$student->CREATE_BY = $userId;
 			$student->UPDATE_DATE = new \DateTime();
-			$student->UPDATE_BY = $request->userLoginId;
+			$student->UPDATE_BY = $userId;
 			$student->save();
 			
 			foreach ($parentForms as $parentForm) {
-				$tmp =json_decode($parentForm);
+				$tmp = $parentForm;
 				$parent = new StudentParent();
 				$parent->SA_ID = $student->SA_ID;
 				$parent->SP_TITLE_NAME = $tmp->parentPrefix;
@@ -81,6 +85,8 @@ class StudentController extends Controller
 				$parent->SP_AMPHUR = $tmp->parentAmphur;
 				$parent->SP_DISTRICT = $tmp->parentDistrict;
 				$parent->SP_TEL = $tmp->relationship;
+				$parent->SP_PICTURE = $tmp->parentPic;
+				$parent->SP_PICTURE_TYPE = $tmp->parentPicType;
 				$parent->CREATE_DATE = new \DateTime();
 				$parent->CREATE_BY = $request->userLoginId;
 				$parent->UPDATE_DATE = new \DateTime();
@@ -107,8 +113,8 @@ class StudentController extends Controller
 	
 	public function postSearchParent(Request $request) {
 		try {
-			$studentForm = json_decode($request->studentModel);
-			$parents = StudentParent::where('SA_ID',$studentForm->studentId)->where('USE_FLAG' , 'Y')->get();
+			$studentId = $request->studentId;
+			$parents = StudentParent::where('SA_ID',$studentId)->where('USE_FLAG' , 'Y')->get();
 			$addressList;
 			$postCodeList;
 			foreach ($parents as $key=> $parent){
@@ -166,12 +172,10 @@ class StudentController extends Controller
 
 	public function postUpdateStudent(Request $request) {
 		try {
-			error_log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
 			$postdata = file_get_contents("php://input");
-			 
-			
-			 $studentForm = json_decode($postdata)->studentModel;
-             $parentForms = json_decode($postdata)->parentModel;
+			$studentForm = json_decode($postdata)->studentModel;
+            $parentForms = json_decode($postdata)->parentModel;
+			$userId = json_decode($postdata)->userId;
 			
 			DB::beginTransaction();
 			$student = StudentAccount::find($studentForm->studentId);
@@ -208,7 +212,7 @@ class StudentController extends Controller
 			$student->SA_PICTURE_TYPE	= (string)$studentForm->studentPicType;
 
 			$student->UPDATE_DATE = new \DateTime();	
-			$student->UPDATE_BY = $request->userLoginId;
+			$student->UPDATE_BY = $userId;
 			$student->save();
 			$tmpList = array();
 			foreach ($parentForms as $parentForm) {
@@ -241,6 +245,8 @@ class StudentController extends Controller
 				$parent->SP_AMPHUR = $tmp->parentAmphur;
 				$parent->SP_DISTRICT = $tmp->parentDistrict;
 				$parent->SP_TEL = $tmp->relationship;
+				$parent->SP_PICTURE = $tmp->parentPic;
+				$parent->SP_PICTURE_TYPE = $tmp->parentPicType;
 				$parent->CREATE_DATE = new \DateTime();
 				$parent->CREATE_BY = $request->userLoginId;
 				$parent->UPDATE_DATE = new \DateTime();
