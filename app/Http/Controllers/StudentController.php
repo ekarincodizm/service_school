@@ -60,6 +60,8 @@ class StudentController extends Controller
 			$student->SA_MOTHER_DISTRICT = $studentForm->motherDistrict;
             $student->SA_MOTHER_TEL = $studentForm->motherTel;
             $student->SA_STUDENT_ID	= $studentId;
+			$student->SA_PICTURE	= $studentForm->studentPic;
+			$student->SA_PICTURE_TYPE	= $studentForm->studentPicType;
 			$student->CREATE_DATE = new \DateTime();
 			$student->CREATE_BY = $request->userLoginId;
 			$student->UPDATE_DATE = new \DateTime();
@@ -164,9 +166,13 @@ class StudentController extends Controller
 
 	public function postUpdateStudent(Request $request) {
 		try {
-			$studentForm = json_decode($request->studentModel);
-            $parentForms = $request->parentModel;
+			error_log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+			$postdata = file_get_contents("php://input");
+			 
 			
+			$studentForm = json_decode($postdata)->studentModel;
+            $parentForms = json_decode($postdata)->parentModel;
+			error_log($studentForm->studentPicType);
 			DB::beginTransaction();
 			$student = StudentAccount::find($studentForm->studentId);
 			$student->SA_TITLE_NAME_TH = $studentForm->studentPrefixTH;
@@ -198,7 +204,10 @@ class StudentController extends Controller
 			$student->SA_MOTHER_DISTRICT = $studentForm->motherDistrict;
 
             $student->SA_MOTHER_TEL = $studentForm->motherTel;
-			$student->UPDATE_DATE = new \DateTime();
+			$student->SA_PICTURE	= $studentForm->studentPic;	
+			$student->SA_PICTURE_TYPE	= (string)$studentForm->studentPicType;
+
+			$student->UPDATE_DATE = new \DateTime();	
 			$student->UPDATE_BY = $request->userLoginId;
 			$student->save();
 			$tmpList = array();
@@ -238,16 +247,14 @@ class StudentController extends Controller
 				$parent->UPDATE_BY = $request->userLoginId;
 				$parent->save();
 			}
-
 			
 			DB::commit();
-			
+			error_log($postdata);
 			return response ()->json ( [
 					'status' => 'ok'
 			] );
 			
 		} catch ( \Exception $e ) {
-			// error_log($e);
 			DB::rollBack ();
 			return response ()->json ( [
 					'status' => 'error',
