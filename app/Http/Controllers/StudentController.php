@@ -21,13 +21,9 @@ class StudentController extends Controller
 		$student;
         $parent;
 		try {
-			ini_set('mysql.connect_timeout', 300);
-			ini_set('default_socket_timeout', 300);
-			ini_set('innodb_log_file_size', 256);
-			ini_set('max_allowed_packet', 300);
 			$postdata = file_get_contents("php://input");
 			$studentForm = json_decode($postdata)->studentModel;
-            $parentForms = json_decode($postdata)->parentModel;
+            // $parentForms = json_decode($postdata)->parentModel;
 			$userId = json_decode($postdata)->userId;
             $year = DateUtil::getCurrentThaiYear2Digit();
 
@@ -75,27 +71,27 @@ class StudentController extends Controller
 			$student->UPDATE_DATE = new \DateTime();
 			$student->UPDATE_BY = $userId;
 			$student->save();
-			foreach ($parentForms as $parentForm) {
-				$tmp = $parentForm;
-				$parent = new StudentParent();
-				$parent->SA_ID = $student->SA_ID;
-				$parent->SP_TITLE_NAME = $tmp->parentPrefix;
-				$parent->SP_FIRST_NAME = $tmp->parentFirstName;
-				$parent->SP_LAST_NAME = $tmp->parentLastName;
-				$parent->SP_RELATION = $tmp->parentAddress;
-				$parent->SP_ADDRESS = $tmp->parentTel;
-				$parent->SP_PROVINCE = $tmp->parentProvince;
-				$parent->SP_AMPHUR = $tmp->parentAmphur;
-				$parent->SP_DISTRICT = $tmp->parentDistrict;
-				$parent->SP_TEL = $tmp->relationship;
-				$parent->SP_PICTURE = $tmp->parentPic;
-				$parent->SP_PICTURE_TYPE = (string)$tmp->parentPicType;
-				$parent->CREATE_DATE = new \DateTime();
-				$parent->CREATE_BY = $userId;
-				$parent->UPDATE_DATE = new \DateTime();
-				$parent->UPDATE_BY = $userId;
-				$parent->save();
-			}
+			// foreach ($parentForms as $parentForm) {
+			// 	$tmp = $parentForm;
+			// 	$parent = new StudentParent();
+			// 	$parent->SA_ID = $student->SA_ID;
+			// 	$parent->SP_TITLE_NAME = $tmp->parentPrefix;
+			// 	$parent->SP_FIRST_NAME = $tmp->parentFirstName;
+			// 	$parent->SP_LAST_NAME = $tmp->parentLastName;
+			// 	$parent->SP_RELATION = $tmp->relationship;
+			// 	$parent->SP_ADDRESS = $tmp->parentAddress;
+			// 	$parent->SP_PROVINCE = $tmp->parentProvince;
+			// 	$parent->SP_AMPHUR = $tmp->parentAmphur;
+			// 	$parent->SP_DISTRICT = $tmp->parentDistrict;
+			// 	$parent->SP_TEL = $tmp->parentTel;
+			// 	$parent->SP_PICTURE = $tmp->parentPic;
+			// 	$parent->SP_PICTURE_TYPE = (string)$tmp->parentPicType;
+			// 	$parent->CREATE_DATE = new \DateTime();
+			// 	$parent->CREATE_BY = $userId;
+			// 	$parent->UPDATE_DATE = new \DateTime();
+			// 	$parent->UPDATE_BY = $userId;
+			// 	$parent->save();
+			// }
 
 
 			DB::commit(); 
@@ -159,7 +155,7 @@ class StudentController extends Controller
 
 			}
 			// $student = StudentAccount::where('SA_FIRST_NAME_TH', 'LIKE', $studentName)->where('SA_STUDENT_ID', 'LIKE', $studentId)->where('USE_FLAG', 'Y')->get();
-			$student = DB::select('SELECT * from STUDENT_ACCOUNT a left join STUDENT_PARENT b on (a.SA_ID = b.SA_ID and b.USE_FLAG = "Y")'.$where .'
+			$student = DB::select('SELECT * from STUDENT_ACCOUNT a '.$where .'
 									GROUP BY a.SA_ID');
 			return response()->json($student);
 
@@ -174,15 +170,11 @@ class StudentController extends Controller
 
 	public function postUpdateStudent(Request $request) {
 		try {
-			ini_set('mysql.connect_timeout', 300);
-			ini_set('default_socket_timeout', 300);
-			ini_set('innodb_log_file_size', 256);
-			ini_set('max_allowed_packet', 300);
 			
 			
 			$postdata = file_get_contents("php://input");
 			$studentForm = json_decode($postdata)->studentModel;
-            $parentForms = json_decode($postdata)->parentModel;
+            // $parentForms = json_decode($postdata)->parentModel;
 			$userId = json_decode($postdata)->userId;
 			
 			DB::beginTransaction();
@@ -222,45 +214,43 @@ class StudentController extends Controller
 			$student->UPDATE_DATE = new \DateTime();	
 			$student->UPDATE_BY = $userId;
 			$student->save();
-			$tmpList = array();
-			foreach ($parentForms as $parentForm) {
-				$tmp = $parentForm;
-				$tmpId = $tmp->parentId;
-				if($tmpId != null && $tmpId != ''){
-					array_push($tmpList, $tmpId);
-				}
+			// $tmpList = array();
+			// foreach ($parentForms as $parentForm) {
+			// 	$tmp = $parentForm;
+			// 	$tmpId = $tmp->parentId;
+			// 	if($tmpId != null && $tmpId != ''){
+			// 		array_push($tmpList, $tmpId);
+			// 	}
 				
-			}
+			// }
 
-			StudentParent::where('SA_ID',$student->SA_ID)->whereNotIn('SP_ID', $tmpList)->update(['USE_FLAG' => 'N','UPDATE_BY'=>$request->userLoginId,'UPDATE_DATE'=>new \DateTime()]);
+			// StudentParent::where('SA_ID',$student->SA_ID)->whereNotIn('SP_ID', $tmpList)->update(['USE_FLAG' => 'N','UPDATE_BY'=>$request->userLoginId,'UPDATE_DATE'=>new \DateTime()]);
 
-			foreach ($parentForms as $parentForm) {
-				$tmp = $parentForm;
-				$tmpId = $tmp->parentId;
-				if($tmpId != null && $tmpId != ''){
-					$parent = StudentParent::find($tmpId);
-				}else{
-					$parent = new StudentParent();
-				}
+			// foreach ($parentForms as $parentForm) {
+			// 	$tmp = $parentForm;
+			// 	$tmpId = $tmp->parentId;
+			// 	if($tmpId != null && $tmpId != ''){
+			// 		$parent = StudentParent::find($tmpId);
+			// 	}else{
+			// 		$parent = new StudentParent();
+			// 	}
 				
-				$parent->SA_ID = $student->SA_ID;
-				$parent->SP_TITLE_NAME = $tmp->parentPrefix;
-				$parent->SP_FIRST_NAME = $tmp->parentFirstName;
-				$parent->SP_LAST_NAME = $tmp->parentLastName;
-				$parent->SP_RELATION = $tmp->parentAddress;
-				$parent->SP_ADDRESS = $tmp->parentTel;
-				$parent->SP_PROVINCE = $tmp->parentProvince;
-				$parent->SP_AMPHUR = $tmp->parentAmphur;
-				$parent->SP_DISTRICT = $tmp->parentDistrict;
-				$parent->SP_TEL = $tmp->relationship;
-				$parent->SP_PICTURE = $tmp->parentPic;
-				$parent->SP_PICTURE_TYPE = (string)$tmp->parentPicType;
-				$parent->CREATE_DATE = new \DateTime();
-				$parent->CREATE_BY = $request->userLoginId;
-				$parent->UPDATE_DATE = new \DateTime();
-				$parent->UPDATE_BY = $request->userLoginId;
-				$parent->save();
-			}
+			// 	$parent->SA_ID = $student->SA_ID;
+			// 	$parent->SP_TITLE_NAME = $tmp->parentPrefix;
+			// 	$parent->SP_FIRST_NAME = $tmp->parentFirstName;
+			// 	$parent->SP_LAST_NAME = $tmp->parentLastName;
+			// 	$parent->SP_RELATION = $tmp->relationship;
+			// 	$parent->SP_ADDRESS = $tmp->parentAddress;
+			// 	$parent->SP_PROVINCE = $tmp->parentProvince;
+			// 	$parent->SP_AMPHUR = $tmp->parentAmphur;
+			// 	$parent->SP_DISTRICT = $tmp->parentDistrict;
+			// 	$parent->SP_TEL = $tmp->parentTel;
+			// 	$parent->SP_PICTURE = $tmp->parentPic;
+			// 	$parent->SP_PICTURE_TYPE = (string)$tmp->parentPicType;
+			// 	$parent->UPDATE_DATE = new \DateTime();
+			// 	$parent->UPDATE_BY = $userId;
+			// 	$parent->save();
+			// }
 			
 			DB::commit();
 			
@@ -280,10 +270,10 @@ class StudentController extends Controller
 	public function postRemoveStudent(Request $request) {
 		$studentId;
 		try {
-			$studentForm = json_decode($request->studentModel);
+			// $studentForm = json_decode($request->studentModel);
 			
 			DB::beginTransaction();
-			$student = StudentAccount::find($studentForm->studentId);
+			$student = StudentAccount::find($request->studentId);
 			$student->UPDATE_DATE = new \DateTime();
 			$student->UPDATE_BY = $request->userLoginId;
 			$student->USE_FLAG = 'N';
@@ -299,7 +289,7 @@ class StudentController extends Controller
 			DB::rollBack ();
 			return response ()->json ( [
 					'status' => 'error',
-					'errorDetail' => $e->getMessage()
+					'errorDetail' => $request->userLoginId
 			] );
 		}
 	}
