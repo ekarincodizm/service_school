@@ -7,7 +7,11 @@ use Illuminate\Http\Request;
 use DB;
 use App\Model\StudentAccount;
 use App\Model\Bill;
+use App\Model\Room;
+use App\Model\RoomType;
 use App\Model\BillDetail;
+use App\Model\Subject;
+use App\Model\ClassRoom;
 
 class RegisterClassController extends Controller{
 
@@ -119,7 +123,7 @@ class RegisterClassController extends Controller{
 			$postdata = file_get_contents("php://input");
 			$studentAccountId = json_decode($postdata)->studentAccountId;
 
-			$bill = BILL::where('USE_FLAG', 'Y')->where('SA_ID', $studentAccountId)->get();
+			$bill = BILL::where('USE_FLAG', 'Y')->where('SA_ID', $studentAccountId)->orderBy('BILL_NO', 'desc')->get();
 			
 			return response()->json($bill);
 			
@@ -148,7 +152,66 @@ class RegisterClassController extends Controller{
 	}
 
 	public function postSearchBillDetailByBillid(Request $request){
+		$postdata;
+		$billId;
+		try {
 
+			$postdata = file_get_contents("php://input");
+			$billId = json_decode($postdata)->billId;
+
+			$billDetails = BillDetail::where('BILL_ID', $billId)->get();
+
+			$registerClasses = [];
+			foreach($billDetails as $billDetail){
+				$registerClass['billDetail'] = $billDetail;
+				$registerClass['classRoom'] = ClassRoom::find($billDetail->CR_ID);
+				$registerClass['room'] = Room::find($registerClass['classRoom']->ROOM_ID);
+				$registerClass['subject'] = Subject::find($registerClass['classRoom']->SUBJECT_ID);
+				$registerClass['roomType'] = RoomType::find($registerClass['classRoom']->RT_ID);
+				array_push($registerClasses, $registerClass);
+			}
+			
+			return response()->json($registerClasses);
+			
+		} catch ( \Exception $e ) {
+
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
+	}
+
+	public function postCancleBill(Request $request){
+		$postdata;
+		$billId;
+		$userLogin;
+		try {
+
+			$postdata = file_get_contents("php://input");
+			$billId = json_decode($postdata)->billId;
+			$userLoginId = json_decode($postdata)->userLoginId;
+
+			DB::beginTransaction();
+
+			$bill = Bill::find($billId);
+			$bill->BILL_STATUS = Bill::BILL_STATUS_CANCLE;
+			$bill->UPDATE_DATE = new \DateTime();
+			$bill->UPDATE_BY = $userLoginId;
+			$bill->save();
+			DB::commit(); 
+			
+			return response ()->json ( [
+				'status' => 'ok'
+			] );
+			
+		} catch ( \Exception $e ) {
+			DB::rollBack ();
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
 	}
 
 }
