@@ -137,18 +137,18 @@ class RegisterClassController extends Controller{
 	}
 
 	public function findBillNumber(){
-		$currentYear = date("Y") + 543;
-		$currentMonth = date("m");
-		$currentday = date("d");
+		$currentYear = DateUtil::getCurrentThaiYear();
+		$currentMonth = DateUtil::getCurrentMonth2Digit();
+		$currentday = DateUtil::getCurrentDay();
 		$maxBillNo = Bill::max("BILL_NO");
 
 		if($maxBillNo == null){
-			$maxBillNo = "01";
+			$maxBillNo = "0001";
 		}else{
-			$maxBillNo = str_pad((((int) substr($maxBillNo, 7)) + 1),2,"0",STR_PAD_LEFT);
+			$maxBillNo = str_pad((((int) substr($maxBillNo, 6)) + 1),4,"0",STR_PAD_LEFT);
 		}
 
-		return $currentYear.$currentMonth.$currentday.$maxBillNo;
+		return $currentYear.$currentMonth.$maxBillNo;
 	}
 
 	public function postSearchBillDetailByBillid(Request $request){
