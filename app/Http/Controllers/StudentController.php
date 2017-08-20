@@ -21,6 +21,10 @@ class StudentController extends Controller
 		$student;
         $parent;
 		try {
+			ini_set('mysql.connect_timeout', 300);
+			ini_set('default_socket_timeout', 300);
+			ini_set('innodb_log_file_size', 256);
+			ini_set('max_allowed_packet', 300);
 			$postdata = file_get_contents("php://input");
 			$studentForm = json_decode($postdata)->studentModel;
             $parentForms = json_decode($postdata)->parentModel;
@@ -52,7 +56,7 @@ class StudentController extends Controller
             $student->SA_RELIGION = $studentForm->religion;
             $student->SA_PARENT_STATUS = $studentForm->parentStatus;
             $student->SA_FATHER_NAME = $studentForm->fatherName;
-            $student->SA_FATHER_ADDRESS = $studentForm->fatherAddress;
+            $student->SA_FATHER_ADDRESS = $studentForm->fatherAddress;	
 			$student->SA_FATHER_PROVINCE = $studentForm->fatherProvince;
 			$student->SA_FATHER_AMPHUR = $studentForm->fatherAmphur;
 			$student->SA_FATHER_DISTRICT = $studentForm->fatherDistrict;
@@ -65,13 +69,12 @@ class StudentController extends Controller
             $student->SA_MOTHER_TEL = $studentForm->motherTel;
             $student->SA_STUDENT_ID	= $studentId;
 			$student->SA_PICTURE	= $studentForm->studentPic;
-			$student->SA_PICTURE_TYPE	= $studentForm->studentPicType;
+			$student->SA_PICTURE_TYPE	= (string)$studentForm->studentPicType;
 			$student->CREATE_DATE = new \DateTime();
 			$student->CREATE_BY = $userId;
 			$student->UPDATE_DATE = new \DateTime();
 			$student->UPDATE_BY = $userId;
 			$student->save();
-			
 			foreach ($parentForms as $parentForm) {
 				$tmp = $parentForm;
 				$parent = new StudentParent();
@@ -86,11 +89,11 @@ class StudentController extends Controller
 				$parent->SP_DISTRICT = $tmp->parentDistrict;
 				$parent->SP_TEL = $tmp->relationship;
 				$parent->SP_PICTURE = $tmp->parentPic;
-				$parent->SP_PICTURE_TYPE = $tmp->parentPicType;
+				$parent->SP_PICTURE_TYPE = (string)$tmp->parentPicType;
 				$parent->CREATE_DATE = new \DateTime();
-				$parent->CREATE_BY = $request->userLoginId;
+				$parent->CREATE_BY = $userId;
 				$parent->UPDATE_DATE = new \DateTime();
-				$parent->UPDATE_BY = $request->userLoginId;
+				$parent->UPDATE_BY = $userId;
 				$parent->save();
 			}
 
@@ -102,7 +105,6 @@ class StudentController extends Controller
 			] );
 			
 		} catch ( \Exception $e ) {
-			error_log($e);
 			DB::rollBack ();
 			return response ()->json ( [ 
 					'status' => 'error',
@@ -172,6 +174,12 @@ class StudentController extends Controller
 
 	public function postUpdateStudent(Request $request) {
 		try {
+			ini_set('mysql.connect_timeout', 300);
+			ini_set('default_socket_timeout', 300);
+			ini_set('innodb_log_file_size', 256);
+			ini_set('max_allowed_packet', 300);
+			
+			
 			$postdata = file_get_contents("php://input");
 			$studentForm = json_decode($postdata)->studentModel;
             $parentForms = json_decode($postdata)->parentModel;
@@ -246,7 +254,7 @@ class StudentController extends Controller
 				$parent->SP_DISTRICT = $tmp->parentDistrict;
 				$parent->SP_TEL = $tmp->relationship;
 				$parent->SP_PICTURE = $tmp->parentPic;
-				$parent->SP_PICTURE_TYPE = $tmp->parentPicType;
+				$parent->SP_PICTURE_TYPE = (string)$tmp->parentPicType;
 				$parent->CREATE_DATE = new \DateTime();
 				$parent->CREATE_BY = $request->userLoginId;
 				$parent->UPDATE_DATE = new \DateTime();
