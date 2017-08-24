@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\UtilController\DateUtil;
 use Illuminate\Http\Request;
 use DB;
+use Carbon\Carbon;
 use App\Model\StudentAccount;
 use App\Model\Bill;
 use App\Model\Room;
@@ -212,6 +213,68 @@ class RegisterClassController extends Controller{
 					'errorDetail' => $e->getMessage()
 			] );
 		}
+	}
+
+	public function getCountCurrentStudentClassRoom($startDateString, $endDateString, $classRoomId){
+		//echo $startDate." ".$endDate." ".$classRoomId;
+		$classRoom;
+		$roomType;
+		$billDetail;
+		$startDateCarbon;
+		$endDateCarbon;
+		$diffDate;
+		$countStudent = 0;
+		try {
+			//หาคลาสก่อนเพื่อจะหาจำนวนเด็กที่สามารถลงได้ และระดับของห้องเรียน
+			$classRoom = ClassRoom::find($classRoomId);
+			$roomType = RoomType::find($classRoom->RT_ID);
+
+			if($roomType->RT_GRADE_FLAG == 'P'){
+				//ถ้าเป็นเตรียมอนุบาลจะต้องคำนวนวันทุกวัน เพื่อตรวจสอบว่าเต็มหรือยัง
+				$startDateCarbon = DateUtil::convertDbToDate($startDateString);
+				$endDateCarbon = DateUtil::convertDbToDate($endDateString);
+				$diffDate = DateUtil::countDaysBetweenDate($startDateCarbon, $endDateCarbon);
+
+				for ($i = 1; $i <= $diffDate; $i++) {
+
+					$dateString = DateUtil::getDisplaytoStore(DateUtil::addDate($startDateCarbon, 1));
+
+					$billDetail = BillDetail::where('BILL_DETAIL.CR_ID', $classRoom->CR_ID)
+					->leftJoin('BILL', 'BILL_DETAIL.BILL_ID', '=', 'BILL.BILL_ID')
+					->where('BILL.BILL_STATUS', '<>' , 'C')
+					->where('BILL_DETAIL.BD_START_LEARN', '<=' , $dateString)
+					->where('BILL_DETAIL.BD_END_LEARN', '>=' , $dateString)
+					->get();
+
+					$countStudentLoop = count($billDetail);
+
+					if($countStudent < $countStudentLoop){
+						$countStudent = $countStudentLoop;
+					}
+					
+				}
+			
+			}else{
+				//ถ้าเป็นอนุบาล count โดยตรงได้เลย
+				$billDetail = BillDetail::where('BILL_DETAIL.CR_ID', $classRoom->CR_ID)
+								->leftJoin('BILL', 'BILL_DETAIL.BILL_ID', '=', 'BILL.BILL_ID')
+								->where('BILL.BILL_STATUS', '<>' , 'C')
+								->get();
+				$countStudent = count($billDetail);
+			}
+
+			return response ()->json ( [
+				'status' => 'ok',
+				'totalStudent' => $countStudent
+		] );
+
+		}catch ( \Exception $e ) {
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
+
 	}
 
 }

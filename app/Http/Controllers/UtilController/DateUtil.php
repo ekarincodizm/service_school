@@ -158,10 +158,23 @@ class DateUtil {
 	public static function getMonthName($month) {
 		return DateUtil::genAbbreviationMonthList()[DateUtil::getMonth2Digit($month)];
 	}
-	
+
+	//20107-08-24
+	public static function convertDbToDate($dateString){
+		return Carbon::parse($dateString);
+	}
+
+	public static function addDate($date, $dayForAdd){
+		return $date->addDays($dayForAdd);
+	}
+
+	public static function countDaysBetweenDate($startDate, $endDate){
+		return DateUtil::convertDbToDate($startDate)->diffInDays(DateUtil::convertDbToDate($endDate));
+	}
+
 	public static function getDisplaytoStore($date) {
-		$dateNumber = str_replace("/","",$date);
-		$dateFormat = substr($dateNumber,4).''.substr($dateNumber,2,2).''.substr($dateNumber,0,2);
+		$dateNumber = str_replace("-","",$date);
+		$dateFormat = substr($dateNumber,0,8);
 		return $dateFormat;
 	}
 	
