@@ -113,7 +113,11 @@ class ClassRoomController extends Controller{
 				$classRoomForm['room'] = Room::find($classRoom->ROOM_ID);
 				$classRoomForm['subject'] = Subject::find($classRoom->SUBJECT_ID);
 				$classRoomForm['roomType'] = RoomType::find($classRoom->RT_ID);
-				$classRoomForm['studentCount'] = BillDetail::where('CR_ID', $classRoom->CR_ID)->where('USE_FLAG', 'Y')->count();
+				$classRoomForm['studentCount'] = BillDetail::where('BILL_DETAIL.CR_ID', $classRoom->CR_ID)
+				->leftJoin('BILL', 'BILL_DETAIL.BILL_ID', '=', 'BILL.BILL_ID')
+				->where('BILL.BILL_STATUS', '<>' , 'C')
+				->count();
+				//BillDetail::where('BILL_DETAIL.CR_ID', $classRoom->CR_ID)->leftJoin('BILL', 'BILL_DETAIL.BILL_ID', '=', 'BILL.BILL_ID')->where('BILL_DETAI.USE_FLAG', 'Y')->where('BILL.BILL_STATUS','<>','C')->count();
 				array_push($classRoomForms, $classRoomForm);	
 			}
 			

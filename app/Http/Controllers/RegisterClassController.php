@@ -87,6 +87,25 @@ class RegisterClassController extends Controller{
 
 			//BillDetail
 			for ($i = 0; $i < count($billDetails); $i++) {
+				//ตรวจสอบอีกทีว่าห้องเต็มหรือยัง
+				$totalStudent = json_decode($this->getCountCurrentStudentClassRoom('20170108', '20171208', '7')->getContent());
+				
+				if($totalStudent->status == 'ok'){
+					$currentStudent = $totalStudent->totalStudent;
+					$maxStudent = $billDetails[$i]->billDetail->classRoom->maxStudent;
+					if($currentStudent >= $maxStudent){
+						return response ()->json ( [
+							'status' => 'warning',
+							'warningDetail' => ' ห้อง: '.$billDetails[$i]->billDetail->classRoom->roomShow->roomName.' วิชา: '.$billDetails[$i]->billDetail->classRoom->subjectShow->subjectName.' ได้มีผู้ลงทะเบียนเต็มแล้ว'
+						] );
+					}
+				}else{
+					return response ()->json ( [
+						'status' => 'error',
+						'errorDetail' => 'พบข้อผิดพลาด'
+					] );
+				}
+
 				 $billDetail = new BillDetail();
 				 $billDetail->BILL_ID = $bill->BILL_ID;
 				 $billDetail->CR_ID = $billDetails[$i]->billDetail->classRoom->classRoomId;
@@ -141,7 +160,7 @@ class RegisterClassController extends Controller{
 		$currentYear = DateUtil::getCurrentThaiYear();
 		$currentMonth = DateUtil::getCurrentMonth2Digit();
 		$currentday = DateUtil::getCurrentDay();
-		$maxBillNo = Bill::max("BILL_NO");
+		$maxBillNo = Bill::where('BILL_NO', 'LIKE', $currentYear.$currentMonth.'%')->max("BILL_NO");
 
 		if($maxBillNo == null){
 			$maxBillNo = "0001";
