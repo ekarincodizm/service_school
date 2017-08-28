@@ -18,8 +18,8 @@ class ParentController extends Controller
 		try {
 			$studentId = $request->studentId;
 			$parents = StudentParent::where('SA_ID',$studentId)->where('USE_FLAG' , 'Y')->get();
-			$addressList;
-			$postCodeList;
+			$addressList = array();
+			$postCodeList = array();
 			foreach ($parents as $key=> $parent){
 				$province = Province::find($parents[$key]->SP_PROVINCE);
 				$amphur = Amphur::find($parents[$key]->SP_AMPHUR);
@@ -46,7 +46,6 @@ class ParentController extends Controller
 	}
 
     public function postStoreParent(Request $request) {
-		$student;
         $parent;
 		try {
 			$postdata = file_get_contents("php://input");
