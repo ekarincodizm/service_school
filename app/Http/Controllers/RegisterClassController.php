@@ -143,7 +143,13 @@ class RegisterClassController extends Controller{
 			$postdata = file_get_contents("php://input");
 			$studentAccountId = json_decode($postdata)->studentAccountId;
 
-			$bill = BILL::where('USE_FLAG', 'Y')->where('SA_ID', $studentAccountId)->orderBy('BILL_NO', 'desc')->get();
+			$bill = BILL::where('USE_FLAG', 'Y');
+
+			if($studentAccountId != null){
+				$bill = $bill->where('SA_ID', $studentAccountId);
+			}
+			
+			$bill = $bill->orderBy('BILL_NO', 'desc')->get();
 			
 			return response()->json($bill);
 			
