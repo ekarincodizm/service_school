@@ -56,5 +56,42 @@ class ConfirmPaymentController extends Controller{
 			] );
 		}
 	}
+
+	public function postConfirmBill(Request $request) {
+		$postdata;
+		$bill;
+		$billParam;
+		$userLoginId;
+		try {
+
+			$postdata = file_get_contents("php://input");
+			$userLoginId = json_decode($postdata)->userLogin;
+			$billParam = json_decode($postdata)->bill;
+
+			DB::beginTransaction();
+
+			$bill = Bill::find($billParam->billId);
+			$bill->BILL_STATUS = 'P';
+			$bill->BILL_PAY_DATE = $billParam->billPayDateString;
+			$bill->BILL_PAY_REF = $billParam->billPayRef;
+			$bill->UPDATE_DATE = new \DateTime();
+			$bill->UPDATE_BY = $userLoginId;
+			$bill->save();
+
+			DB::commit(); 
+			
+			return response ()->json ( [
+				'status' => 'ok'
+		] );
+			
+			
+		} catch ( \Exception $e ) {
+			DB::rollBack ();
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
+	}
     
 }
