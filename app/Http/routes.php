@@ -11,5 +11,6 @@ Route::group(['middleware' => ['cors']], function(){
 	Route::controller ( 'address', 'AddressController' );
 	Route::controller ( 'register-class', 'RegisterClassController' );
 	Route::controller ( 'confirm-payment', 'ConfirmPaymentController' );
+	Route::controller ( 'report', 'ReportController' );
 	
 });
