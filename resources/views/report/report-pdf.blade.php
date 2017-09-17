@@ -31,7 +31,7 @@
 				<p>วันที่ / Date :</p>
 				<table style="width: 101%; border-spacing: 0px;">
 					<tr>
-						<td colspan="3" style="width: 500px; border: 1px solid; border-right-style: none;" valign="top">
+						<td colspan="2" style="width: 500px; border: 1px solid; border-right-style: none;" valign="top">
 							<h3>SERVICE CODE : PLENGSRI</h3>
 						</td>
 						<td></td>
@@ -40,8 +40,7 @@
 						<td style="width: 200px; border-left: 1px solid;" valign="top">
 							<p>ชื่อ-สกุล</p>
 						</td>
-						<td style="width: 200px; border-bottom: 1px solid;" valign="top">{{$studentAccount->SA_TITLE_NAME_TH.$studentAccount->SA_FIRST_NAME_TH.'&nbsp;&nbsp;&nbsp;'.$studentAccount->SA_LAST_NAME_TH}}</td>
-						<td style="width: 100px; border-bottom: 1px solid;" valign="top"></td>
+						<td style="width: 300px; border-bottom: 1px solid;" valign="top">{{$studentAccount->SA_TITLE_NAME_TH.$studentAccount->SA_FIRST_NAME_TH.'&nbsp;&nbsp;&nbsp;'.$studentAccount->SA_LAST_NAME_TH}}</td>
 						<td></td>
 					</tr>
 					<tr>
@@ -49,7 +48,6 @@
 							<p>รหัสประจำตัว Customer No. (Ref.1)</p>
 						</td>
 						<td style="border-bottom: 1px solid;" valign="top">{{$studentAccount->SA_STUDENT_ID}}</td>
-						<td style="border-bottom: 1px solid;" valign="top"></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -57,11 +55,10 @@
 							<p>รหัสกิจกรรมที่เลือกเรียน (Ref.2)</p>
 						</td>
 						<td style="border-bottom: 1px solid;" valign="top"></td>
-						<td style="border-bottom: 1px solid;" valign="top"></td>
 						<td></td>
 					</tr>
 					<tr>
-						<td valign="bottom" colspan="3" style="text-align:right; border-left: 1px solid; border-bottom: 1px solid;">
+						<td valign="bottom" colspan="2" style="text-align:right; border-left: 1px solid; border-bottom: 1px solid;">
 							<p>&nbsp;</p>
 							<p>Tel. 02-743-4047&nbsp;</p>
 						</td>

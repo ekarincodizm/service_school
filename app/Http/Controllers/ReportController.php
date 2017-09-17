@@ -15,10 +15,10 @@ class ReportController extends Controller{
         ] );
     }
 
-    public function getTest($billId){
+    public function getBillPayment($billNo){
         ini_set('memory_limit', '128M');
         
-        $bill = $bill = Bill::find($billId);
+        $bill = $bill = Bill::where('BILL_NO', $billNo)->first();
         $studentAccount = StudentAccount::find($bill->SA_ID);
 
         $value = [
@@ -27,7 +27,7 @@ class ReportController extends Controller{
         ];
 
         $pdf =  PDF::loadView('report.report-pdf', $value, [], [
-            'title' => 'ใบจ่ายเงิน',
+            'title' => 'bill-payment ('.$bill->BILL_NO.')',
             'author' => '',
             'margin_top' => 5,
             'margin_bottom' => 5,
@@ -35,6 +35,6 @@ class ReportController extends Controller{
             'margin_right' => 5,
             ]);
 
-        return $pdf->stream('ใบจ่ายเงิน.pdf');
+        return $pdf->stream('bill-payment('.$bill->BILL_NO.').pdf');
     }
 }

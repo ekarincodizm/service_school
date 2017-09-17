@@ -88,7 +88,7 @@ class RegisterClassController extends Controller{
 			//BillDetail
 			for ($i = 0; $i < count($billDetails); $i++) {
 				//ตรวจสอบอีกทีว่าห้องเต็มหรือยัง
-				$totalStudent = json_decode($this->getCountCurrentStudentClassRoom('20170108', '20171208', '7')->getContent());
+				$totalStudent = json_decode($this->getCountCurrentStudentClassRoom($billDetails[$i]->billDetail->startLearnString, $billDetails[$i]->billDetail->endLearnString, $billDetails[$i]->billDetail->classRoom->classRoomId)->getContent());
 				
 				if($totalStudent->status == 'ok'){
 					$currentStudent = $totalStudent->totalStudent;
@@ -96,13 +96,13 @@ class RegisterClassController extends Controller{
 					if($currentStudent >= $maxStudent){
 						return response ()->json ( [
 							'status' => 'warning',
-							'warningDetail' => ' ห้อง: '.$billDetails[$i]->billDetail->classRoom->roomShow->roomName.' วิชา: '.$billDetails[$i]->billDetail->classRoom->subjectShow->subjectName.' ได้มีผู้ลงทะเบียนเต็มแล้ว'
+							'warningDetail' => ' ห้อง: '.$billDetails[$i]->billDetail->classRoom->roomShow->roomName.' วิชา: '.$billDetails[$i]->billDetail->classRoom->subjectShow->subjectCode.' - '.$billDetails[$i]->billDetail->classRoom->subjectShow->subjectName.' ได้มีผู้ลงทะเบียนเต็มแล้ว'
 						] );
 					}
 				}else{
 					return response ()->json ( [
 						'status' => 'error',
-						'errorDetail' => 'พบข้อผิดพลาด'
+						'errorDetail' => $totalStudent->errorDetail
 					] );
 				}
 
