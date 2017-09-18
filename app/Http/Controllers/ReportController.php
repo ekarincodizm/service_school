@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use PDF;
 use App\Model\Bill;
+use App\Model\BillDetail;
 use App\Model\StudentAccount;
 use DB;
 
@@ -18,11 +19,18 @@ class ReportController extends Controller{
     public function getBillPayment($billNo){
         ini_set('memory_limit', '128M');
         
-        $bill = $bill = Bill::where('BILL_NO', $billNo)->first();
+        $bill = Bill::where('BILL_NO', $billNo)->first();
         $studentAccount = StudentAccount::find($bill->SA_ID);
-
+        $billDetails = BillDetail::select('BILL_DETAIL.*')
+                        ->where("BILL_ID", $bill->BILL_ID)
+                        ->join('CLASS_ROOM', 'BILL_DETAIL.CR_ID', '=', 'CLASS_ROOM.CR_ID')
+                        ->join('SUBJECT', 'CLASS_ROOM.SUBJECT_ID', '=', 'SUBJECT.SUBJECT_ID')
+                        ->orderBy('SUBJECT.SUBJECT_CODE')
+                        ->get();
+                        
         $value = [
             'bill'=>$bill,
+            'billDetails'=>$billDetails,
             'studentAccount'=>$studentAccount
         ];
 

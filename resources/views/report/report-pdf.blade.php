@@ -54,7 +54,13 @@
 						<td valign="top" style="border-left: 1px solid;">
 							<p>รหัสกิจกรรมที่เลือกเรียน (Ref.2)</p>
 						</td>
-						<td style="border-bottom: 1px solid;" valign="top"></td>
+						<td style="border-bottom: 1px solid;" valign="top">
+							<p>
+								@foreach ($billDetails as $index =>$billDetail)
+									{{$billDetail->classRoom->subject->SUBJECT_CODE}}&nbsp;
+								@endforeach
+							</p>
+						</td>
 						<td></td>
 					</tr>
 					<tr>
@@ -90,6 +96,37 @@
 		<tr>
 			<td colspan="3" valign="bottom" style="text-align:center;">
 				<h3 style="color:red;">**รับเฉพาะเงินสดเท่านั้น**</h3>
+			</td>
+		</tr>
+
+	</tbody>
+</table>
+<table style="width: 100%; border: 1px solid; border-top-style: none; border-spacing: 0px;">
+	<tbody>
+		<tr>
+			<td valign="middle" style="text-align:center; width: 20%; border-right: 1px solid; border-bottom: 1px solid;" colspan="2">
+				<p>รายการ</p>
+			</td>
+			<td valign="middle" style="text-align:center; width: 60%; border-right: 1px solid; border-bottom: 1px solid;">
+				<p>จำนวนเงินที่เป็นตัวอักษร</p>
+			</td>
+			<td colspan="2" valign="middle" style="text-align:center; width: 20%; border-bottom: 1px solid;">
+				<p>จำนวนเงิน (บาท)</p>
+			</td>
+		</tr>
+
+		<tr>
+			<td valign="middle" style="text-align:right;  height:50px;">
+				<img style="width:20px;" src="{{ URL::asset('assets/images/square.jpg')}}">
+			</td>
+			<td valign="middle" style="text-align:left;  height:50px; border-right: 1px solid;">
+				<h3>&nbsp;เงินเสด<h3>
+			</td>
+			<td valign="middle" style="text-align:center; border-right: 1px solid;">
+				<p>จำนวนเงินที่เป็นตัวอักษร</p>
+			</td>
+			<td colspan="2" valign="middle" style="text-align:center;">
+				<p>จำนวนเงิน (บาท)</p>
 			</td>
 		</tr>
 
