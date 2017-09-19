@@ -34,7 +34,7 @@ class ReportController extends Controller{
             'studentAccount'=>$studentAccount
         ];
 
-        $pdf =  PDF::loadView('bill-payment', $value, [], [
+        $pdf =  PDF::loadView('report.bill-payment', $value, [], [
             'title' => 'bill-payment ('.$bill->BILL_NO.')',
             'author' => '',
             'margin_top' => 5,
@@ -64,7 +64,7 @@ class ReportController extends Controller{
             'studentAccount'=>$studentAccount
         ];
 
-        $pdf =  PDF::loadView('bill-payment', $value, [], [
+        $pdf =  PDF::loadView('report.bill-payment', $value, [], [
             'title' => 'bill-slip ('.$bill->BILL_NO.')',
             'author' => '',
             'margin_top' => 10,
