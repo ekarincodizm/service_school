@@ -266,7 +266,9 @@ class RegisterClassController extends Controller{
 
 					$billDetail = BillDetail::where('BILL_DETAIL.CR_ID', $classRoom->CR_ID)
 					->leftJoin('BILL', 'BILL_DETAIL.BILL_ID', '=', 'BILL.BILL_ID')
+					->leftJoin('STUDENT_ACCOUNT', 'BILL.SA_ID', '=', 'STUDENT_ACCOUNT.SA_ID')
 					->where('BILL.BILL_STATUS', '<>' , 'C')
+					->where('STUDENT_ACCOUNT.USE_FLAG', '<>' , 'N')
 					->where('BILL_DETAIL.BD_START_LEARN', '<=' , $dateString)
 					->where('BILL_DETAIL.BD_END_LEARN', '>=' , $dateString)
 					->get();
@@ -283,7 +285,9 @@ class RegisterClassController extends Controller{
 				//ถ้าเป็นอนุบาล count โดยตรงได้เลย
 				$billDetail = BillDetail::where('BILL_DETAIL.CR_ID', $classRoom->CR_ID)
 								->leftJoin('BILL', 'BILL_DETAIL.BILL_ID', '=', 'BILL.BILL_ID')
+								->leftJoin('STUDENT_ACCOUNT', 'BILL.SA_ID', '=', 'STUDENT_ACCOUNT.SA_ID')
 								->where('BILL.BILL_STATUS', '<>' , 'C')
+								->where('STUDENT_ACCOUNT.USE_FLAG', '<>' , 'N')
 								->get();
 				$countStudent = count($billDetail);
 			}

@@ -43,7 +43,11 @@ class ConfirmPaymentController extends Controller{
 			foreach ($bill as $value) {
 				$billForm['bill'] = $value;
 				$billForm['student'] = StudentAccount::find($value->SA_ID);
-				array_push($billForms, $billForm);	
+
+				if($billForm['student']->USE_FLAG == "Y"){
+					array_push($billForms, $billForm);	
+				}
+
 			}
 			
 			return response()->json($billForms);
