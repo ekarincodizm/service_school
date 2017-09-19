@@ -34,7 +34,7 @@ class ReportController extends Controller{
             'studentAccount'=>$studentAccount
         ];
 
-        $pdf =  PDF::loadView('report.report-pdf', $value, [], [
+        $pdf =  PDF::loadView('bill-payment', $value, [], [
             'title' => 'bill-payment ('.$bill->BILL_NO.')',
             'author' => '',
             'margin_top' => 5,
@@ -44,5 +44,36 @@ class ReportController extends Controller{
             ]);
 
         return $pdf->stream('bill-payment('.$bill->BILL_NO.').pdf');
+    }
+
+    public function getBillSlip($billNo){
+        ini_set('memory_limit', '128M');
+        
+        $bill = Bill::where('BILL_NO', $billNo)->first();
+        $studentAccount = StudentAccount::find($bill->SA_ID);
+        $billDetails = BillDetail::select('BILL_DETAIL.*')
+                        ->where("BILL_ID", $bill->BILL_ID)
+                        ->join('CLASS_ROOM', 'BILL_DETAIL.CR_ID', '=', 'CLASS_ROOM.CR_ID')
+                        ->join('SUBJECT', 'CLASS_ROOM.SUBJECT_ID', '=', 'SUBJECT.SUBJECT_ID')
+                        ->orderBy('SUBJECT.SUBJECT_CODE')
+                        ->get();
+                        
+        $value = [
+            'bill'=>$bill,
+            'billDetails'=>$billDetails,
+            'studentAccount'=>$studentAccount
+        ];
+
+        $pdf =  PDF::loadView('bill-payment', $value, [], [
+            'title' => 'bill-slip ('.$bill->BILL_NO.')',
+            'author' => '',
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'format' => 'Letter',
+            ]);
+
+        return $pdf->stream('bill-slip('.$bill->BILL_NO.').pdf');
     }
 }

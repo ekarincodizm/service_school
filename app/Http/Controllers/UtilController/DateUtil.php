@@ -159,6 +159,7 @@ class DateUtil {
 		return DateUtil::genAbbreviationMonthList()[DateUtil::getMonth2Digit($month)];
 	}
 
+	//========================================
 	//20107-08-24
 	public static function convertDbToDate($dateString){
 		return Carbon::parse($dateString);
@@ -186,7 +187,13 @@ class DateUtil {
 		
 		return $dateFormat;
 	}
-	
+
+	public static function convertDateStringToTextThai($dateString){
+		$day = substr($dateString,6,2);
+		$month = DateUtil::genMonthList()[substr($dateString,4,2)];
+		$year = (substr($dateString,0,4))+543;
+		return $day.' '.$month.' '.$year;
+	} 
 	
 }
 
