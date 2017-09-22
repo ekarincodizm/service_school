@@ -6,6 +6,7 @@ use PDF;
 use App\Model\Bill;
 use App\Model\BillDetail;
 use App\Model\StudentAccount;
+use App\Model\StudentParent;
 use DB;
 
 class ReportController extends Controller{
@@ -75,5 +76,52 @@ class ReportController extends Controller{
             ]);
 
         return $pdf->stream('bill-slip('.$bill->BILL_NO.').pdf');
+    }
+
+
+    public function getStudentCard($sid){
+        ini_set('memory_limit', '128M');
+
+        // $parent = StudentParent::find($pid); 
+        $student = StudentAccount::find($sid);             
+        $value = [
+            // 'parent'=>$parent,
+            'student'=>$student
+        ];
+
+        $pdf =  PDF::loadView('report.student-card', $value, [], [
+            'title' => 'student-card ('.$student->SA_ID.')',
+            'author' => '',
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'format' => 'Letter',
+            ]);
+        return $pdf->stream('student-card('.$student->SA_ID.').pdf');
+        // return view('report.student-card');
+    }
+
+    public function getParentCard($pid){
+        ini_set('memory_limit', '128M');
+
+        $parent = StudentParent::find($pid); 
+        $student = StudentAccount::find($parent->SA_ID);             
+        $value = [
+            'parent'=>$parent,
+            'student'=>$student
+        ];
+
+        $pdf =  PDF::loadView('report.parent-card', $value, [], [
+            'title' => 'parent-card ('.$parent->SP_ID.')',
+            'author' => '',
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'format' => 'Letter',
+            ]);
+        return $pdf->stream('parent-card('.$parent->SP_ID.').pdf');
+        // return view('report.parent-card');
     }
 }
