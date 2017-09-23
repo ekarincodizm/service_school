@@ -117,16 +117,33 @@ class ReportController extends Controller{
         exit;
         
     }
-    
+
+    public function getParentImage($pid){
+        
+        $parent = StudentParent::find($pid); 
+        $data = $parent->SP_PICTURE;
+
+        header("Content-type: image/gif");
+        echo base64_decode($data);
+        exit;
+        
+    }
 
     public function getParentCard($pid){
         ini_set('memory_limit', '128M');
 
         $parent = StudentParent::find($pid); 
-        $student = StudentAccount::find($parent->SA_ID);             
+        $student = StudentAccount::find($parent->SA_ID);  
+        
+        $studentPicUrl = URL::asset('report/student-image/'.$parent->SA_ID.'');
+        $parentPicUrl = URL::asset('report/parent-image/'.$pid.'');
+
         $value = [
             'parent'=>$parent,
-            'student'=>$student
+            'student'=>$student,
+            'studentPicUrl'=>$studentPicUrl,
+            'parentPicUrl'=>$parentPicUrl
+
         ];
 
         $pdf =  PDF::loadView('report.parent-card', $value, [], [
