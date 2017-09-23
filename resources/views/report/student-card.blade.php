@@ -16,7 +16,7 @@
 				<h3>น้อง{{$student->SA_NICK_NAME_TH}}</h3>
 				<p>{{$student->SA_TITLE_NAME_TH}} {{$student->SA_FIRST_NAME_TH}} {{$student->SA_LAST_NAME_TH}}</p>
 			</td>
-			<td style="width:3.6cm; text-align:center;" valign="middle"><img width="3cm" height="3cm" src="{{$student->SA_PICTURE_TYPE}},{{$student->SA_PICTURE}}"></td>
+			<td style="width:3.6cm; text-align:center;" valign="middle"><img width="3cm" height="3cm" src="{{ $studentPicUrl }}"></td>
 		</tr>
 		<tr>
 			<td style="text-align:right; height:1.2cm;" colspan="3" valign="bottom">

@@ -8,6 +8,7 @@ use App\Model\BillDetail;
 use App\Model\StudentAccount;
 use App\Model\StudentParent;
 use DB;
+use URL;
 
 class ReportController extends Controller{
     
@@ -80,13 +81,15 @@ class ReportController extends Controller{
 
 
     public function getStudentCard($sid){
-        ini_set('memory_limit', '128M');
+        ini_set('memory_limit', '1024M');
 
         // $parent = StudentParent::find($pid); 
-        $student = StudentAccount::find($sid);             
+        $student = StudentAccount::find($sid);  
+        $studentPicUrl = URL::asset('report/student-image/'.$sid.'');
         $value = [
             // 'parent'=>$parent,
-            'student'=>$student
+            'student'=>$student,
+            'studentPicUrl'=>$studentPicUrl
         ];
 
         $pdf =  PDF::loadView('report.student-card', $value, [], [
@@ -98,9 +101,23 @@ class ReportController extends Controller{
             'margin_right' => 10,
             'format' => 'Letter',
             ]);
-        return $pdf->stream('student-card('.$student->SA_ID.').pdf');
-        // return view('report.student-card');
+       return $pdf->stream('student-card('.$student->SA_ID.').pdf');
+       //return view('report.student-card', $value);
+
+       
     }
+
+    public function getStudentImage($sid){
+
+        $student = StudentAccount::find($sid);  
+        $data = $student->SA_PICTURE;
+
+        header("Content-type: image/gif");
+        echo base64_decode($data);
+        exit;
+        
+    }
+    
 
     public function getParentCard($pid){
         ini_set('memory_limit', '128M');
