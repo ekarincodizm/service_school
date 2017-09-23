@@ -12,10 +12,10 @@
 	<tbody>
 		<tr>
 			<td style=" width: 4.3cm; height:2.3cm; text-align:center;"  valign="top">
-				<img height="2.2cm" src="{{$student->SA_PICTURE_TYPE}},{{$student->SA_PICTURE}}" >
+				<img width="2.2cm" height="2.2cm" src="{{$student->SA_PICTURE_TYPE}},{{$student->SA_PICTURE}}" >
 			</td>
 			<td style=" width: 4.3cm; text-align:center;" valign="top">
-				<img height="2.2cm" src="{{$student->SA_PICTURE_TYPE}},{{$student->SA_PICTURE}}" >
+				<img width="2.2cm" height="2.2cm" src="{{$student->SA_PICTURE_TYPE}},{{$student->SA_PICTURE}}" >
 			</td>
 		</tr>
 		<tr>
