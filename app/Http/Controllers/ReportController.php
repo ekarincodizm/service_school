@@ -60,19 +60,19 @@ class ReportController extends Controller{
                         ->orderBy('SUBJECT.SUBJECT_CODE')
                         ->get();
                         
-        $value = [
-            'bill'=>$bill,
-            'billDetails'=>$billDetails,
-            'studentAccount'=>$studentAccount
-        ];
+         $value = [
+               'bill'=>$bill,
+               'billDetails'=>$billDetails,
+               'studentAccount'=>$studentAccount
+         ];
 
-        $pdf =  PDF::loadView('report.bill-payment', $value, [], [
+        $pdf =  PDF::loadView('report.bill-slip', $value, [], [
             'title' => 'bill-slip ('.$bill->BILL_NO.')',
             'author' => '',
             'margin_top' => 10,
             'margin_bottom' => 10,
-            'margin_left' => 10,
-            'margin_right' => 10,
+            'margin_left' => 15,
+            'margin_right' => 15,
             'format' => 'Letter',
             ]);
 
@@ -81,7 +81,7 @@ class ReportController extends Controller{
 
 
     public function getStudentCard($sid){
-        ini_set('memory_limit', '1024M');
+        ini_set('memory_limit', '128M');
 
         // $parent = StudentParent::find($pid); 
         $student = StudentAccount::find($sid);  
@@ -105,28 +105,6 @@ class ReportController extends Controller{
        //return view('report.student-card', $value);
 
        
-    }
-
-    public function getStudentImage($sid){
-
-        $student = StudentAccount::find($sid);  
-        $data = $student->SA_PICTURE;
-
-        header("Content-type: image/gif");
-        echo base64_decode($data);
-        exit;
-        
-    }
-
-    public function getParentImage($pid){
-        
-        $parent = StudentParent::find($pid); 
-        $data = $parent->SP_PICTURE;
-
-        header("Content-type: image/gif");
-        echo base64_decode($data);
-        exit;
-        
     }
 
     public function getParentCard($pid){
@@ -158,4 +136,27 @@ class ReportController extends Controller{
         return $pdf->stream('parent-card('.$parent->SP_ID.').pdf');
         // return view('report.parent-card');
     }
+
+    public function getStudentImage($sid){
+        
+        $student = StudentAccount::find($sid);  
+        $data = $student->SA_PICTURE;
+
+        header("Content-type: image/gif");
+        echo base64_decode($data);
+        exit;
+        
+    }
+
+    public function getParentImage($pid){
+        
+        $parent = StudentParent::find($pid); 
+        $data = $parent->SP_PICTURE;
+
+        header("Content-type: image/gif");
+        echo base64_decode($data);
+        exit;
+        
+    }
+        
 }
