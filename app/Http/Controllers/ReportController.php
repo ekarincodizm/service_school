@@ -9,6 +9,7 @@ use App\Model\StudentAccount;
 use App\Model\StudentParent;
 use DB;
 use URL;
+use App\Http\Controllers\UtilController\DateUtil;
 
 class ReportController extends Controller{
     
@@ -157,6 +158,34 @@ class ReportController extends Controller{
         echo base64_decode($data);
         exit;
         
+    }
+
+    public function getStudentSubjectHistory($sid){
+        ini_set('memory_limit', '128M');
+
+        // $parent = StudentParent::find($pid); 
+        $currentTime = 'วันที่ '.DateUtil::getCurrentDay().' '.DateUtil::genMonthList()[DateUtil::getCurrentMonth2Digit()].' พ.ศ. '.DateUtil::getCurrentThaiYear().' '.DateUtil::getCurrentTime().' น.';
+        $student = StudentAccount::find($sid);         
+
+        $bill = Bill::where('SA_ID', $sid)->where('USE_FLAG',"Y")->where('BILL_STATUS',"P")->get();
+
+        $value = [
+            'bills'=>$bill,
+            'student'=>$student,
+            'currentTime'=>$currentTime
+        ];
+
+        $pdf =  PDF::loadView('report.student-subject-history', $value, [], [
+            'title' => 'student-subject-history ('.$sid.')',
+            'author' => '',
+            'margin_top' => 10,
+            'margin_bottom' => 30,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'format' => 'A4',
+            ]);
+        return $pdf->stream('student-subject-history('.$sid.').pdf');
+        // return view('report.parent-card');
     }
         
 }
