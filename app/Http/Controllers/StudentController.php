@@ -151,7 +151,11 @@ class StudentController extends Controller
 
 			}
 			if($request->studentFirstNameTH != ''&& $request->studentFirstNameTH != null){
-				$where = $where.' AND SA_FIRST_NAME_TH LIKE "%'.$request->studentFirstNameTH.'%" ';
+				$where = $where.' AND (SA_FIRST_NAME_TH LIKE "%'.$request->studentFirstNameTH.'%" OR SA_LAST_NAME_TH LIKE "%'.$request->studentFirstNameTH.'%" )';
+
+			}
+			if($request->studentNickNameTH != '' && $request->studentNickNameTH != null){
+				$where = $where.' AND SA_NICK_NAME_TH LIKE "%'.$request->studentNickNameTH.'%" ';	
 
 			}
 			// $student = StudentAccount::where('SA_FIRST_NAME_TH', 'LIKE', $studentName)->where('SA_STUDENT_ID', 'LIKE', $studentId)->where('USE_FLAG', 'Y')->get();

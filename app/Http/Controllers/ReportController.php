@@ -96,11 +96,12 @@ class ReportController extends Controller{
         $pdf =  PDF::loadView('report.student-card', $value, [], [
             'title' => 'student-card ('.$student->SA_ID.')',
             'author' => '',
-            'margin_top' => 10,
-            'margin_bottom' => 10,
-            'margin_left' => 10,
-            'margin_right' => 10,
-            'format' => 'Letter',
+            'margin_top' => 1,
+            'margin_bottom' => 1,
+            'margin_left' => 1,
+            'margin_right' => 1,
+            'format' => 'Legal',
+            'orientation' => 'L'
             ]);
        return $pdf->stream('student-card('.$student->SA_ID.').pdf');
        //return view('report.student-card', $value);
@@ -128,11 +129,12 @@ class ReportController extends Controller{
         $pdf =  PDF::loadView('report.parent-card', $value, [], [
             'title' => 'parent-card ('.$parent->SP_ID.')',
             'author' => '',
-            'margin_top' => 10,
-            'margin_bottom' => 10,
-            'margin_left' => 10,
-            'margin_right' => 10,
-            'format' => 'Letter',
+            'margin_top' => 1,
+            'margin_bottom' => 1,
+            'margin_left' => 1,
+            'margin_right' => 1,
+            'format' => 'Legal',
+            'orientation' => 'L'
             ]);
         return $pdf->stream('parent-card('.$parent->SP_ID.').pdf');
         // return view('report.parent-card');

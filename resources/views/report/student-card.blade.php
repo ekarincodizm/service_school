@@ -1,4 +1,4 @@
-<table style="width:8.6cm; border: 1px solid; border-bottom-style: none; border-spacing: 0px;">
+<table style="width:8.6cm; border-spacing: 0px;">
 	<tbody>
 		<tr>
 			<td style=" width:3cm; height:1.2cm; text-align:center;"><img style="width:2cm;" src="{{ URL::asset('assets/images/logo-school-short.jpg')}}"></td>
@@ -9,7 +9,7 @@
 	</tbody>
 </table>
 
-<table style="width:8.6cm; border: 1px solid; border-top-style: none; border-spacing: 0px;">
+<table style="width:8.6cm; border-spacing: 0px;">
 	<tbody>
 		<tr>
 			<td style="width:5cm; height:3cm; text-align:center;"   valign="middle">
