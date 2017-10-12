@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Model\StudentParent;
+use App\Model\StudentAccount;
 use App\Model\Province;
 use App\Model\Amphur;
 use App\Model\District;
@@ -109,6 +110,35 @@ class ParentController extends Controller
 			$parent->UPDATE_DATE = new \DateTime();
 			$parent->UPDATE_BY = $parentForm->userId;
 			$parent->save();
+
+			if($parent->SP_RELATION_TYPE == 'D'){
+				$student = StudentAccount::find($parent->SA_ID);
+				$student->SA_FATHER_TITLE_NAME_TH = $parentForm->parentPrefix;
+				$student->SA_FATHER_NAME = $parentForm->parentFirstName;
+				$student->SA_FATHER_LAST_NAME = $parentForm->parentLastName;
+				$student->SA_FATHER_ADDRESS = $parentForm->parentAddress;	
+				$student->SA_FATHER_PROVINCE = $parentForm->parentProvince;
+				$student->SA_FATHER_AMPHUR = $parentForm->parentAmphur;
+				$student->SA_FATHER_DISTRICT = $parentForm->parentDistrict;	
+				$student->SA_FATHER_TEL = $parentForm->parentTel;
+				$student->SA_FATHER_PICTURE	= $parentForm->parentPic;
+				$student->SA_FATHER_PICTURE_TYPE	= (string)$parentForm->parentPicType;
+				$student->save();
+			}
+			if($parent->SP_RELATION_TYPE == 'M'){
+				$student = StudentAccount::find($parent->SA_ID);
+				$student->SA_MOTHER_TITLE_NAME_TH = $parentForm->parentPrefix;
+				$student->SA_MOTHER_NAME = $parentForm->parentFirstName;
+				$student->SA_MOTHER_LAST_NAME = $parentForm->parentLastName;
+				$student->SA_MOTHER_ADDRESS = $parentForm->parentAddress;	
+				$student->SA_MOTHER_PROVINCE = $parentForm->parentProvince;
+				$student->SA_MOTHER_AMPHUR = $parentForm->parentAmphur;
+				$student->SA_MOTHER_DISTRICT = $parentForm->parentDistrict;	
+				$student->SA_MOTHER_TEL = $parentForm->parentTel;
+				$student->SA_MOTHER_PICTURE	= $parentForm->parentPic;
+				$student->SA_MOTHER_PICTURE_TYPE	= (string)$parentForm->parentPicType;
+				$student->save();
+			}
 			
 			
 			DB::commit();
