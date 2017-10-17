@@ -90,18 +90,22 @@ class ClassRoomController extends Controller{
 
 			$classRooms = ClassRoom::where('USE_FLAG', 'Y');
 
-			if(count($request->roomTypeIdSearch) > 0){
-				$classRooms->whereIn('RT_ID', $request->roomTypeIdSearch);
-			}else{
-				$classRooms->where('1','2');
-			}
+			if(!$request->isFirstSearch){
 
-			if($request->roomId != ''){
-				$classRooms->where('ROOM_ID', $request->roomId);
-			}
+				if(count($request->roomTypeIdSearch) > 0){
+					$classRooms->whereIn('RT_ID', $request->roomTypeIdSearch);
+				}else{
+					$classRooms->where('1','2');
+				}
 
-			if($request->subjectId != ''){
-				$classRooms->where('SUBJECT_ID', $request->subjectId);
+				if($request->roomId != ''){
+					$classRooms->where('ROOM_ID', $request->roomId);
+				}
+
+				if($request->subjectId != ''){
+					$classRooms->where('SUBJECT_ID', $request->subjectId);
+				}
+
 			}
 
 			$classRooms = $classRooms->get();
@@ -120,6 +124,7 @@ class ClassRoomController extends Controller{
 				//BillDetail::where('BILL_DETAIL.CR_ID', $classRoom->CR_ID)->leftJoin('BILL', 'BILL_DETAIL.BILL_ID', '=', 'BILL.BILL_ID')->where('BILL_DETAI.USE_FLAG', 'Y')->where('BILL.BILL_STATUS','<>','C')->count();
 				array_push($classRoomForms, $classRoomForm);	
 			}
+			
 			
 			return response()->json($classRoomForms);
 			
