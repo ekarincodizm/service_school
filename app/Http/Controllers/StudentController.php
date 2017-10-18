@@ -292,7 +292,7 @@ class StudentController extends Controller
 						$parentFather->SP_TITLE_NAME = $studentForm->fatherPrefix;
 						$parentFather->SP_FIRST_NAME = $studentForm->fatherName;
 						$parentFather->SP_LAST_NAME = $studentForm->fatherLastName;
-						$parentFather->SP_RELATION = 'บิดา';
+						//$parentFather->SP_RELATION = 'บิดา';
 						$parentFather->SP_ADDRESS = $studentForm->fatherAddress;
 						$parentFather->SP_PROVINCE = $studentForm->fatherProvince;
 						$parentFather->SP_AMPHUR = $studentForm->fatherAmphur;
@@ -348,7 +348,7 @@ class StudentController extends Controller
 						$parentMother->SP_TITLE_NAME = $studentForm->motherPrefix;
 						$parentMother->SP_FIRST_NAME = $studentForm->motherName;
 						$parentMother->SP_LAST_NAME = $studentForm->motherLastName;
-						$parentMother->SP_RELATION = 'มารดา';
+						//$parentMother->SP_RELATION = 'มารดา';
 						$parentMother->SP_ADDRESS = $studentForm->motherAddress;
 						$parentMother->SP_PROVINCE = $studentForm->motherProvince;
 						$parentMother->SP_AMPHUR = $studentForm->motherAmphur;
