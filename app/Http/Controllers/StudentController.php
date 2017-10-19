@@ -86,6 +86,22 @@ class StudentController extends Controller
 			if($studentForm->motherParentFlag){
 				$student->SA_MOTHER_PARENT_FLAG = 'Y';
 			}
+
+
+			$student->SA_EMERGENCY_TITLE_NAME_TH = $studentForm->emergencyPrefix;
+            $student->SA_EMERGENCY_NAME = $studentForm->emergencyName;
+			$student->SA_EMERGENCY_LAST_NAME = $studentForm->emergencyLastName;
+            $student->SA_EMERGENCY_ADDRESS = $studentForm->emergencyAddress;	
+			$student->SA_EMERGENCY_PROVINCE = $studentForm->emergencyProvince;
+			$student->SA_EMERGENCY_AMPHUR = $studentForm->emergencyAmphur;
+			$student->SA_EMERGENCY_DISTRICT = $studentForm->emergencyDistrict;
+            $student->SA_EMERGENCY_TEL = $studentForm->emergencyTel;
+			$student->SA_EMERGENCY_PICTURE	= $studentForm->emergencyPic;
+			$student->SA_EMERGENCY_PICTURE_TYPE	= (string)$studentForm->emergencyPicType;
+			$student->SA_EMERGENCY_PARENT_FLAG = 'N';
+			if($studentForm->emergencyParentFlag){
+				$student->SA_EMERGENCY_PARENT_FLAG = 'Y';
+			}
 			$student->CREATE_DATE = new \DateTime();
 			$student->CREATE_BY = $userId;
 			$student->UPDATE_DATE = new \DateTime();
@@ -130,6 +146,29 @@ class StudentController extends Controller
 				$parent->SP_PICTURE = $studentForm->motherPic;
 				$parent->SP_PICTURE_TYPE = (string)$studentForm->motherPicType;
 				$parent->SP_RELATION_TYPE = 'M';
+				$parent->CREATE_DATE = new \DateTime();
+				$parent->CREATE_BY = $userId;
+				$parent->UPDATE_DATE = new \DateTime();
+				$parent->UPDATE_BY = $userId;
+				$parent->save();
+
+			}
+
+			if($studentForm->emergencyParentFlag){
+				$parent = new StudentParent();
+				$parent->SA_ID = $student->SA_ID;
+				$parent->SP_TITLE_NAME = $studentForm->emergencyPrefix;
+				$parent->SP_FIRST_NAME = $studentForm->emergencyName;
+				$parent->SP_LAST_NAME = $studentForm->emergencyLastName;
+				$parent->SP_RELATION = 'ผู้ติดต่อฉุกเฉิน';
+				$parent->SP_ADDRESS = $studentForm->emergencyAddress;
+				$parent->SP_PROVINCE = $studentForm->emergencyProvince;
+				$parent->SP_AMPHUR = $studentForm->emergencyAmphur;
+				$parent->SP_DISTRICT = $studentForm->emergencyDistrict;
+				$parent->SP_TEL = $studentForm->emergencyTel;
+				$parent->SP_PICTURE = $studentForm->emergencyPic;
+				$parent->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
+				$parent->SP_RELATION_TYPE = 'E';
 				$parent->CREATE_DATE = new \DateTime();
 				$parent->CREATE_BY = $userId;
 				$parent->UPDATE_DATE = new \DateTime();
@@ -280,6 +319,22 @@ class StudentController extends Controller
 				$student->SA_MOTHER_PARENT_FLAG = 'Y';
 			}
 
+			$student->SA_EMERGENCY_TITLE_NAME_TH = $studentForm->emergencyPrefix;
+            $student->SA_EMERGENCY_NAME = $studentForm->emergencyName;
+			$student->SA_EMERGENCY_LAST_NAME = $studentForm->emergencyLastName;
+            $student->SA_EMERGENCY_ADDRESS = $studentForm->emergencyAddress;	
+			$student->SA_EMERGENCY_PROVINCE = $studentForm->emergencyProvince;
+			$student->SA_EMERGENCY_AMPHUR = $studentForm->emergencyAmphur;
+			$student->SA_EMERGENCY_DISTRICT = $studentForm->emergencyDistrict;
+            $student->SA_EMERGENCY_TEL = $studentForm->emergencyTel;
+			$student->SA_EMERGENCY_PICTURE	= $studentForm->emergencyPic;
+			$student->SA_EMERGENCY_PICTURE_TYPE	= (string)$studentForm->emergencyPicType;
+			$student->SA_EMERGENCY_PARENT_FLAG = 'N';
+			if($studentForm->emergencyParentFlag){
+				$student->SA_EMERGENCY_PARENT_FLAG = 'Y';
+			}
+
+
 			$student->UPDATE_DATE = new \DateTime();	
 			$student->UPDATE_BY = $userId;
 			$student->save();
@@ -394,6 +449,60 @@ class StudentController extends Controller
 					}
 				}
 			}	
+
+			if($studentForm->emergencyParentFlag){
+			$parentEmergencyFind = StudentParent::where('SA_ID', $studentForm->studentId)->where('USE_FLAG','Y')->where('SP_RELATION_TYPE','E')->first();
+				if($parentEmergencyFind != null || $parentEmergencyFind != '' ||$parentEmergencyFind != []){
+					$parentEmergency = StudentParent::find($parentEmergencyFind->SP_ID);
+					if($parentEmergency != null || $parentEmergency != '' ||$parentEmergency != []){
+						$parentEmergency->SP_TITLE_NAME = $studentForm->emergencyPrefix;
+						$parentEmergency->SP_FIRST_NAME = $studentForm->emergencyName;
+						$parentEmergency->SP_LAST_NAME = $studentForm->emergencyLastName;
+						$parentEmergency->SP_ADDRESS = $studentForm->emergencyAddress;
+						$parentEmergency->SP_PROVINCE = $studentForm->emergencyProvince;
+						$parentEmergency->SP_AMPHUR = $studentForm->emergencyAmphur;
+						$parentEmergency->SP_DISTRICT = $studentForm->emergencyDistrict;
+						$parentEmergency->SP_TEL = $studentForm->emergencyTel;
+						$parentEmergency->SP_PICTURE = $studentForm->emergencyPic;
+						$parentEmergency->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
+						$parentEmergency->SP_RELATION_TYPE = 'D';
+						$parentEmergency->UPDATE_DATE = new \DateTime();
+						$parentEmergency->UPDATE_BY = $userId;
+						$parentEmergency->save();
+					}
+				}else{
+					$parent = new StudentParent();
+					$parent->SP_TITLE_NAME = $studentForm->emergencyPrefix;
+					$parent->SP_FIRST_NAME = $studentForm->emergencyName;
+					$parent->SP_LAST_NAME = $studentForm->emergencyLastName;
+					$parent->SP_RELATION = 'ผู้ติดต่อฉุกเฉิน';
+					$parent->SP_ADDRESS = $studentForm->emergencyAddress;
+					$parent->SP_PROVINCE = $studentForm->emergencyProvince;
+					$parent->SP_AMPHUR = $studentForm->emergencyAmphur;
+					$parent->SP_DISTRICT = $studentForm->emergencyDistrict;
+					$parent->SP_TEL = $studentForm->emergencyTel;
+					$parent->SP_PICTURE = $studentForm->emergencyPic;
+					$parent->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
+					$parent->SP_RELATION_TYPE = 'E';
+					$parent->SA_ID	= $studentForm->studentId;
+					$parent->CREATE_DATE = new \DateTime();
+					$parent->CREATE_BY = $userId;
+					$parent->UPDATE_DATE = new \DateTime();
+					$parent->UPDATE_BY = $userId;
+					$parent->save();
+				}
+				
+
+			}else{
+					$parentEmergencyFind = StudentParent::where('SA_ID', $studentForm->studentId)->where('USE_FLAG','Y')->where('SP_RELATION_TYPE','E')->first();
+					if($parentEmergencyFind != null || $parentEmergencyFind != '' ||$parentEmergencyFind != []){
+						$parentEmergency = StudentParent::find($parentEmergencyFind->SP_ID);
+						if($parentEmergency != null || $parentEmergency != '' ||$parentEmergency != []){
+							$parentEmergency->USE_FLAG = 'N';
+							$parentEmergency->save();
+						}
+					}
+			}
 			
 			DB::commit();
 			

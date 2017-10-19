@@ -49,6 +49,18 @@ class ImageController extends Controller{
         
     }
 
+    //student-mother-image/...
+    public function getStudentEmergencyImage($sid){
+        
+        $student = StudentAccount::find($sid);  
+        $data = $student->SA_EMERGENCY_PICTURE; 
+
+        header("Content-type: image/gif");
+        echo base64_decode($data);
+        exit;
+        
+    }
+
     //parent-image/...
     public function getParentImage($sid){
         

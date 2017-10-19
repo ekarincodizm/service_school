@@ -139,6 +139,21 @@ class ParentController extends Controller
 				$student->SA_MOTHER_PICTURE_TYPE	= (string)$parentForm->parentPicType;
 				$student->save();
 			}
+
+			if($parent->SP_RELATION_TYPE == 'E'){
+				$student = StudentAccount::find($parent->SA_ID);
+				$student->SA_EMERGENCY_TITLE_NAME_TH = $parentForm->parentPrefix;
+				$student->SA_EMERGENCY_NAME = $parentForm->parentFirstName;
+				$student->SA_EMERGENCY_LAST_NAME = $parentForm->parentLastName;
+				$student->SA_EMERGENCY_ADDRESS = $parentForm->parentAddress;	
+				$student->SA_EMERGENCY_PROVINCE = $parentForm->parentProvince;
+				$student->SA_EMERGENCY_AMPHUR = $parentForm->parentAmphur;
+				$student->SA_EMERGENCY_DISTRICT = $parentForm->parentDistrict;	
+				$student->SA_EMERGENCY_TEL = $parentForm->parentTel;
+				$student->SA_EMERGENCY_PICTURE	= $parentForm->parentPic;
+				$student->SA_EMERGENCY_PICTURE_TYPE	= (string)$parentForm->parentPicType;
+				$student->save();
+			}
 			
 			
 			DB::commit();
