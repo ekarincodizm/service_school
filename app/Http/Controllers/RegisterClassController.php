@@ -36,11 +36,11 @@ class RegisterClassController extends Controller{
 			}
 
 			if($student->studentFirstNameTH != ''){
-				$studentAccount->where('SA_FIRST_NAME_TH', 'LIKE',  '%'.$student->studentFirstNameTH.'%');
+				$studentAccount->whereRaw('CONCAT (SA_FIRST_NAME_TH, \' \' ,SA_LAST_NAME_TH) LIKE \'%'.$student->studentFirstNameTH.'%\'');
 			}
 
-			if($student->studentLastNameTH != ''){
-				$studentAccount->where('SA_LAST_NAME_TH', 'LIKE',  '%'.$student->studentLastNameTH.'%');
+			if($student->studentNickNameTH != ''){
+				$studentAccount->where('SA_NICK_NAME_TH', 'LIKE',  '%'.$student->studentNickNameTH.'%');
 			}
 
 			$studentAccount = $studentAccount->get();
