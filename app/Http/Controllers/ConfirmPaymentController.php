@@ -29,14 +29,22 @@ class ConfirmPaymentController extends Controller{
 
 			$postdata = file_get_contents("php://input");
 			$billNo = json_decode($postdata)->billNo;
+			$studentName = json_decode($postdata)->studentName;
 
-			$bill = BILL::where('USE_FLAG', 'Y')->where('BILL_STATUS', 'W');
+			$bill = BILL::select('BILL.*')
+							->where('BILL.USE_FLAG', 'Y')
+							->where('BILL.BILL_STATUS', 'W')
+							->join('STUDENT_ACCOUNT', 'BILL.SA_ID', '=', 'STUDENT_ACCOUNT.SA_ID');
 
-			if($billNo != null){
-				$bill = $bill->where('BILL_NO', 'LIKE', '%'.$billNo.'%');
+			if($studentName != ''){
+				$bill->whereRaw('CONCAT (STUDENT_ACCOUNT.SA_FIRST_NAME_TH, \' \' ,STUDENT_ACCOUNT.SA_LAST_NAME_TH) LIKE \'%'.$studentName.'%\'');
 			}
 			
-			$bill = $bill->orderBy('BILL_NO', 'asc')->get();
+			if($billNo != null){
+				$bill = $bill->where('BILL.BILL_NO', 'LIKE', '%'.$billNo.'%');
+			}
+			
+			$bill = $bill->orderBy('BILL.BILL_NO', 'asc')->get();
 
 			$billForms = [];
 			
@@ -78,6 +86,8 @@ class ConfirmPaymentController extends Controller{
 			$bill->BILL_STATUS = 'P';
 			$bill->BILL_PAY_DATE = $billParam->billPayDateString;
 			$bill->BILL_PAY_REF = $billParam->billPayRef;
+			$bill->BILL_PIC = $billParam->billPic;
+			$bill->BILL_PIC_TYPE = $billParam->billPicType;
 			$bill->UPDATE_DATE = new \DateTime();
 			$bill->UPDATE_BY = $userLoginId;
 			$bill->save();
@@ -85,7 +95,8 @@ class ConfirmPaymentController extends Controller{
 			DB::commit(); 
 			
 			return response ()->json ( [
-				'status' => 'ok'
+				'status' => 'ok',
+				'billNo' => $bill->BILL_NO
 		] );
 			
 			

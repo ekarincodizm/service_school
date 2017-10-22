@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Model\StudentAccount;
 use App\Model\StudentParent;
+use App\Model\Bill;
+use URL;
 
 class ImageController extends Controller{
     
@@ -71,6 +73,27 @@ class ImageController extends Controller{
         echo base64_decode($data);
         exit;
         
+    }
+
+    //bill-image/...
+    public function getBillImage($id){
+        
+        $bill = Bill::find($id);  
+        $data = $bill->BILL_PIC; 
+
+        header("Content-type: image/jpg");
+        echo base64_decode($data);
+        exit;
+        
+    }
+
+    //bill-pic-default
+    public function getBillPicDefault(){
+        $file = 'assets/images/bill-pic-default.jpg';
+        $type = 'image/jpg';
+        header('Content-Type:'.$type);
+        header('Content-Length: ' . filesize($file));
+        readfile($file);
     }
 
 
