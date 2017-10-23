@@ -40,7 +40,7 @@ class StudentController extends Controller
             $student->SA_FIRST_NAME_TH = $studentForm->studentFirstNameTH;
             $student->SA_LAST_NAME_TH = $studentForm->studentLastNameTH;
             $student->SA_NICK_NAME_TH = $studentForm->studentNickNameTH;
-            // $student->SA_TITLE_NAME_EN = $studentForm->studentPrefixEN;
+            $student->SA_TITLE_NAME_EN = $studentForm->studentPrefixEN;
             $student->SA_FIRST_NAME_EN = $studentForm->studentFirstNameEN;
             $student->SA_LAST_NAME_EN = $studentForm->studentLastNameEN;
             $student->SA_NICK_NAME_EN = $studentForm->studentNickNameEN;
@@ -106,6 +106,12 @@ class StudentController extends Controller
 			$student->CREATE_BY = $userId;
 			$student->UPDATE_DATE = new \DateTime();
 			$student->UPDATE_BY = $userId;
+			//
+			$student->SA_CITIZEN_CODE = $studentForm->studentCitizenCode;
+			$student->SA_SON_NO = $studentForm->sonNumber;
+			$student->SA_OLDER_BROTHER = $studentForm->olderSon;
+			$student->SA_YOUNGER_BROTHER = $studentForm->youngerSon;
+
 			$student->save();
 
 			if($studentForm->fatherParentFlag){
@@ -272,7 +278,7 @@ class StudentController extends Controller
             $student->SA_FIRST_NAME_TH = $studentForm->studentFirstNameTH;
             $student->SA_LAST_NAME_TH = $studentForm->studentLastNameTH;
             $student->SA_NICK_NAME_TH = $studentForm->studentNickNameTH;
-            // $student->SA_TITLE_NAME_EN = $studentForm->studentPrefixEN;
+            $student->SA_TITLE_NAME_EN = $studentForm->studentPrefixEN;
             $student->SA_FIRST_NAME_EN = $studentForm->studentFirstNameEN;
             $student->SA_LAST_NAME_EN = $studentForm->studentLastNameEN;
             $student->SA_NICK_NAME_EN = $studentForm->studentNickNameEN;
@@ -337,6 +343,13 @@ class StudentController extends Controller
 
 			$student->UPDATE_DATE = new \DateTime();	
 			$student->UPDATE_BY = $userId;
+
+			//
+			$student->SA_CITIZEN_CODE = $studentForm->studentCitizenCode;
+			$student->SA_SON_NO = $studentForm->sonNumber;
+			$student->SA_OLDER_BROTHER = $studentForm->olderSon;
+			$student->SA_YOUNGER_BROTHER = $studentForm->youngerSon;
+
 			$student->save();
 			
 			if($studentForm->fatherParentFlag){
@@ -503,6 +516,8 @@ class StudentController extends Controller
 						}
 					}
 			}
+
+
 			
 			DB::commit();
 			
