@@ -112,6 +112,10 @@ class StudentController extends Controller
 			$student->SA_OLDER_BROTHER = $studentForm->olderSon;
 			$student->SA_YOUNGER_BROTHER = $studentForm->youngerSon;
 			$student->SA_HOSPITAL_BORN = $studentForm->hospitalBorn;
+			$student->SA_DISEASE = $studentForm->disease;
+			$student->SA_FOOD_ALLERGY = $studentForm->foodALG;
+			$student->SA_DRUG_ALLERGY = $studentForm->drugALG;
+			$student->SA_CREDIT_LIMIT = $studentForm->creditLimit;
 
 			$student->save();
 
@@ -351,6 +355,10 @@ class StudentController extends Controller
 			$student->SA_OLDER_BROTHER = $studentForm->olderSon;
 			$student->SA_YOUNGER_BROTHER = $studentForm->youngerSon;
 			$student->SA_HOSPITAL_BORN = $studentForm->hospitalBorn;
+			$student->SA_DISEASE = $studentForm->disease;
+			$student->SA_FOOD_ALLERGY = $studentForm->foodALG;
+			$student->SA_DRUG_ALLERGY = $studentForm->drugALG;
+			$student->SA_CREDIT_LIMIT = $studentForm->creditLimit;
 
 			$student->save();
 			
