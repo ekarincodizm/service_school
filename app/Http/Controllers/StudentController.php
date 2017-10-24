@@ -111,6 +111,7 @@ class StudentController extends Controller
 			$student->SA_SON_NO = $studentForm->sonNumber;
 			$student->SA_OLDER_BROTHER = $studentForm->olderSon;
 			$student->SA_YOUNGER_BROTHER = $studentForm->youngerSon;
+			$student->SA_HOSPITAL_BORN = $studentForm->hospitalBorn;
 
 			$student->save();
 
@@ -349,6 +350,7 @@ class StudentController extends Controller
 			$student->SA_SON_NO = $studentForm->sonNumber;
 			$student->SA_OLDER_BROTHER = $studentForm->olderSon;
 			$student->SA_YOUNGER_BROTHER = $studentForm->youngerSon;
+			$student->SA_HOSPITAL_BORN = $studentForm->hospitalBorn;
 
 			$student->save();
 			
