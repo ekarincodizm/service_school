@@ -116,6 +116,12 @@ class StudentController extends Controller
 			$student->SA_FOOD_ALLERGY = $studentForm->foodALG;
 			$student->SA_DRUG_ALLERGY = $studentForm->drugALG;
 			$student->SA_CREDIT_LIMIT = $studentForm->creditLimit;
+			$student->SA_FATHER_EMAIL = $studentForm->fatherEmail;
+			$student->SA_FATHER_HOME_TEL = $studentForm->fatherHomeNumber;
+			$student->SA_FATHER_CITIZEN_CODE = $studentForm->fatherCitizenCode;
+			$student->SA_MOTHER_EMAIL = $studentForm->motherEmail;
+			$student->SA_MOTHER_HOME_TEL = $studentForm->motherHomeNumber;
+			$student->SA_MOTHER_CITIZEN_CODE = $studentForm->motherCitizenCode;
 
 			$student->save();
 
@@ -359,6 +365,12 @@ class StudentController extends Controller
 			$student->SA_FOOD_ALLERGY = $studentForm->foodALG;
 			$student->SA_DRUG_ALLERGY = $studentForm->drugALG;
 			$student->SA_CREDIT_LIMIT = $studentForm->creditLimit;
+			$student->SA_FATHER_EMAIL = $studentForm->fatherEmail;
+			$student->SA_FATHER_HOME_TEL = $studentForm->fatherHomeNumber;
+			$student->SA_FATHER_CITIZEN_CODE = $studentForm->fatherCitizenCode;
+			$student->SA_MOTHER_EMAIL = $studentForm->motherEmail;
+			$student->SA_MOTHER_HOME_TEL = $studentForm->motherHomeNumber;
+			$student->SA_MOTHER_CITIZEN_CODE = $studentForm->motherCitizenCode;
 
 			$student->save();
 			
