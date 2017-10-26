@@ -61,7 +61,11 @@ class ClassRoomController extends Controller{
             }
 
             $classRoom->CR_START_DATE = $request->startDateString;
-            $classRoom->CR_END_DATE = $request->endDateString;
+			$classRoom->CR_END_DATE = $request->endDateString;
+			
+			//20171026 -- เพิ่ม ภาคเรียนกับปีการศึกษา
+			$classRoom->CR_TERM = $request->term;
+			$classRoom->CR_YEAR = $request->year;
 
             $classRoom->CREATE_DATE = new \DateTime();
 			$classRoom->CREATE_BY = $request->userLoginId;
@@ -104,6 +108,15 @@ class ClassRoomController extends Controller{
 
 				if($request->subjectId != ''){
 					$classRooms->where('SUBJECT_ID', $request->subjectId);
+				}
+
+				//20171026 -- เพิ่ม ภาคเรียนกับปีการศึกษา
+				if($request->term != ''){
+					$classRooms->where('CR_TERM', $request->term);
+				}
+
+				if($request->year != ''){
+					$classRooms->where('CR_YEAR', $request->year);
 				}
 
 			}
@@ -178,7 +191,11 @@ class ClassRoomController extends Controller{
             }
 
             $classRoom->CR_START_DATE = $request->startDateString;
-            $classRoom->CR_END_DATE = $request->endDateString;
+			$classRoom->CR_END_DATE = $request->endDateString;
+			
+			//20171026 -- เพิ่ม ภาคเรียนกับปีการศึกษา
+			$classRoom->CR_TERM = $request->term;
+			$classRoom->CR_YEAR = $request->year;
 
             // $classRoom->CREATE_DATE = new \DateTime();
 			// $classRoom->CREATE_BY = $request->userLoginId;
