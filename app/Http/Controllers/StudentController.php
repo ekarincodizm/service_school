@@ -122,7 +122,22 @@ class StudentController extends Controller
 			$student->SA_MOTHER_EMAIL = $studentForm->motherEmail;
 			$student->SA_MOTHER_HOME_TEL = $studentForm->motherHomeNumber;
 			$student->SA_MOTHER_CITIZEN_CODE = $studentForm->motherCitizenCode;
+			$student->SA_RELIGION_REMARK = $studentForm->religionRemark;
+            $student->SA_PARENT_STATUS_REMARK = $studentForm->parentStatusRemark;
 
+			$student->SA_FATHER_JOB = $studentForm->fatherJob;
+			$student->SA_FATHER_JOB_REMARK = $studentForm->fatherJobRemark;
+			$student->SA_FATHER_JOB_SALARY = $studentForm->fatherJobSalary;
+			$student->SA_MOTHER_JOB = $studentForm->motherJob;
+			$student->SA_MOTHER_JOB_REMARK = $studentForm->motherJobRemark;
+			$student->SA_MOTHER_JOB_SALARY = $studentForm->motherJobSalary;
+
+			$student->SA_EMERGENCY_JOB = $studentForm->emergencyJob;
+			$student->SA_EMERGENCY_JOB_REMARK = $studentForm->emergencyJobRemark;
+			$student->SA_EMERGENCY_JOB_SALARY = $studentForm->emergencyJobSalary;
+			$student->SA_EMERGENCY_EMAIL = $studentForm->emergencyEmail;
+			$student->SA_EMERGENCY_HOME_TEL = $studentForm->emergencyHomeNumber;
+			$student->SA_EMERGENCY_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
 			$student->save();
 
 			if($studentForm->fatherParentFlag){
@@ -371,6 +386,23 @@ class StudentController extends Controller
 			$student->SA_MOTHER_EMAIL = $studentForm->motherEmail;
 			$student->SA_MOTHER_HOME_TEL = $studentForm->motherHomeNumber;
 			$student->SA_MOTHER_CITIZEN_CODE = $studentForm->motherCitizenCode;
+
+			$student->SA_RELIGION_REMARK = $studentForm->religionRemark;
+            $student->SA_PARENT_STATUS_REMARK = $studentForm->parentStatusRemark;
+
+			$student->SA_FATHER_JOB = $studentForm->fatherJob;
+			$student->SA_FATHER_JOB_REMARK = $studentForm->fatherJobRemark;
+			$student->SA_FATHER_JOB_SALARY = $studentForm->fatherJobSalary;
+			$student->SA_MOTHER_JOB = $studentForm->motherJob;
+			$student->SA_MOTHER_JOB_REMARK = $studentForm->motherJobRemark;
+			$student->SA_MOTHER_JOB_SALARY = $studentForm->motherJobSalary;
+
+			$student->SA_EMERGENCY_JOB = $studentForm->emergencyJob;
+			$student->SA_EMERGENCY_JOB_REMARK = $studentForm->emergencyJobRemark;
+			$student->SA_EMERGENCY_JOB_SALARY = $studentForm->emergencyJobSalary;
+			$student->SA_EMERGENCY_EMAIL = $studentForm->emergencyEmail;
+			$student->SA_EMERGENCY_HOME_TEL = $studentForm->emergencyHomeNumber;
+			$student->SA_EMERGENCY_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
 
 			$student->save();
 			
