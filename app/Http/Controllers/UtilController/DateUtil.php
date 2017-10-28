@@ -113,7 +113,7 @@ class DateUtil {
 	}
 	
 	public static function getCurrentTime() {
-		$currTime = Carbon::now ();
+		$currTime = Carbon::now ('Asia/Bangkok');
 		$currTime = (str_pad((String)$currTime->hour, 2, "0", STR_PAD_LEFT)).':'.(str_pad((String)$currTime->minute, 2, "0", STR_PAD_LEFT));
 		
 		return $currTime;

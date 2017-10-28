@@ -7,6 +7,8 @@ use App\Model\Bill;
 use App\Model\BillDetail;
 use App\Model\StudentAccount;
 use App\Model\StudentParent;
+use App\Model\User;
+use App\Model\ClassRoom;
 use DB;
 use URL;
 use App\Http\Controllers\UtilController\DateUtil;
@@ -190,4 +192,57 @@ class ReportController extends Controller{
         // return view('report.parent-card');
     }
         
+    public function getSubjectReport($startSchoolYear, $endSchoolYear, $userPrint){
+
+        $reportSql = 'SELECT cr.CR_YEAR, cr.CR_TERM, rt.RT_NAME, s.SUBJECT_CODE ,s.SUBJECT_NAME, COUNT(s.SUBJECT_CODE) AS SUM_SUBJECT
+        FROM CLASS_ROOM cr
+        INNER JOIN SUBJECT s ON (cr.SUBJECT_ID = s.SUBJECT_ID)
+        INNER JOIN BILL_DETAIL bd ON (cr.CR_ID = bd.CR_ID)
+        INNER JOIN BILL b ON (bd.BILL_ID = b.BILL_ID and b.BILL_STATUS = "P")
+        INNER JOIN ROOM_TYPE rt ON (rt.RT_ID = cr.RT_ID) 
+        WHERE 1 = 1 ';
+
+        if($startSchoolYear != "null" && $endSchoolYear != "null"){
+            $reportSql .= ' AND cr.CR_YEAR >= '.$startSchoolYear;
+            $reportSql .= ' AND cr.CR_YEAR <= '.$endSchoolYear;
+        }else if($startSchoolYear != "null" && $endSchoolYear == "null"){
+            $reportSql .= ' AND cr.CR_YEAR = '.$startSchoolYear;
+        }else if($startSchoolYear == "null" && $endSchoolYear != "null"){
+            $reportSql .= ' AND cr.CR_YEAR = '.$endSchoolYear;
+        }
+
+        $reportSql .= ' GROUP BY  cr.CR_YEAR, cr.CR_TERM, rt.RT_NAME, s.SUBJECT_CODE
+        ORDER BY cr.CR_YEAR, cr.CR_TERM,
+                (CASE rt.RT_NAME
+                    WHEN "เตรียมอนุบาล" 	THEN 1
+                    WHEN "อนุบาล 1" 	THEN 2
+                    WHEN "อนุบาล 2" 	THEN 3
+                    WHEN "อนุบาล 3" 	THEN 4 END),
+                s.SUBJECT_CODE';
+
+        $subjectReport = DB::select(DB::raw($reportSql));
+
+        $user = User::find($userPrint);
+        $currentTime = 'วันที่ '.DateUtil::getCurrentDay().' '.DateUtil::genMonthList()[DateUtil::getCurrentMonth2Digit()].' พ.ศ. '.DateUtil::getCurrentThaiYear().' '.DateUtil::getCurrentTime().' น.';
+
+        $value = [
+            'values'=>$subjectReport,
+            'user'=>$user,
+            'startSchoolYear'=>$startSchoolYear,
+            'endSchoolYear'=>$endSchoolYear,
+            'currentTime'=>$currentTime
+        ];
+
+        $pdf =  PDF::loadView('report.subjeect-history', $value, [], [
+            'title' => 'subject-history',
+            'author' => '',
+            'margin_top' => 10,
+            'margin_bottom' => 15,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            ]);
+
+        return $pdf->stream('subject-history.pdf');
+
+    }
 }

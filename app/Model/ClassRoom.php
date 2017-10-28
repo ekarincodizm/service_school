@@ -4,6 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Model\Subject;
+use App\Model\RoomType;
 
 class ClassRoom extends Model
 {
@@ -13,6 +14,10 @@ class ClassRoom extends Model
 
 	public function subject() {
 		return $this->belongsTo(Subject::class,'SUBJECT_ID');
+	}
+
+	public function roomType() {
+		return $this->belongsTo(RoomType::class,'RT_ID');
 	}
 	
 }
