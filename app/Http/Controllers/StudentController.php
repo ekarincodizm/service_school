@@ -138,6 +138,7 @@ class StudentController extends Controller
 			$student->SA_EMERGENCY_EMAIL = $studentForm->emergencyEmail;
 			$student->SA_EMERGENCY_HOME_TEL = $studentForm->emergencyHomeNumber;
 			$student->SA_EMERGENCY_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
+			$student->SA_EMERGENCY_RELATION = $studentForm->emergencyRelation;
 			$student->save();
 
 			if($studentForm->fatherParentFlag){
@@ -159,6 +160,14 @@ class StudentController extends Controller
 				$parent->CREATE_BY = $userId;
 				$parent->UPDATE_DATE = new \DateTime();
 				$parent->UPDATE_BY = $userId;
+
+				$parent->SP_JOB = $studentForm->fatherJob;
+				$parent->SP_JOB_REMARK = $studentForm->fatherJobRemark;
+				$parent->SP_JOB_SALARY = $studentForm->fatherJobSalary;
+				$parent->SP_EMAIL = $studentForm->fatherEmail;
+				$parent->SP_HOME_TEL = $studentForm->fatherHomeNumber;
+				$parent->SP_CITIZEN_CODE = $studentForm->fatherCitizenCode;
+
 				$parent->save();
 
 			}
@@ -182,6 +191,14 @@ class StudentController extends Controller
 				$parent->CREATE_BY = $userId;
 				$parent->UPDATE_DATE = new \DateTime();
 				$parent->UPDATE_BY = $userId;
+
+				$parent->SP_JOB = $studentForm->motherJob;
+				$parent->SP_JOB_REMARK = $studentForm->motherJobRemark;
+				$parent->SP_JOB_SALARY = $studentForm->motherJobSalary;
+				$parent->SP_EMAIL = $studentForm->motherEmail;
+				$parent->SP_HOME_TEL = $studentForm->motherHomeNumber;
+				$parent->SP_CITIZEN_CODE = $studentForm->motherCitizenCode;
+
 				$parent->save();
 
 			}
@@ -192,7 +209,7 @@ class StudentController extends Controller
 				$parent->SP_TITLE_NAME = $studentForm->emergencyPrefix;
 				$parent->SP_FIRST_NAME = $studentForm->emergencyName;
 				$parent->SP_LAST_NAME = $studentForm->emergencyLastName;
-				$parent->SP_RELATION = 'ผู้ติดต่อฉุกเฉิน';
+				$parent->SP_RELATION = $studentForm->emergencyRelation;
 				$parent->SP_ADDRESS = $studentForm->emergencyAddress;
 				$parent->SP_PROVINCE = $studentForm->emergencyProvince;
 				$parent->SP_AMPHUR = $studentForm->emergencyAmphur;
@@ -205,6 +222,15 @@ class StudentController extends Controller
 				$parent->CREATE_BY = $userId;
 				$parent->UPDATE_DATE = new \DateTime();
 				$parent->UPDATE_BY = $userId;
+
+				$parent->SP_JOB = $studentForm->emergencyJob;
+				$parent->SP_JOB_REMARK = $studentForm->emergencyJobRemark;
+				$parent->SP_JOB_SALARY = $studentForm->emergencyJobSalary;
+				$parent->SP_EMAIL = $studentForm->emergencyEmail;
+				$parent->SP_HOME_TEL = $studentForm->emergencyHomeNumber;
+				$parent->SP_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
+				$parent->SP_RELATION = $studentForm->emergencyRelation;
+
 				$parent->save();
 
 			}
@@ -403,6 +429,7 @@ class StudentController extends Controller
 			$student->SA_EMERGENCY_EMAIL = $studentForm->emergencyEmail;
 			$student->SA_EMERGENCY_HOME_TEL = $studentForm->emergencyHomeNumber;
 			$student->SA_EMERGENCY_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
+			$student->SA_EMERGENCY_RELATION = $studentForm->emergencyRelation;
 
 			$student->save();
 			
@@ -425,6 +452,14 @@ class StudentController extends Controller
 						$parentFather->SP_RELATION_TYPE = 'D';
 						$parentFather->UPDATE_DATE = new \DateTime();
 						$parentFather->UPDATE_BY = $userId;
+
+						$parentFather->SP_JOB = $studentForm->fatherJob;
+						$parentFather->SP_JOB_REMARK = $studentForm->fatherJobRemark;
+						$parentFather->SP_JOB_SALARY = $studentForm->fatherJobSalary;
+						$parentFather->SP_EMAIL = $studentForm->fatherEmail;
+						$parentFather->SP_HOME_TEL = $studentForm->fatherHomeNumber;
+						$parentFather->SP_CITIZEN_CODE = $studentForm->fatherCitizenCode;
+
 						$parentFather->save();
 					}
 				}else{
@@ -446,6 +481,14 @@ class StudentController extends Controller
 					$parent->CREATE_BY = $userId;
 					$parent->UPDATE_DATE = new \DateTime();
 					$parent->UPDATE_BY = $userId;
+
+					$parent->SP_JOB = $studentForm->fatherJob;
+					$parent->SP_JOB_REMARK = $studentForm->fatherJobRemark;
+					$parent->SP_JOB_SALARY = $studentForm->fatherJobSalary;
+					$parent->SP_EMAIL = $studentForm->fatherEmail;
+					$parent->SP_HOME_TEL = $studentForm->fatherHomeNumber;
+					$parent->SP_CITIZEN_CODE = $studentForm->fatherCitizenCode;
+
 					$parent->save();
 				}
 				
@@ -481,6 +524,14 @@ class StudentController extends Controller
 						$parentMother->SP_RELATION_TYPE = 'M';
 						$parentMother->UPDATE_DATE = new \DateTime();
 						$parentMother->UPDATE_BY = $userId;
+
+						$parentMother->SP_JOB = $studentForm->motherJob;
+						$parentMother->SP_JOB_REMARK = $studentForm->motherJobRemark;
+						$parentMother->SP_JOB_SALARY = $studentForm->motherJobSalary;
+						$parentMother->SP_EMAIL = $studentForm->motherEmail;
+						$parentMother->SP_HOME_TEL = $studentForm->motherHomeNumber;
+						$parentMother->SP_CITIZEN_CODE = $studentForm->motherCitizenCode;
+						
 						$parentMother->save();
 					}
 				}else{
@@ -502,6 +553,14 @@ class StudentController extends Controller
 					$parent->CREATE_BY = $userId;
 					$parent->UPDATE_DATE = new \DateTime();
 					$parent->UPDATE_BY = $userId;
+
+					$parent->SP_JOB = $studentForm->motherJob;
+					$parent->SP_JOB_REMARK = $studentForm->motherJobRemark;
+					$parent->SP_JOB_SALARY = $studentForm->motherJobSalary;
+					$parent->SP_EMAIL = $studentForm->motherEmail;
+					$parent->SP_HOME_TEL = $studentForm->motherHomeNumber;
+					$parent->SP_CITIZEN_CODE = $studentForm->motherCitizenCode;
+
 					$parent->save();
 
 				}
@@ -525,6 +584,7 @@ class StudentController extends Controller
 						$parentEmergency->SP_TITLE_NAME = $studentForm->emergencyPrefix;
 						$parentEmergency->SP_FIRST_NAME = $studentForm->emergencyName;
 						$parentEmergency->SP_LAST_NAME = $studentForm->emergencyLastName;
+						$parentEmergency->SP_RELATION = $studentForm->emergencyRelation;
 						$parentEmergency->SP_ADDRESS = $studentForm->emergencyAddress;
 						$parentEmergency->SP_PROVINCE = $studentForm->emergencyProvince;
 						$parentEmergency->SP_AMPHUR = $studentForm->emergencyAmphur;
@@ -532,9 +592,17 @@ class StudentController extends Controller
 						$parentEmergency->SP_TEL = $studentForm->emergencyTel;
 						$parentEmergency->SP_PICTURE = $studentForm->emergencyPic;
 						$parentEmergency->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
-						$parentEmergency->SP_RELATION_TYPE = 'D';
+						$parentEmergency->SP_RELATION_TYPE = 'E';
 						$parentEmergency->UPDATE_DATE = new \DateTime();
 						$parentEmergency->UPDATE_BY = $userId;
+
+						$parentEmergency->SP_JOB = $studentForm->emergencyJob;
+						$parentEmergency->SP_JOB_REMARK = $studentForm->emergencyJobRemark;
+						$parentEmergency->SP_JOB_SALARY = $studentForm->emergencyJobSalary;
+						$parentEmergency->SP_EMAIL = $studentForm->emergencyEmail;
+						$parentEmergency->SP_HOME_TEL = $studentForm->emergencyHomeNumber;
+						$parentEmergency->SP_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
+
 						$parentEmergency->save();
 					}
 				}else{
@@ -542,7 +610,7 @@ class StudentController extends Controller
 					$parent->SP_TITLE_NAME = $studentForm->emergencyPrefix;
 					$parent->SP_FIRST_NAME = $studentForm->emergencyName;
 					$parent->SP_LAST_NAME = $studentForm->emergencyLastName;
-					$parent->SP_RELATION = 'ผู้ติดต่อฉุกเฉิน';
+					$parent->SP_RELATION = $studentForm->emergencyRelation;
 					$parent->SP_ADDRESS = $studentForm->emergencyAddress;
 					$parent->SP_PROVINCE = $studentForm->emergencyProvince;
 					$parent->SP_AMPHUR = $studentForm->emergencyAmphur;
@@ -556,6 +624,14 @@ class StudentController extends Controller
 					$parent->CREATE_BY = $userId;
 					$parent->UPDATE_DATE = new \DateTime();
 					$parent->UPDATE_BY = $userId;
+
+					$parent->SP_JOB = $studentForm->emergencyJob;
+					$parent->SP_JOB_REMARK = $studentForm->emergencyJobRemark;
+					$parent->SP_JOB_SALARY = $studentForm->emergencyJobSalary;
+					$parent->SP_EMAIL = $studentForm->emergencyEmail;
+					$parent->SP_HOME_TEL = $studentForm->emergencyHomeNumber;
+					$parent->SP_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
+
 					$parent->save();
 				}
 				

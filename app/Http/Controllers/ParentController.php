@@ -70,6 +70,12 @@ class ParentController extends Controller
 				$parent->CREATE_BY = $parentForm->userId;
 				$parent->UPDATE_DATE = new \DateTime();
 				$parent->UPDATE_BY = $parentForm->userId;
+				$parent->SP_JOB = $parentForm->parentJob;
+				$parent->SP_JOB_REMARK = $parentForm->parentJobRemark;
+				$parent->SP_JOB_SALARY = $parentForm->parentJobSalary;
+				$parent->SP_EMAIL = $parentForm->parentEmail;
+				$parent->SP_HOME_TEL = $parentForm->parentHomeNumber;
+				$parent->SP_CITIZEN_CODE = $parentForm->parentCitizenCode;
 				$parent->save();
 
 			DB::commit(); 
@@ -109,6 +115,14 @@ class ParentController extends Controller
 			$parent->SP_PICTURE_TYPE = (string)$parentForm->parentPicType;
 			$parent->UPDATE_DATE = new \DateTime();
 			$parent->UPDATE_BY = $parentForm->userId;
+
+			$parent->SP_JOB = $parentForm->parentJob;
+			$parent->SP_JOB_REMARK = $parentForm->parentJobRemark;
+			$parent->SP_JOB_SALARY = $parentForm->parentJobSalary;
+			$parent->SP_EMAIL = $parentForm->parentEmail;
+			$parent->SP_HOME_TEL = $parentForm->parentHomeNumber;
+			$parent->SP_CITIZEN_CODE = $parentForm->parentCitizenCode;
+
 			$parent->save();
 
 			if($parent->SP_RELATION_TYPE == 'D'){
@@ -123,6 +137,14 @@ class ParentController extends Controller
 				$student->SA_FATHER_TEL = $parentForm->parentTel;
 				$student->SA_FATHER_PICTURE	= $parentForm->parentPic;
 				$student->SA_FATHER_PICTURE_TYPE	= (string)$parentForm->parentPicType;
+
+				$student->SA_FATHER_JOB = $parentForm->fatherJob;
+				$student->SA_FATHER_JOB_REMARK = $parentForm->fatherJobRemark;
+				$student->SA_FATHER_JOB_SALARY = $parentForm->fatherJobSalary;
+				$student->SA_FATHER_EMAIL = $parentForm->fatherEmail;
+				$student->SA_FATHER_HOME_TEL = $parentForm->fatherHomeNumber;
+				$student->SA_FATHER_CITIZEN_CODE = $parentForm->fatherCitizenCode;
+			
 				$student->save();
 			}
 			if($parent->SP_RELATION_TYPE == 'M'){
@@ -137,6 +159,12 @@ class ParentController extends Controller
 				$student->SA_MOTHER_TEL = $parentForm->parentTel;
 				$student->SA_MOTHER_PICTURE	= $parentForm->parentPic;
 				$student->SA_MOTHER_PICTURE_TYPE	= (string)$parentForm->parentPicType;
+				$student->SA_MOTHER_EMAIL = $parentForm->motherEmail;
+				$student->SA_MOTHER_HOME_TEL = $parentForm->motherHomeNumber;
+				$student->SA_MOTHER_CITIZEN_CODE = $parentForm->motherCitizenCode;
+				$student->SA_MOTHER_JOB = $parentForm->motherJob;
+				$student->SA_MOTHER_JOB_REMARK = $parentForm->motherJobRemark;
+				$student->SA_MOTHER_JOB_SALARY = $parentForm->motherJobSalary;
 				$student->save();
 			}
 
@@ -152,6 +180,13 @@ class ParentController extends Controller
 				$student->SA_EMERGENCY_TEL = $parentForm->parentTel;
 				$student->SA_EMERGENCY_PICTURE	= $parentForm->parentPic;
 				$student->SA_EMERGENCY_PICTURE_TYPE	= (string)$parentForm->parentPicType;
+				$student->SA_EMERGENCY_JOB = $parentForm->emergencyJob;
+				$student->SA_EMERGENCY_JOB_REMARK = $parentForm->emergencyJobRemark;
+				$student->SA_EMERGENCY_JOB_SALARY = $parentForm->emergencyJobSalary;
+				$student->SA_EMERGENCY_EMAIL = $parentForm->emergencyEmail;
+				$student->SA_EMERGENCY_HOME_TEL = $parentForm->emergencyHomeNumber;
+				$student->SA_EMERGENCY_CITIZEN_CODE = $parentForm->emergencyCitizenCode;
+				$student->SA_EMERGENCY_RELATION = $parentForm->emergencyRelation;
 				$student->save();
 			}
 			
