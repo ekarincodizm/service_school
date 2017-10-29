@@ -171,7 +171,26 @@ class ReportController extends Controller{
         $currentTime = 'วันที่ '.DateUtil::getCurrentDay().' '.DateUtil::genMonthList()[DateUtil::getCurrentMonth2Digit()].' พ.ศ. '.DateUtil::getCurrentThaiYear().' '.DateUtil::getCurrentTime().' น.';
         $student = StudentAccount::find($sid);         
 
-        $bill = Bill::where('SA_ID', $sid)->where('USE_FLAG',"Y")->where('BILL_STATUS',"P")->get();
+        // $bill = Bill::where('SA_ID', $sid)->where('USE_FLAG',"Y")->where('BILL_STATUS',"P")->get();
+
+        $reportSql = 'SELECT cr.CR_YEAR, cr.CR_TERM, rt.RT_NAME, s.SUBJECT_CODE ,s.SUBJECT_NAME, BD_START_LEARN , BD_END_LEARN
+        FROM BILL b
+        INNER JOIN BILL_DETAIL bd ON (bd.BILL_ID = b.BILL_ID and b.BILL_STATUS = "P")
+        INNER JOIN CLASS_ROOM cr ON (cr.CR_ID = bd.CR_ID)
+        INNER JOIN SUBJECT s ON (cr.SUBJECT_ID = s.SUBJECT_ID)
+        INNER JOIN ROOM_TYPE rt ON (rt.RT_ID = cr.RT_ID) 
+        WHERE 1 = 1 
+        AND b.SA_ID = '.$sid ;
+        $reportSql .= ' GROUP BY  cr.CR_YEAR, cr.CR_TERM, rt.RT_NAME, s.SUBJECT_CODE
+        ORDER BY cr.CR_YEAR, cr.CR_TERM,
+                (CASE rt.RT_NAME
+                    WHEN "เตรียมอนุบาล" 	THEN 1
+                    WHEN "อนุบาล 1" 	THEN 2
+                    WHEN "อนุบาล 2" 	THEN 3
+                    WHEN "อนุบาล 3" 	THEN 4 END),
+                s.SUBJECT_CODE';
+
+        $bill = DB::select(DB::raw($reportSql));
 
         $value = [
             'bills'=>$bill,
@@ -189,7 +208,7 @@ class ReportController extends Controller{
             'format' => 'A4',
             ]);
         return $pdf->stream('student-subject-history('.$sid.').pdf');
-        // return view('report.parent-card');
+        // return view('report.student-subject-history', $value);
     }
         
     public function getSubjectReport($startSchoolYear, $endSchoolYear, $userPrint){
