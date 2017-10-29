@@ -12,6 +12,7 @@ use App\Model\ClassRoom;
 use DB;
 use URL;
 use App\Http\Controllers\UtilController\DateUtil;
+use App\Http\Controllers\UtilController\StringUtil;
 
 class ReportController extends Controller{
     
@@ -264,4 +265,81 @@ class ReportController extends Controller{
         return $pdf->stream('subject-history.pdf');
 
     }
+
+    public function getPaymentReport($schoolYear, $userPrint){
+        
+        $user = User::find($userPrint);
+        $currentTime = 'วันที่ '.DateUtil::getCurrentDay().' '.DateUtil::genMonthList()[DateUtil::getCurrentMonth2Digit()].' พ.ศ. '.DateUtil::getCurrentThaiYear().' '.DateUtil::getCurrentTime().' น.';
+        
+        $reportSql = 'SELECT cr.CR_TERM, b.BILL_NO, rt.RT_NAME, s.SUBJECT_CODE ,s.SUBJECT_NAME, DATE_FORMAT(DATE_ADD(b.BILL_PAY_DATE, INTERVAL 543 YEAR), "%d/%m/%Y") AS PAY_DATE , Format(SUM(bd.BD_PRICE), "##,##0")  AS SUM_SUBJECT_PRICE 
+        FROM CLASS_ROOM cr
+        INNER JOIN SUBJECT s ON (cr.SUBJECT_ID = s.SUBJECT_ID)
+        INNER JOIN BILL_DETAIL bd ON (cr.CR_ID = bd.CR_ID)
+        INNER JOIN BILL b ON (bd.BILL_ID = b.BILL_ID and b.BILL_STATUS = "P")
+        INNER JOIN ROOM_TYPE rt ON (rt.RT_ID = cr.RT_ID) 
+        WHERE 1 = 1 ';
+        $reportSql .= ' AND cr.CR_YEAR = '.$schoolYear;
+        $reportSql .= ' GROUP BY  b.BILL_NO, cr.CR_TERM, rt.RT_NAME, s.SUBJECT_CODE
+        ORDER BY b.BILL_NO, cr.CR_TERM,
+                (CASE rt.RT_NAME
+                    WHEN "เตรียมอนุบาล" 	THEN 1
+                    WHEN "อนุบาล 1" 	THEN 2
+                    WHEN "อนุบาล 2" 	THEN 3
+                    WHEN "อนุบาล 3" 	THEN 4 END),
+                s.SUBJECT_CODE';
+
+        $paymentReport = DB::select(DB::raw($reportSql));
+
+        if(count($paymentReport) > 0){
+            $sumTermPrice = DB::select(DB::raw('SELECT cr.CR_TERM , Format(SUM(bd.BD_PRICE), "##,##0")  AS SUM_TERM_PRICE
+            FROM CLASS_ROOM cr
+            INNER JOIN SUBJECT s ON (cr.SUBJECT_ID = s.SUBJECT_ID)
+            INNER JOIN BILL_DETAIL bd ON (cr.CR_ID = bd.CR_ID)
+            INNER JOIN BILL b ON (bd.BILL_ID = b.BILL_ID and b.BILL_STATUS = "P")
+            INNER JOIN ROOM_TYPE rt ON (rt.RT_ID = cr.RT_ID) 
+            WHERE 1 = 1 AND cr.CR_YEAR = '.$schoolYear.' GROUP BY  cr.CR_TERM ORDER BY  cr.CR_TERM'));
+
+            $sumPrice = DB::select(DB::raw('SELECT Format(SUM(bd.BD_PRICE), "##,##0")  AS SUM_PRICE
+            FROM CLASS_ROOM cr
+            INNER JOIN SUBJECT s ON (cr.SUBJECT_ID = s.SUBJECT_ID)
+            INNER JOIN BILL_DETAIL bd ON (cr.CR_ID = bd.CR_ID)
+            INNER JOIN BILL b ON (bd.BILL_ID = b.BILL_ID and b.BILL_STATUS = "P")
+            INNER JOIN ROOM_TYPE rt ON (rt.RT_ID = cr.RT_ID) 
+            WHERE 1 = 1 AND cr.CR_YEAR = '.$schoolYear));
+    
+            
+    
+            $value = [
+                'values'=>$paymentReport,
+                'sumTermPrice'=>$sumTermPrice,
+                'sumPrice' => $sumPrice,
+                'sumPriceText' => StringUtil::convertNumberToText(str_replace(",","",$sumPrice[0]->SUM_PRICE)),
+                'user'=>$user,
+                'schoolYear'=>$schoolYear,
+                'currentTime'=>$currentTime
+            ];
+        }else{
+            $value = [
+                'values'=>$paymentReport,
+                'user'=>$user,
+                'schoolYear'=>$schoolYear,
+                'currentTime'=>$currentTime
+            ];
+        }
+
+        
+
+        $pdf =  PDF::loadView('report.payment-history', $value, [], [
+            'title' => 'subject-history',
+            'author' => '',
+            'margin_top' => 10,
+            'margin_bottom' => 15,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            ]);
+
+        return $pdf->stream('payment-history.pdf');
+
+    }
+
 }
