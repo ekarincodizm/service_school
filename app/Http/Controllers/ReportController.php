@@ -12,6 +12,7 @@ use App\Model\ClassRoom;
 use DB;
 use URL;
 use App\Http\Controllers\UtilController\DateUtil;
+use App\Http\Controllers\UtilController\StringUtil;
 use App\Model\Province;
 use App\Model\Amphur;
 use App\Model\District;
