@@ -12,7 +12,9 @@ use App\Model\ClassRoom;
 use DB;
 use URL;
 use App\Http\Controllers\UtilController\DateUtil;
-use App\Http\Controllers\UtilController\StringUtil;
+use App\Model\Province;
+use App\Model\Amphur;
+use App\Model\District;
 
 class ReportController extends Controller{
     
@@ -143,6 +145,42 @@ class ReportController extends Controller{
         // return view('report.parent-card');
     }
 
+    public function getParentReport($pid){
+        ini_set('memory_limit', '128M');
+
+        $parent = StudentParent::find($pid); 
+        $student = StudentAccount::find($parent->SA_ID);  
+        
+        $studentPicUrl = URL::asset('report/student-image/'.$parent->SA_ID.'');
+        $parentPicUrl = URL::asset('report/parent-image/'.$pid.'');
+
+        $province = Province::find($parent->SP_PROVINCE);
+        $amphur = Amphur::find($parent->SP_AMPHUR);
+        $district = District::find($parent->SP_DISTRICT);
+        $address = 'ต.'.$district->DISTRICT_NAME.' อ.'.$amphur->AMPHUR_NAME.' จ.'.$province->PROVINCE_NAME.' '.$amphur->POSTCODE;
+
+        $value = [
+            'parent'=>$parent,
+            'student'=>$student,
+            'address'=>$address,
+            'studentPicUrl'=>$studentPicUrl,
+            'parentPicUrl'=>$parentPicUrl
+
+        ];
+
+        $pdf =  PDF::loadView('report.parent-report', $value, [], [
+            'title' => 'parent-report ('.$parent->SP_ID.')',
+            'author' => '',
+            'margin_top' => 10,
+            'margin_bottom' => 15,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'format' => 'A4',
+            ]);
+        return $pdf->stream('parent-report('.$parent->SP_ID.').pdf');
+        // return view('report.parent-card');
+    }
+
     public function getStudentImage($sid){
         
         $student = StudentAccount::find($sid);  
@@ -203,7 +241,7 @@ class ReportController extends Controller{
             'title' => 'student-subject-history ('.$sid.')',
             'author' => '',
             'margin_top' => 10,
-            'margin_bottom' => 30,
+            'margin_bottom' => 15,
             'margin_left' => 10,
             'margin_right' => 10,
             'format' => 'A4',

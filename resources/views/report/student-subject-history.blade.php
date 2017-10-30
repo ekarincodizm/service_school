@@ -1,3 +1,14 @@
+<style>
+
+@page {
+	header: page-header;
+	footer: page-footer;
+}
+
+
+</style>
+
+
 <h2 style="text-align: center; font-weight: bold; margin: 0;">ประวัติของนักเรียน </h2>
 <h3 style="text-align: center; font-weight: bold; margin: 0;">{{$student->SA_TITLE_NAME_TH}} {{$student->SA_FIRST_NAME_TH}} {{$student->SA_LAST_NAME_TH}} </h3>
 <br>

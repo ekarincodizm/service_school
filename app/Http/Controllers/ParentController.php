@@ -180,13 +180,13 @@ class ParentController extends Controller
 				$student->SA_EMERGENCY_TEL = $parentForm->parentTel;
 				$student->SA_EMERGENCY_PICTURE	= $parentForm->parentPic;
 				$student->SA_EMERGENCY_PICTURE_TYPE	= (string)$parentForm->parentPicType;
-				$student->SA_EMERGENCY_JOB = $parentForm->emergencyJob;
-				$student->SA_EMERGENCY_JOB_REMARK = $parentForm->emergencyJobRemark;
-				$student->SA_EMERGENCY_JOB_SALARY = $parentForm->emergencyJobSalary;
-				$student->SA_EMERGENCY_EMAIL = $parentForm->emergencyEmail;
-				$student->SA_EMERGENCY_HOME_TEL = $parentForm->emergencyHomeNumber;
-				$student->SA_EMERGENCY_CITIZEN_CODE = $parentForm->emergencyCitizenCode;
-				$student->SA_EMERGENCY_RELATION = $parentForm->emergencyRelation;
+				$student->SA_EMERGENCY_JOB = $parentForm->parentJob;
+				$student->SA_EMERGENCY_JOB_REMARK = $parentForm->parentJobRemark;
+				$student->SA_EMERGENCY_JOB_SALARY = $parentForm->parentJobSalary;
+				$student->SA_EMERGENCY_EMAIL = $parentForm->parentEmail;
+				$student->SA_EMERGENCY_HOME_TEL = $parentForm->parentHomeNumber;
+				$student->SA_EMERGENCY_CITIZEN_CODE = $parentForm->parentCitizenCode;
+				$student->SA_EMERGENCY_RELATION = $parentForm->relationship;
 				$student->save();
 			}
 			
