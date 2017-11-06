@@ -44,8 +44,9 @@ class StudentController extends Controller
             $student->SA_FIRST_NAME_EN = $studentForm->studentFirstNameEN;
             $student->SA_LAST_NAME_EN = $studentForm->studentLastNameEN;
             $student->SA_NICK_NAME_EN = $studentForm->studentNickNameEN;
-			$birthday = str_replace("-","",$studentForm->birthday);
-			$birthday = substr($birthday,0,4).''.substr($birthday,4,2).''.substr($birthday,6,2);
+			// $birthday = str_replace("-","",$studentForm->birthday);
+			
+			$birthday = $studentForm->YYYYbirthday.''.str_pad($studentForm->MMbirthday,2,"0",STR_PAD_LEFT).''.str_pad($studentForm->DDbirthday,2,"0",STR_PAD_LEFT);
             $student->SA_BIRTH_DATE = $birthday;
             $student->SA_NATIONALITY = $studentForm->nationality;
             $student->SA_ETHNIC = $studentForm->ethnic;
@@ -334,8 +335,9 @@ class StudentController extends Controller
             $student->SA_FIRST_NAME_EN = $studentForm->studentFirstNameEN;
             $student->SA_LAST_NAME_EN = $studentForm->studentLastNameEN;
             $student->SA_NICK_NAME_EN = $studentForm->studentNickNameEN;
-			$birthday = str_replace("-","",$studentForm->birthday);
-			$birthday = substr($birthday,0,4).''.substr($birthday,4,2).''.substr($birthday,6,2);
+			// $birthday = str_replace("-","",$studentForm->birthday);
+			// $birthday = substr($birthday,0,4).''.substr($birthday,4,2).''.substr($birthday,6,2);
+			$birthday = $studentForm->YYYYbirthday.''.str_pad($studentForm->MMbirthday,2,"0",STR_PAD_LEFT).''.str_pad($studentForm->DDbirthday,2,"0",STR_PAD_LEFT);
             $student->SA_BIRTH_DATE = $birthday;
             $student->SA_NATIONALITY = $studentForm->nationality;
             $student->SA_ETHNIC = $studentForm->ethnic;
