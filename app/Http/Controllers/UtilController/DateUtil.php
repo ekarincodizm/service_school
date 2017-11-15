@@ -49,6 +49,12 @@ class DateUtil {
 		
 		return $dateUtil->genYearRang ( $currYear - 5, $currYear + 5 );
 	}
+
+	public static function getCurrentYear() {
+		$currTime = Carbon::now ();
+		$currYear = ($currTime->year);
+		return $currYear;
+	}
 	
 	public static function getCurrentThaiYear() {
 		$currTime = Carbon::now ();

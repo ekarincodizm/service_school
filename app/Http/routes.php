@@ -13,5 +13,6 @@ Route::group(['middleware' => ['cors']], function(){
 	Route::controller ( 'confirm-payment', 'ConfirmPaymentController' );
 	Route::controller ( 'report', 'ReportController' );
 	Route::controller ( 'image', 'ImageController' );
+	Route::controller ( 'stat', 'StatController' );
 	
 });
