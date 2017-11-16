@@ -27,222 +27,232 @@ class StudentController extends Controller
 			$userId = json_decode($postdata)->userId;
             $year = DateUtil::getCurrentThaiYear2Digit();
 
-            $studentIdOld = StudentAccount::where('SA_STUDENT_ID','LIKE',$year.'%')->max('SA_STUDENT_ID'); 
-			if($studentIdOld == null || $studentIdOld == 0){
-				$studentId = $year.'00001';
-			}else{
-				$studentId =  $studentIdOld+1;
-			}
-
-			DB::beginTransaction();
-			$student = new StudentAccount();
-			$student->SA_TITLE_NAME_TH = $studentForm->studentPrefixTH;
-            $student->SA_FIRST_NAME_TH = $studentForm->studentFirstNameTH;
-            $student->SA_LAST_NAME_TH = $studentForm->studentLastNameTH;
-            $student->SA_NICK_NAME_TH = $studentForm->studentNickNameTH;
-            $student->SA_TITLE_NAME_EN = $studentForm->studentPrefixEN;
-            $student->SA_FIRST_NAME_EN = $studentForm->studentFirstNameEN;
-            $student->SA_LAST_NAME_EN = $studentForm->studentLastNameEN;
-            $student->SA_NICK_NAME_EN = $studentForm->studentNickNameEN;
-			// $birthday = str_replace("-","",$studentForm->birthday);
+            // $studentIdOld = StudentAccount::where('SA_STUDENT_ID','LIKE',$year.'%')->max('SA_STUDENT_ID'); 
+			// if($studentIdOld == null || $studentIdOld == 0){
+			// 	$studentId = $year.'00001';
+			// }else{
+			// 	$studentId =  $studentIdOld+1;
+			// }
 			
-			$birthday = $studentForm->YYYYbirthday.''.str_pad($studentForm->MMbirthday,2,"0",STR_PAD_LEFT).''.str_pad($studentForm->DDbirthday,2,"0",STR_PAD_LEFT);
-            $student->SA_BIRTH_DATE = $birthday;
-            $student->SA_NATIONALITY = $studentForm->nationality;
-            $student->SA_ETHNIC = $studentForm->ethnic;
-            $student->SA_RELIGION = $studentForm->religion;
-            $student->SA_PARENT_STATUS = $studentForm->parentStatus;
+			$studentCheck = StudentAccount::where('USE_FLAG','Y')->where('SA_STUDENT_ID',$studentForm->studentCardId)->first();
+			if($studentCheck != null || $studentCheck != '' ||$studentCheck != []){
+				return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => "รหัสประจำตัวนักเรียนซ้ำ"
+				] );
 
-			$student->SA_FATHER_TITLE_NAME_TH = $studentForm->fatherPrefix;
-            $student->SA_FATHER_NAME = $studentForm->fatherName;
-			$student->SA_FATHER_LAST_NAME = $studentForm->fatherLastName;
-            $student->SA_FATHER_ADDRESS = $studentForm->fatherAddress;	
-			$student->SA_FATHER_PROVINCE = $studentForm->fatherProvince;
-			$student->SA_FATHER_AMPHUR = $studentForm->fatherAmphur;
-			$student->SA_FATHER_DISTRICT = $studentForm->fatherDistrict;
-            $student->SA_FATHER_TEL = $studentForm->fatherTel;
+			}else{	
 
-			$student->SA_MOTHER_TITLE_NAME_TH = $studentForm->motherPrefix;
-            $student->SA_MOTHER_NAME = $studentForm->motherName;
-			$student->SA_MOTHER_LAST_NAME = $studentForm->motherLastName;
-            $student->SA_MOTHER_ADDRESS = $studentForm->motherAddress;
-			$student->SA_MOTHER_PROVINCE = $studentForm->motherProvince;
-			$student->SA_MOTHER_AMPHUR = $studentForm->motherAmphur;
-			$student->SA_MOTHER_DISTRICT = $studentForm->motherDistrict;
-            $student->SA_MOTHER_TEL = $studentForm->motherTel;
-            $student->SA_STUDENT_ID	= $studentId;
-			$student->SA_PICTURE	= $studentForm->studentPic;
-			$student->SA_PICTURE_TYPE	= (string)$studentForm->studentPicType;
+				DB::beginTransaction();
+				$student = new StudentAccount();
+				$student->SA_TITLE_NAME_TH = $studentForm->studentPrefixTH;
+				$student->SA_FIRST_NAME_TH = $studentForm->studentFirstNameTH;
+				$student->SA_LAST_NAME_TH = $studentForm->studentLastNameTH;
+				$student->SA_NICK_NAME_TH = $studentForm->studentNickNameTH;
+				$student->SA_TITLE_NAME_EN = $studentForm->studentPrefixEN;
+				$student->SA_FIRST_NAME_EN = $studentForm->studentFirstNameEN;
+				$student->SA_LAST_NAME_EN = $studentForm->studentLastNameEN;
+				$student->SA_NICK_NAME_EN = $studentForm->studentNickNameEN;
+				// $birthday = str_replace("-","",$studentForm->birthday);
+				
+				$birthday = $studentForm->YYYYbirthday.''.str_pad($studentForm->MMbirthday,2,"0",STR_PAD_LEFT).''.str_pad($studentForm->DDbirthday,2,"0",STR_PAD_LEFT);
+				$student->SA_BIRTH_DATE = $birthday;
+				$student->SA_NATIONALITY = $studentForm->nationality;
+				$student->SA_ETHNIC = $studentForm->ethnic;
+				$student->SA_RELIGION = $studentForm->religion;
+				$student->SA_PARENT_STATUS = $studentForm->parentStatus;
 
-			$student->SA_FATHER_PICTURE	= $studentForm->fatherPic;
-			$student->SA_FATHER_PICTURE_TYPE	= (string)$studentForm->fatherPicType;
+				$student->SA_FATHER_TITLE_NAME_TH = $studentForm->fatherPrefix;
+				$student->SA_FATHER_NAME = $studentForm->fatherName;
+				$student->SA_FATHER_LAST_NAME = $studentForm->fatherLastName;
+				$student->SA_FATHER_ADDRESS = $studentForm->fatherAddress;	
+				$student->SA_FATHER_PROVINCE = $studentForm->fatherProvince;
+				$student->SA_FATHER_AMPHUR = $studentForm->fatherAmphur;
+				$student->SA_FATHER_DISTRICT = $studentForm->fatherDistrict;
+				$student->SA_FATHER_TEL = $studentForm->fatherTel;
 
-			$student->SA_MOTHER_PICTURE	= $studentForm->motherPic;
-			$student->SA_MOTHER_PICTURE_TYPE	= (string)$studentForm->motherPicType;
-			$student->SA_FATHER_PARENT_FLAG = 'N';
-			$student->SA_MOTHER_PARENT_FLAG = 'N';
-			if($studentForm->fatherParentFlag){
-				$student->SA_FATHER_PARENT_FLAG = 'Y';
+				$student->SA_MOTHER_TITLE_NAME_TH = $studentForm->motherPrefix;
+				$student->SA_MOTHER_NAME = $studentForm->motherName;
+				$student->SA_MOTHER_LAST_NAME = $studentForm->motherLastName;
+				$student->SA_MOTHER_ADDRESS = $studentForm->motherAddress;
+				$student->SA_MOTHER_PROVINCE = $studentForm->motherProvince;
+				$student->SA_MOTHER_AMPHUR = $studentForm->motherAmphur;
+				$student->SA_MOTHER_DISTRICT = $studentForm->motherDistrict;
+				$student->SA_MOTHER_TEL = $studentForm->motherTel;
+				$student->SA_STUDENT_ID	= $studentForm->studentCardId;
+				$student->SA_PICTURE	= $studentForm->studentPic;
+				$student->SA_PICTURE_TYPE	= (string)$studentForm->studentPicType;
+
+				$student->SA_FATHER_PICTURE	= $studentForm->fatherPic;
+				$student->SA_FATHER_PICTURE_TYPE	= (string)$studentForm->fatherPicType;
+
+				$student->SA_MOTHER_PICTURE	= $studentForm->motherPic;
+				$student->SA_MOTHER_PICTURE_TYPE	= (string)$studentForm->motherPicType;
+				$student->SA_FATHER_PARENT_FLAG = 'N';
+				$student->SA_MOTHER_PARENT_FLAG = 'N';
+				if($studentForm->fatherParentFlag){
+					$student->SA_FATHER_PARENT_FLAG = 'Y';
+				}
+				if($studentForm->motherParentFlag){
+					$student->SA_MOTHER_PARENT_FLAG = 'Y';
+				}
+
+
+				$student->SA_EMERGENCY_TITLE_NAME_TH = $studentForm->emergencyPrefix;
+				$student->SA_EMERGENCY_NAME = $studentForm->emergencyName;
+				$student->SA_EMERGENCY_LAST_NAME = $studentForm->emergencyLastName;
+				$student->SA_EMERGENCY_ADDRESS = $studentForm->emergencyAddress;	
+				$student->SA_EMERGENCY_PROVINCE = $studentForm->emergencyProvince;
+				$student->SA_EMERGENCY_AMPHUR = $studentForm->emergencyAmphur;
+				$student->SA_EMERGENCY_DISTRICT = $studentForm->emergencyDistrict;
+				$student->SA_EMERGENCY_TEL = $studentForm->emergencyTel;
+				$student->SA_EMERGENCY_PICTURE	= $studentForm->emergencyPic;
+				$student->SA_EMERGENCY_PICTURE_TYPE	= (string)$studentForm->emergencyPicType;
+				$student->SA_EMERGENCY_PARENT_FLAG = 'N';
+				if($studentForm->emergencyParentFlag){
+					$student->SA_EMERGENCY_PARENT_FLAG = 'Y';
+				}
+				$student->CREATE_DATE = new \DateTime();
+				$student->CREATE_BY = $userId;
+				$student->UPDATE_DATE = new \DateTime();
+				$student->UPDATE_BY = $userId;
+				//
+				$student->SA_CITIZEN_CODE = $studentForm->studentCitizenCode;
+				$student->SA_SON_NO = $studentForm->sonNumber;
+				$student->SA_OLDER_BROTHER = $studentForm->olderSon;
+				$student->SA_YOUNGER_BROTHER = $studentForm->youngerSon;
+				$student->SA_HOSPITAL_BORN = $studentForm->hospitalBorn;
+				$student->SA_DISEASE = $studentForm->disease;
+				$student->SA_FOOD_ALLERGY = $studentForm->foodALG;
+				$student->SA_DRUG_ALLERGY = $studentForm->drugALG;
+				$student->SA_CREDIT_NAME = $studentForm->creditName;
+				$student->SA_CREDIT_LIMIT = $studentForm->creditLimit;
+				$student->SA_FATHER_EMAIL = $studentForm->fatherEmail;
+				$student->SA_FATHER_HOME_TEL = $studentForm->fatherHomeNumber;
+				$student->SA_FATHER_CITIZEN_CODE = $studentForm->fatherCitizenCode;
+				$student->SA_MOTHER_EMAIL = $studentForm->motherEmail;
+				$student->SA_MOTHER_HOME_TEL = $studentForm->motherHomeNumber;
+				$student->SA_MOTHER_CITIZEN_CODE = $studentForm->motherCitizenCode;
+				$student->SA_RELIGION_REMARK = $studentForm->religionRemark;
+				$student->SA_PARENT_STATUS_REMARK = $studentForm->parentStatusRemark;
+
+				$student->SA_FATHER_JOB = $studentForm->fatherJob;
+				$student->SA_FATHER_JOB_REMARK = $studentForm->fatherJobRemark;
+				$student->SA_FATHER_JOB_SALARY = $studentForm->fatherJobSalary;
+				$student->SA_MOTHER_JOB = $studentForm->motherJob;
+				$student->SA_MOTHER_JOB_REMARK = $studentForm->motherJobRemark;
+				$student->SA_MOTHER_JOB_SALARY = $studentForm->motherJobSalary;
+
+				$student->SA_EMERGENCY_JOB = $studentForm->emergencyJob;
+				$student->SA_EMERGENCY_JOB_REMARK = $studentForm->emergencyJobRemark;
+				$student->SA_EMERGENCY_JOB_SALARY = $studentForm->emergencyJobSalary;
+				$student->SA_EMERGENCY_EMAIL = $studentForm->emergencyEmail;
+				$student->SA_EMERGENCY_HOME_TEL = $studentForm->emergencyHomeNumber;
+				$student->SA_EMERGENCY_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
+				$student->SA_EMERGENCY_RELATION = $studentForm->emergencyRelation;
+				$student->save();
+
+				if($studentForm->fatherParentFlag){
+					$parent = new StudentParent();
+					$parent->SA_ID = $student->SA_ID;
+					$parent->SP_TITLE_NAME = $studentForm->fatherPrefix;
+					$parent->SP_FIRST_NAME = $studentForm->fatherName;
+					$parent->SP_LAST_NAME = $studentForm->fatherLastName;
+					$parent->SP_RELATION = 'บิดา';
+					$parent->SP_ADDRESS = $studentForm->fatherAddress;
+					$parent->SP_PROVINCE = $studentForm->fatherProvince;
+					$parent->SP_AMPHUR = $studentForm->fatherAmphur;
+					$parent->SP_DISTRICT = $studentForm->fatherDistrict;
+					$parent->SP_TEL = $studentForm->fatherTel;
+					$parent->SP_PICTURE = $studentForm->fatherPic;
+					$parent->SP_PICTURE_TYPE = (string)$studentForm->fatherPicType;
+					$parent->SP_RELATION_TYPE = 'D';
+					$parent->CREATE_DATE = new \DateTime();
+					$parent->CREATE_BY = $userId;
+					$parent->UPDATE_DATE = new \DateTime();
+					$parent->UPDATE_BY = $userId;
+
+					$parent->SP_JOB = $studentForm->fatherJob;
+					$parent->SP_JOB_REMARK = $studentForm->fatherJobRemark;
+					$parent->SP_JOB_SALARY = $studentForm->fatherJobSalary;
+					$parent->SP_EMAIL = $studentForm->fatherEmail;
+					$parent->SP_HOME_TEL = $studentForm->fatherHomeNumber;
+					$parent->SP_CITIZEN_CODE = $studentForm->fatherCitizenCode;
+
+					$parent->save();
+
+				}
+
+				if($studentForm->motherParentFlag){
+					$parent = new StudentParent();
+					$parent->SA_ID = $student->SA_ID;
+					$parent->SP_TITLE_NAME = $studentForm->motherPrefix;
+					$parent->SP_FIRST_NAME = $studentForm->motherName;
+					$parent->SP_LAST_NAME = $studentForm->motherLastName;
+					$parent->SP_RELATION = 'มารดา';
+					$parent->SP_ADDRESS = $studentForm->motherAddress;
+					$parent->SP_PROVINCE = $studentForm->motherProvince;
+					$parent->SP_AMPHUR = $studentForm->motherAmphur;
+					$parent->SP_DISTRICT = $studentForm->motherDistrict;
+					$parent->SP_TEL = $studentForm->motherTel;
+					$parent->SP_PICTURE = $studentForm->motherPic;
+					$parent->SP_PICTURE_TYPE = (string)$studentForm->motherPicType;
+					$parent->SP_RELATION_TYPE = 'M';
+					$parent->CREATE_DATE = new \DateTime();
+					$parent->CREATE_BY = $userId;
+					$parent->UPDATE_DATE = new \DateTime();
+					$parent->UPDATE_BY = $userId;
+
+					$parent->SP_JOB = $studentForm->motherJob;
+					$parent->SP_JOB_REMARK = $studentForm->motherJobRemark;
+					$parent->SP_JOB_SALARY = $studentForm->motherJobSalary;
+					$parent->SP_EMAIL = $studentForm->motherEmail;
+					$parent->SP_HOME_TEL = $studentForm->motherHomeNumber;
+					$parent->SP_CITIZEN_CODE = $studentForm->motherCitizenCode;
+
+					$parent->save();
+
+				}
+
+				if($studentForm->emergencyParentFlag){
+					$parent = new StudentParent();
+					$parent->SA_ID = $student->SA_ID;
+					$parent->SP_TITLE_NAME = $studentForm->emergencyPrefix;
+					$parent->SP_FIRST_NAME = $studentForm->emergencyName;
+					$parent->SP_LAST_NAME = $studentForm->emergencyLastName;
+					$parent->SP_RELATION = $studentForm->emergencyRelation;
+					$parent->SP_ADDRESS = $studentForm->emergencyAddress;
+					$parent->SP_PROVINCE = $studentForm->emergencyProvince;
+					$parent->SP_AMPHUR = $studentForm->emergencyAmphur;
+					$parent->SP_DISTRICT = $studentForm->emergencyDistrict;
+					$parent->SP_TEL = $studentForm->emergencyTel;
+					$parent->SP_PICTURE = $studentForm->emergencyPic;
+					$parent->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
+					$parent->SP_RELATION_TYPE = 'E';
+					$parent->CREATE_DATE = new \DateTime();
+					$parent->CREATE_BY = $userId;
+					$parent->UPDATE_DATE = new \DateTime();
+					$parent->UPDATE_BY = $userId;
+
+					$parent->SP_JOB = $studentForm->emergencyJob;
+					$parent->SP_JOB_REMARK = $studentForm->emergencyJobRemark;
+					$parent->SP_JOB_SALARY = $studentForm->emergencyJobSalary;
+					$parent->SP_EMAIL = $studentForm->emergencyEmail;
+					$parent->SP_HOME_TEL = $studentForm->emergencyHomeNumber;
+					$parent->SP_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
+					$parent->SP_RELATION = $studentForm->emergencyRelation;
+
+					$parent->save();
+
+				}
+
+
+				DB::commit(); 
+				
+				return response ()->json ( [
+						'status' => 'ok'
+				] );
 			}
-			if($studentForm->motherParentFlag){
-				$student->SA_MOTHER_PARENT_FLAG = 'Y';
-			}
-
-
-			$student->SA_EMERGENCY_TITLE_NAME_TH = $studentForm->emergencyPrefix;
-            $student->SA_EMERGENCY_NAME = $studentForm->emergencyName;
-			$student->SA_EMERGENCY_LAST_NAME = $studentForm->emergencyLastName;
-            $student->SA_EMERGENCY_ADDRESS = $studentForm->emergencyAddress;	
-			$student->SA_EMERGENCY_PROVINCE = $studentForm->emergencyProvince;
-			$student->SA_EMERGENCY_AMPHUR = $studentForm->emergencyAmphur;
-			$student->SA_EMERGENCY_DISTRICT = $studentForm->emergencyDistrict;
-            $student->SA_EMERGENCY_TEL = $studentForm->emergencyTel;
-			$student->SA_EMERGENCY_PICTURE	= $studentForm->emergencyPic;
-			$student->SA_EMERGENCY_PICTURE_TYPE	= (string)$studentForm->emergencyPicType;
-			$student->SA_EMERGENCY_PARENT_FLAG = 'N';
-			if($studentForm->emergencyParentFlag){
-				$student->SA_EMERGENCY_PARENT_FLAG = 'Y';
-			}
-			$student->CREATE_DATE = new \DateTime();
-			$student->CREATE_BY = $userId;
-			$student->UPDATE_DATE = new \DateTime();
-			$student->UPDATE_BY = $userId;
-			//
-			$student->SA_CITIZEN_CODE = $studentForm->studentCitizenCode;
-			$student->SA_SON_NO = $studentForm->sonNumber;
-			$student->SA_OLDER_BROTHER = $studentForm->olderSon;
-			$student->SA_YOUNGER_BROTHER = $studentForm->youngerSon;
-			$student->SA_HOSPITAL_BORN = $studentForm->hospitalBorn;
-			$student->SA_DISEASE = $studentForm->disease;
-			$student->SA_FOOD_ALLERGY = $studentForm->foodALG;
-			$student->SA_DRUG_ALLERGY = $studentForm->drugALG;
-			$student->SA_CREDIT_LIMIT = $studentForm->creditLimit;
-			$student->SA_FATHER_EMAIL = $studentForm->fatherEmail;
-			$student->SA_FATHER_HOME_TEL = $studentForm->fatherHomeNumber;
-			$student->SA_FATHER_CITIZEN_CODE = $studentForm->fatherCitizenCode;
-			$student->SA_MOTHER_EMAIL = $studentForm->motherEmail;
-			$student->SA_MOTHER_HOME_TEL = $studentForm->motherHomeNumber;
-			$student->SA_MOTHER_CITIZEN_CODE = $studentForm->motherCitizenCode;
-			$student->SA_RELIGION_REMARK = $studentForm->religionRemark;
-            $student->SA_PARENT_STATUS_REMARK = $studentForm->parentStatusRemark;
-
-			$student->SA_FATHER_JOB = $studentForm->fatherJob;
-			$student->SA_FATHER_JOB_REMARK = $studentForm->fatherJobRemark;
-			$student->SA_FATHER_JOB_SALARY = $studentForm->fatherJobSalary;
-			$student->SA_MOTHER_JOB = $studentForm->motherJob;
-			$student->SA_MOTHER_JOB_REMARK = $studentForm->motherJobRemark;
-			$student->SA_MOTHER_JOB_SALARY = $studentForm->motherJobSalary;
-
-			$student->SA_EMERGENCY_JOB = $studentForm->emergencyJob;
-			$student->SA_EMERGENCY_JOB_REMARK = $studentForm->emergencyJobRemark;
-			$student->SA_EMERGENCY_JOB_SALARY = $studentForm->emergencyJobSalary;
-			$student->SA_EMERGENCY_EMAIL = $studentForm->emergencyEmail;
-			$student->SA_EMERGENCY_HOME_TEL = $studentForm->emergencyHomeNumber;
-			$student->SA_EMERGENCY_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
-			$student->SA_EMERGENCY_RELATION = $studentForm->emergencyRelation;
-			$student->save();
-
-			if($studentForm->fatherParentFlag){
-				$parent = new StudentParent();
-				$parent->SA_ID = $student->SA_ID;
-				$parent->SP_TITLE_NAME = $studentForm->fatherPrefix;
-				$parent->SP_FIRST_NAME = $studentForm->fatherName;
-				$parent->SP_LAST_NAME = $studentForm->fatherLastName;
-				$parent->SP_RELATION = 'บิดา';
-				$parent->SP_ADDRESS = $studentForm->fatherAddress;
-				$parent->SP_PROVINCE = $studentForm->fatherProvince;
-				$parent->SP_AMPHUR = $studentForm->fatherAmphur;
-				$parent->SP_DISTRICT = $studentForm->fatherDistrict;
-				$parent->SP_TEL = $studentForm->fatherTel;
-				$parent->SP_PICTURE = $studentForm->fatherPic;
-				$parent->SP_PICTURE_TYPE = (string)$studentForm->fatherPicType;
-				$parent->SP_RELATION_TYPE = 'D';
-				$parent->CREATE_DATE = new \DateTime();
-				$parent->CREATE_BY = $userId;
-				$parent->UPDATE_DATE = new \DateTime();
-				$parent->UPDATE_BY = $userId;
-
-				$parent->SP_JOB = $studentForm->fatherJob;
-				$parent->SP_JOB_REMARK = $studentForm->fatherJobRemark;
-				$parent->SP_JOB_SALARY = $studentForm->fatherJobSalary;
-				$parent->SP_EMAIL = $studentForm->fatherEmail;
-				$parent->SP_HOME_TEL = $studentForm->fatherHomeNumber;
-				$parent->SP_CITIZEN_CODE = $studentForm->fatherCitizenCode;
-
-				$parent->save();
-
-			}
-
-			if($studentForm->motherParentFlag){
-				$parent = new StudentParent();
-				$parent->SA_ID = $student->SA_ID;
-				$parent->SP_TITLE_NAME = $studentForm->motherPrefix;
-				$parent->SP_FIRST_NAME = $studentForm->motherName;
-				$parent->SP_LAST_NAME = $studentForm->motherLastName;
-				$parent->SP_RELATION = 'มารดา';
-				$parent->SP_ADDRESS = $studentForm->motherAddress;
-				$parent->SP_PROVINCE = $studentForm->motherProvince;
-				$parent->SP_AMPHUR = $studentForm->motherAmphur;
-				$parent->SP_DISTRICT = $studentForm->motherDistrict;
-				$parent->SP_TEL = $studentForm->motherTel;
-				$parent->SP_PICTURE = $studentForm->motherPic;
-				$parent->SP_PICTURE_TYPE = (string)$studentForm->motherPicType;
-				$parent->SP_RELATION_TYPE = 'M';
-				$parent->CREATE_DATE = new \DateTime();
-				$parent->CREATE_BY = $userId;
-				$parent->UPDATE_DATE = new \DateTime();
-				$parent->UPDATE_BY = $userId;
-
-				$parent->SP_JOB = $studentForm->motherJob;
-				$parent->SP_JOB_REMARK = $studentForm->motherJobRemark;
-				$parent->SP_JOB_SALARY = $studentForm->motherJobSalary;
-				$parent->SP_EMAIL = $studentForm->motherEmail;
-				$parent->SP_HOME_TEL = $studentForm->motherHomeNumber;
-				$parent->SP_CITIZEN_CODE = $studentForm->motherCitizenCode;
-
-				$parent->save();
-
-			}
-
-			if($studentForm->emergencyParentFlag){
-				$parent = new StudentParent();
-				$parent->SA_ID = $student->SA_ID;
-				$parent->SP_TITLE_NAME = $studentForm->emergencyPrefix;
-				$parent->SP_FIRST_NAME = $studentForm->emergencyName;
-				$parent->SP_LAST_NAME = $studentForm->emergencyLastName;
-				$parent->SP_RELATION = $studentForm->emergencyRelation;
-				$parent->SP_ADDRESS = $studentForm->emergencyAddress;
-				$parent->SP_PROVINCE = $studentForm->emergencyProvince;
-				$parent->SP_AMPHUR = $studentForm->emergencyAmphur;
-				$parent->SP_DISTRICT = $studentForm->emergencyDistrict;
-				$parent->SP_TEL = $studentForm->emergencyTel;
-				$parent->SP_PICTURE = $studentForm->emergencyPic;
-				$parent->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
-				$parent->SP_RELATION_TYPE = 'E';
-				$parent->CREATE_DATE = new \DateTime();
-				$parent->CREATE_BY = $userId;
-				$parent->UPDATE_DATE = new \DateTime();
-				$parent->UPDATE_BY = $userId;
-
-				$parent->SP_JOB = $studentForm->emergencyJob;
-				$parent->SP_JOB_REMARK = $studentForm->emergencyJobRemark;
-				$parent->SP_JOB_SALARY = $studentForm->emergencyJobSalary;
-				$parent->SP_EMAIL = $studentForm->emergencyEmail;
-				$parent->SP_HOME_TEL = $studentForm->emergencyHomeNumber;
-				$parent->SP_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
-				$parent->SP_RELATION = $studentForm->emergencyRelation;
-
-				$parent->save();
-
-			}
-
-
-			DB::commit(); 
-			
-			return response ()->json ( [
-					'status' => 'ok'
-			] );
-			
 		} catch ( \Exception $e ) {
 			DB::rollBack ();
 			// echo $e;
@@ -324,338 +334,354 @@ class StudentController extends Controller
 			$studentForm = json_decode($postdata)->studentModel;
             // $parentForms = json_decode($postdata)->parentModel;
 			$userId = json_decode($postdata)->userId;
-			
-			DB::beginTransaction();
-			$student = StudentAccount::find($studentForm->studentId);
-			$student->SA_TITLE_NAME_TH = $studentForm->studentPrefixTH;
-            $student->SA_FIRST_NAME_TH = $studentForm->studentFirstNameTH;
-            $student->SA_LAST_NAME_TH = $studentForm->studentLastNameTH;
-            $student->SA_NICK_NAME_TH = $studentForm->studentNickNameTH;
-            $student->SA_TITLE_NAME_EN = $studentForm->studentPrefixEN;
-            $student->SA_FIRST_NAME_EN = $studentForm->studentFirstNameEN;
-            $student->SA_LAST_NAME_EN = $studentForm->studentLastNameEN;
-            $student->SA_NICK_NAME_EN = $studentForm->studentNickNameEN;
-			// $birthday = str_replace("-","",$studentForm->birthday);
-			// $birthday = substr($birthday,0,4).''.substr($birthday,4,2).''.substr($birthday,6,2);
-			$birthday = $studentForm->YYYYbirthday.''.str_pad($studentForm->MMbirthday,2,"0",STR_PAD_LEFT).''.str_pad($studentForm->DDbirthday,2,"0",STR_PAD_LEFT);
-            $student->SA_BIRTH_DATE = $birthday;
-            $student->SA_NATIONALITY = $studentForm->nationality;
-            $student->SA_ETHNIC = $studentForm->ethnic;
-            $student->SA_RELIGION = $studentForm->religion;
-            $student->SA_PARENT_STATUS = $studentForm->parentStatus;
-            $student->SA_FATHER_NAME = $studentForm->fatherName;
-			
-			$student->SA_FATHER_TITLE_NAME_TH = $studentForm->fatherPrefix;
-            $student->SA_FATHER_NAME = $studentForm->fatherName;
-			$student->SA_FATHER_LAST_NAME = $studentForm->fatherLastName;
-            $student->SA_FATHER_ADDRESS = $studentForm->fatherAddress;	
-			$student->SA_FATHER_PROVINCE = $studentForm->fatherProvince;
-			$student->SA_FATHER_AMPHUR = $studentForm->fatherAmphur;
-			$student->SA_FATHER_DISTRICT = $studentForm->fatherDistrict;
-            $student->SA_FATHER_TEL = $studentForm->fatherTel;
+			$studentCheck = StudentAccount::where('SA_ID','<>', $studentForm->studentId)->where('USE_FLAG','Y')->where('SA_STUDENT_ID',$studentForm->studentCardId)->first();
+			if($studentCheck != null || $studentCheck != '' ||$studentCheck != []){
+				return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => "รหัสประจำตัวนักเรียนซ้ำ"
+				] );
 
-			$student->SA_MOTHER_TITLE_NAME_TH = $studentForm->motherPrefix;
-            $student->SA_MOTHER_NAME = $studentForm->motherName;
-			$student->SA_MOTHER_LAST_NAME = $studentForm->motherLastName;
-            $student->SA_MOTHER_ADDRESS = $studentForm->motherAddress;
-			$student->SA_MOTHER_PROVINCE = $studentForm->motherProvince;
-			$student->SA_MOTHER_AMPHUR = $studentForm->motherAmphur;
-			$student->SA_MOTHER_DISTRICT = $studentForm->motherDistrict;
-            $student->SA_MOTHER_TEL = $studentForm->motherTel;
-			$student->SA_PICTURE	= $studentForm->studentPic;
-			$student->SA_PICTURE_TYPE	= (string)$studentForm->studentPicType;
-
-			$student->SA_FATHER_PICTURE	= $studentForm->fatherPic;
-			$student->SA_FATHER_PICTURE_TYPE	= (string)$studentForm->fatherPicType;
-
-			$student->SA_MOTHER_PICTURE	= $studentForm->motherPic;
-			$student->SA_MOTHER_PICTURE_TYPE	= (string)$studentForm->motherPicType;
-			$student->SA_FATHER_PARENT_FLAG = 'N';
-			$student->SA_MOTHER_PARENT_FLAG = 'N';
-			if($studentForm->fatherParentFlag){
-				$student->SA_FATHER_PARENT_FLAG = 'Y';
-			}
-			if($studentForm->motherParentFlag){
-				$student->SA_MOTHER_PARENT_FLAG = 'Y';
-			}
-
-			$student->SA_EMERGENCY_TITLE_NAME_TH = $studentForm->emergencyPrefix;
-            $student->SA_EMERGENCY_NAME = $studentForm->emergencyName;
-			$student->SA_EMERGENCY_LAST_NAME = $studentForm->emergencyLastName;
-            $student->SA_EMERGENCY_ADDRESS = $studentForm->emergencyAddress;	
-			$student->SA_EMERGENCY_PROVINCE = $studentForm->emergencyProvince;
-			$student->SA_EMERGENCY_AMPHUR = $studentForm->emergencyAmphur;
-			$student->SA_EMERGENCY_DISTRICT = $studentForm->emergencyDistrict;
-            $student->SA_EMERGENCY_TEL = $studentForm->emergencyTel;
-			$student->SA_EMERGENCY_PICTURE	= $studentForm->emergencyPic;
-			$student->SA_EMERGENCY_PICTURE_TYPE	= (string)$studentForm->emergencyPicType;
-			$student->SA_EMERGENCY_PARENT_FLAG = 'N';
-			if($studentForm->emergencyParentFlag){
-				$student->SA_EMERGENCY_PARENT_FLAG = 'Y';
-			}
-
-
-			$student->UPDATE_DATE = new \DateTime();	
-			$student->UPDATE_BY = $userId;
-
-			//
-			$student->SA_CITIZEN_CODE = $studentForm->studentCitizenCode;
-			$student->SA_SON_NO = $studentForm->sonNumber;
-			$student->SA_OLDER_BROTHER = $studentForm->olderSon;
-			$student->SA_YOUNGER_BROTHER = $studentForm->youngerSon;
-			$student->SA_HOSPITAL_BORN = $studentForm->hospitalBorn;
-			$student->SA_DISEASE = $studentForm->disease;
-			$student->SA_FOOD_ALLERGY = $studentForm->foodALG;
-			$student->SA_DRUG_ALLERGY = $studentForm->drugALG;
-			$student->SA_CREDIT_LIMIT = $studentForm->creditLimit;
-			$student->SA_FATHER_EMAIL = $studentForm->fatherEmail;
-			$student->SA_FATHER_HOME_TEL = $studentForm->fatherHomeNumber;
-			$student->SA_FATHER_CITIZEN_CODE = $studentForm->fatherCitizenCode;
-			$student->SA_MOTHER_EMAIL = $studentForm->motherEmail;
-			$student->SA_MOTHER_HOME_TEL = $studentForm->motherHomeNumber;
-			$student->SA_MOTHER_CITIZEN_CODE = $studentForm->motherCitizenCode;
-
-			$student->SA_RELIGION_REMARK = $studentForm->religionRemark;
-            $student->SA_PARENT_STATUS_REMARK = $studentForm->parentStatusRemark;
-
-			$student->SA_FATHER_JOB = $studentForm->fatherJob;
-			$student->SA_FATHER_JOB_REMARK = $studentForm->fatherJobRemark;
-			$student->SA_FATHER_JOB_SALARY = $studentForm->fatherJobSalary;
-			$student->SA_MOTHER_JOB = $studentForm->motherJob;
-			$student->SA_MOTHER_JOB_REMARK = $studentForm->motherJobRemark;
-			$student->SA_MOTHER_JOB_SALARY = $studentForm->motherJobSalary;
-
-			$student->SA_EMERGENCY_JOB = $studentForm->emergencyJob;
-			$student->SA_EMERGENCY_JOB_REMARK = $studentForm->emergencyJobRemark;
-			$student->SA_EMERGENCY_JOB_SALARY = $studentForm->emergencyJobSalary;
-			$student->SA_EMERGENCY_EMAIL = $studentForm->emergencyEmail;
-			$student->SA_EMERGENCY_HOME_TEL = $studentForm->emergencyHomeNumber;
-			$student->SA_EMERGENCY_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
-			$student->SA_EMERGENCY_RELATION = $studentForm->emergencyRelation;
-
-			$student->save();
-			
-			if($studentForm->fatherParentFlag){
-			$parentFatherFind = StudentParent::where('SA_ID', $studentForm->studentId)->where('USE_FLAG','Y')->where('SP_RELATION_TYPE','D')->first();
-				if($parentFatherFind != null || $parentFatherFind != '' ||$parentFatherFind != []){
-					$parentFather = StudentParent::find($parentFatherFind->SP_ID);
-					if($parentFather != null || $parentFather != '' ||$parentFather != []){
-						$parentFather->SP_TITLE_NAME = $studentForm->fatherPrefix;
-						$parentFather->SP_FIRST_NAME = $studentForm->fatherName;
-						$parentFather->SP_LAST_NAME = $studentForm->fatherLastName;
-						//$parentFather->SP_RELATION = 'บิดา';
-						$parentFather->SP_ADDRESS = $studentForm->fatherAddress;
-						$parentFather->SP_PROVINCE = $studentForm->fatherProvince;
-						$parentFather->SP_AMPHUR = $studentForm->fatherAmphur;
-						$parentFather->SP_DISTRICT = $studentForm->fatherDistrict;
-						$parentFather->SP_TEL = $studentForm->fatherTel;
-						$parentFather->SP_PICTURE = $studentForm->fatherPic;
-						$parentFather->SP_PICTURE_TYPE = (string)$studentForm->fatherPicType;
-						$parentFather->SP_RELATION_TYPE = 'D';
-						$parentFather->UPDATE_DATE = new \DateTime();
-						$parentFather->UPDATE_BY = $userId;
-
-						$parentFather->SP_JOB = $studentForm->fatherJob;
-						$parentFather->SP_JOB_REMARK = $studentForm->fatherJobRemark;
-						$parentFather->SP_JOB_SALARY = $studentForm->fatherJobSalary;
-						$parentFather->SP_EMAIL = $studentForm->fatherEmail;
-						$parentFather->SP_HOME_TEL = $studentForm->fatherHomeNumber;
-						$parentFather->SP_CITIZEN_CODE = $studentForm->fatherCitizenCode;
-
-						$parentFather->save();
-					}
-				}else{
-					$parent = new StudentParent();
-					$parent->SP_TITLE_NAME = $studentForm->fatherPrefix;
-					$parent->SP_FIRST_NAME = $studentForm->fatherName;
-					$parent->SP_LAST_NAME = $studentForm->fatherLastName;
-					$parent->SP_RELATION = 'บิดา';
-					$parent->SP_ADDRESS = $studentForm->fatherAddress;
-					$parent->SP_PROVINCE = $studentForm->fatherProvince;
-					$parent->SP_AMPHUR = $studentForm->fatherAmphur;
-					$parent->SP_DISTRICT = $studentForm->fatherDistrict;
-					$parent->SP_TEL = $studentForm->fatherTel;
-					$parent->SP_PICTURE = $studentForm->fatherPic;
-					$parent->SP_PICTURE_TYPE = (string)$studentForm->fatherPicType;
-					$parent->SP_RELATION_TYPE = 'D';
-					$parent->SA_ID	= $studentForm->studentId;
-					$parent->CREATE_DATE = new \DateTime();
-					$parent->CREATE_BY = $userId;
-					$parent->UPDATE_DATE = new \DateTime();
-					$parent->UPDATE_BY = $userId;
-
-					$parent->SP_JOB = $studentForm->fatherJob;
-					$parent->SP_JOB_REMARK = $studentForm->fatherJobRemark;
-					$parent->SP_JOB_SALARY = $studentForm->fatherJobSalary;
-					$parent->SP_EMAIL = $studentForm->fatherEmail;
-					$parent->SP_HOME_TEL = $studentForm->fatherHomeNumber;
-					$parent->SP_CITIZEN_CODE = $studentForm->fatherCitizenCode;
-
-					$parent->save();
-				}
+			}else{	
 				
 
-			}else{
-					$parentFatherFind = StudentParent::where('SA_ID', $studentForm->studentId)->where('USE_FLAG','Y')->where('SP_RELATION_TYPE','D')->first();
+			
+			
+				DB::beginTransaction();
+				$student = StudentAccount::find($studentForm->studentId);
+				$student->SA_TITLE_NAME_TH = $studentForm->studentPrefixTH;
+				$student->SA_FIRST_NAME_TH = $studentForm->studentFirstNameTH;
+				$student->SA_LAST_NAME_TH = $studentForm->studentLastNameTH;
+				$student->SA_NICK_NAME_TH = $studentForm->studentNickNameTH;
+				$student->SA_TITLE_NAME_EN = $studentForm->studentPrefixEN;
+				$student->SA_FIRST_NAME_EN = $studentForm->studentFirstNameEN;
+				$student->SA_LAST_NAME_EN = $studentForm->studentLastNameEN;
+				$student->SA_NICK_NAME_EN = $studentForm->studentNickNameEN;
+				// $birthday = str_replace("-","",$studentForm->birthday);
+				// $birthday = substr($birthday,0,4).''.substr($birthday,4,2).''.substr($birthday,6,2);
+				$birthday = $studentForm->YYYYbirthday.''.str_pad($studentForm->MMbirthday,2,"0",STR_PAD_LEFT).''.str_pad($studentForm->DDbirthday,2,"0",STR_PAD_LEFT);
+				$student->SA_BIRTH_DATE = $birthday;
+				$student->SA_NATIONALITY = $studentForm->nationality;
+				$student->SA_ETHNIC = $studentForm->ethnic;
+				$student->SA_RELIGION = $studentForm->religion;
+				$student->SA_PARENT_STATUS = $studentForm->parentStatus;
+				$student->SA_FATHER_NAME = $studentForm->fatherName;
+				
+				$student->SA_FATHER_TITLE_NAME_TH = $studentForm->fatherPrefix;
+				$student->SA_FATHER_NAME = $studentForm->fatherName;
+				$student->SA_FATHER_LAST_NAME = $studentForm->fatherLastName;
+				$student->SA_FATHER_ADDRESS = $studentForm->fatherAddress;	
+				$student->SA_FATHER_PROVINCE = $studentForm->fatherProvince;
+				$student->SA_FATHER_AMPHUR = $studentForm->fatherAmphur;
+				$student->SA_FATHER_DISTRICT = $studentForm->fatherDistrict;
+				$student->SA_FATHER_TEL = $studentForm->fatherTel;
+
+				$student->SA_MOTHER_TITLE_NAME_TH = $studentForm->motherPrefix;
+				$student->SA_MOTHER_NAME = $studentForm->motherName;
+				$student->SA_MOTHER_LAST_NAME = $studentForm->motherLastName;
+				$student->SA_MOTHER_ADDRESS = $studentForm->motherAddress;
+				$student->SA_MOTHER_PROVINCE = $studentForm->motherProvince;
+				$student->SA_MOTHER_AMPHUR = $studentForm->motherAmphur;
+				$student->SA_MOTHER_DISTRICT = $studentForm->motherDistrict;
+				$student->SA_MOTHER_TEL = $studentForm->motherTel;
+				$student->SA_STUDENT_ID	= $studentForm->studentCardId;
+				$student->SA_PICTURE	= $studentForm->studentPic;
+				$student->SA_PICTURE_TYPE	= (string)$studentForm->studentPicType;
+
+				$student->SA_FATHER_PICTURE	= $studentForm->fatherPic;
+				$student->SA_FATHER_PICTURE_TYPE	= (string)$studentForm->fatherPicType;
+
+				$student->SA_MOTHER_PICTURE	= $studentForm->motherPic;
+				$student->SA_MOTHER_PICTURE_TYPE	= (string)$studentForm->motherPicType;
+				$student->SA_FATHER_PARENT_FLAG = 'N';
+				$student->SA_MOTHER_PARENT_FLAG = 'N';
+				if($studentForm->fatherParentFlag){
+					$student->SA_FATHER_PARENT_FLAG = 'Y';
+				}
+				if($studentForm->motherParentFlag){
+					$student->SA_MOTHER_PARENT_FLAG = 'Y';
+				}
+
+				$student->SA_EMERGENCY_TITLE_NAME_TH = $studentForm->emergencyPrefix;
+				$student->SA_EMERGENCY_NAME = $studentForm->emergencyName;
+				$student->SA_EMERGENCY_LAST_NAME = $studentForm->emergencyLastName;
+				$student->SA_EMERGENCY_ADDRESS = $studentForm->emergencyAddress;	
+				$student->SA_EMERGENCY_PROVINCE = $studentForm->emergencyProvince;
+				$student->SA_EMERGENCY_AMPHUR = $studentForm->emergencyAmphur;
+				$student->SA_EMERGENCY_DISTRICT = $studentForm->emergencyDistrict;
+				$student->SA_EMERGENCY_TEL = $studentForm->emergencyTel;
+				$student->SA_EMERGENCY_PICTURE	= $studentForm->emergencyPic;
+				$student->SA_EMERGENCY_PICTURE_TYPE	= (string)$studentForm->emergencyPicType;
+				$student->SA_EMERGENCY_PARENT_FLAG = 'N';
+				if($studentForm->emergencyParentFlag){
+					$student->SA_EMERGENCY_PARENT_FLAG = 'Y';
+				}
+
+
+				$student->UPDATE_DATE = new \DateTime();	
+				$student->UPDATE_BY = $userId;
+
+				//
+				$student->SA_CITIZEN_CODE = $studentForm->studentCitizenCode;
+				$student->SA_SON_NO = $studentForm->sonNumber;
+				$student->SA_OLDER_BROTHER = $studentForm->olderSon;
+				$student->SA_YOUNGER_BROTHER = $studentForm->youngerSon;
+				$student->SA_HOSPITAL_BORN = $studentForm->hospitalBorn;
+				$student->SA_DISEASE = $studentForm->disease;
+				$student->SA_FOOD_ALLERGY = $studentForm->foodALG;
+				$student->SA_DRUG_ALLERGY = $studentForm->drugALG;
+				$student->SA_CREDIT_NAME = $studentForm->creditName;
+				$student->SA_CREDIT_LIMIT = $studentForm->creditLimit;
+				$student->SA_FATHER_EMAIL = $studentForm->fatherEmail;
+				$student->SA_FATHER_HOME_TEL = $studentForm->fatherHomeNumber;
+				$student->SA_FATHER_CITIZEN_CODE = $studentForm->fatherCitizenCode;
+				$student->SA_MOTHER_EMAIL = $studentForm->motherEmail;
+				$student->SA_MOTHER_HOME_TEL = $studentForm->motherHomeNumber;
+				$student->SA_MOTHER_CITIZEN_CODE = $studentForm->motherCitizenCode;
+
+				$student->SA_RELIGION_REMARK = $studentForm->religionRemark;
+				$student->SA_PARENT_STATUS_REMARK = $studentForm->parentStatusRemark;
+
+				$student->SA_FATHER_JOB = $studentForm->fatherJob;
+				$student->SA_FATHER_JOB_REMARK = $studentForm->fatherJobRemark;
+				$student->SA_FATHER_JOB_SALARY = $studentForm->fatherJobSalary;
+				$student->SA_MOTHER_JOB = $studentForm->motherJob;
+				$student->SA_MOTHER_JOB_REMARK = $studentForm->motherJobRemark;
+				$student->SA_MOTHER_JOB_SALARY = $studentForm->motherJobSalary;
+
+				$student->SA_EMERGENCY_JOB = $studentForm->emergencyJob;
+				$student->SA_EMERGENCY_JOB_REMARK = $studentForm->emergencyJobRemark;
+				$student->SA_EMERGENCY_JOB_SALARY = $studentForm->emergencyJobSalary;
+				$student->SA_EMERGENCY_EMAIL = $studentForm->emergencyEmail;
+				$student->SA_EMERGENCY_HOME_TEL = $studentForm->emergencyHomeNumber;
+				$student->SA_EMERGENCY_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
+				$student->SA_EMERGENCY_RELATION = $studentForm->emergencyRelation;
+
+				$student->save();
+				
+				if($studentForm->fatherParentFlag){
+				$parentFatherFind = StudentParent::where('SA_ID', $studentForm->studentId)->where('USE_FLAG','Y')->where('SP_RELATION_TYPE','D')->first();
 					if($parentFatherFind != null || $parentFatherFind != '' ||$parentFatherFind != []){
 						$parentFather = StudentParent::find($parentFatherFind->SP_ID);
 						if($parentFather != null || $parentFather != '' ||$parentFather != []){
-							$parentFather->USE_FLAG = 'N';
+							$parentFather->SP_TITLE_NAME = $studentForm->fatherPrefix;
+							$parentFather->SP_FIRST_NAME = $studentForm->fatherName;
+							$parentFather->SP_LAST_NAME = $studentForm->fatherLastName;
+							//$parentFather->SP_RELATION = 'บิดา';
+							$parentFather->SP_ADDRESS = $studentForm->fatherAddress;
+							$parentFather->SP_PROVINCE = $studentForm->fatherProvince;
+							$parentFather->SP_AMPHUR = $studentForm->fatherAmphur;
+							$parentFather->SP_DISTRICT = $studentForm->fatherDistrict;
+							$parentFather->SP_TEL = $studentForm->fatherTel;
+							$parentFather->SP_PICTURE = $studentForm->fatherPic;
+							$parentFather->SP_PICTURE_TYPE = (string)$studentForm->fatherPicType;
+							$parentFather->SP_RELATION_TYPE = 'D';
+							$parentFather->UPDATE_DATE = new \DateTime();
+							$parentFather->UPDATE_BY = $userId;
+
+							$parentFather->SP_JOB = $studentForm->fatherJob;
+							$parentFather->SP_JOB_REMARK = $studentForm->fatherJobRemark;
+							$parentFather->SP_JOB_SALARY = $studentForm->fatherJobSalary;
+							$parentFather->SP_EMAIL = $studentForm->fatherEmail;
+							$parentFather->SP_HOME_TEL = $studentForm->fatherHomeNumber;
+							$parentFather->SP_CITIZEN_CODE = $studentForm->fatherCitizenCode;
+
 							$parentFather->save();
 						}
-					}
-			}
+					}else{
+						$parent = new StudentParent();
+						$parent->SP_TITLE_NAME = $studentForm->fatherPrefix;
+						$parent->SP_FIRST_NAME = $studentForm->fatherName;
+						$parent->SP_LAST_NAME = $studentForm->fatherLastName;
+						$parent->SP_RELATION = 'บิดา';
+						$parent->SP_ADDRESS = $studentForm->fatherAddress;
+						$parent->SP_PROVINCE = $studentForm->fatherProvince;
+						$parent->SP_AMPHUR = $studentForm->fatherAmphur;
+						$parent->SP_DISTRICT = $studentForm->fatherDistrict;
+						$parent->SP_TEL = $studentForm->fatherTel;
+						$parent->SP_PICTURE = $studentForm->fatherPic;
+						$parent->SP_PICTURE_TYPE = (string)$studentForm->fatherPicType;
+						$parent->SP_RELATION_TYPE = 'D';
+						$parent->SA_ID	= $studentForm->studentId;
+						$parent->CREATE_DATE = new \DateTime();
+						$parent->CREATE_BY = $userId;
+						$parent->UPDATE_DATE = new \DateTime();
+						$parent->UPDATE_BY = $userId;
 
-			if($studentForm->motherParentFlag){
-				$parentMotherFind = StudentParent::where('SA_ID', $studentForm->studentId)->where('USE_FLAG','Y')->where('SP_RELATION_TYPE','M')->first();
-				if($parentMotherFind != null || $parentMotherFind != '' ||$parentMotherFind != []){
-					$parentMother = StudentParent::find($parentMotherFind->SP_ID);
-					if($parentMother != null || $parentMother != '' ||$parentMother != []){
-						$parentMother = new StudentParent();
-						$parentMother->SP_TITLE_NAME = $studentForm->motherPrefix;
-						$parentMother->SP_FIRST_NAME = $studentForm->motherName;
-						$parentMother->SP_LAST_NAME = $studentForm->motherLastName;
-						//$parentMother->SP_RELATION = 'มารดา';
-						$parentMother->SP_ADDRESS = $studentForm->motherAddress;
-						$parentMother->SP_PROVINCE = $studentForm->motherProvince;
-						$parentMother->SP_AMPHUR = $studentForm->motherAmphur;
-						$parentMother->SP_DISTRICT = $studentForm->motherDistrict;
-						$parentMother->SP_TEL = $studentForm->motherTel;
-						$parentMother->SP_PICTURE = $studentForm->motherPic;
-						$parentMother->SP_PICTURE_TYPE = (string)$tmp->motherPicType;
-						$parentMother->SP_RELATION_TYPE = 'M';
-						$parentMother->UPDATE_DATE = new \DateTime();
-						$parentMother->UPDATE_BY = $userId;
+						$parent->SP_JOB = $studentForm->fatherJob;
+						$parent->SP_JOB_REMARK = $studentForm->fatherJobRemark;
+						$parent->SP_JOB_SALARY = $studentForm->fatherJobSalary;
+						$parent->SP_EMAIL = $studentForm->fatherEmail;
+						$parent->SP_HOME_TEL = $studentForm->fatherHomeNumber;
+						$parent->SP_CITIZEN_CODE = $studentForm->fatherCitizenCode;
 
-						$parentMother->SP_JOB = $studentForm->motherJob;
-						$parentMother->SP_JOB_REMARK = $studentForm->motherJobRemark;
-						$parentMother->SP_JOB_SALARY = $studentForm->motherJobSalary;
-						$parentMother->SP_EMAIL = $studentForm->motherEmail;
-						$parentMother->SP_HOME_TEL = $studentForm->motherHomeNumber;
-						$parentMother->SP_CITIZEN_CODE = $studentForm->motherCitizenCode;
-						
-						$parentMother->save();
+						$parent->save();
 					}
+					
+
 				}else{
-					$parent = new StudentParent();
-					$parent->SP_TITLE_NAME = $studentForm->motherPrefix;
-					$parent->SP_FIRST_NAME = $studentForm->motherName;
-					$parent->SP_LAST_NAME = $studentForm->motherLastName;
-					$parent->SP_RELATION = 'มารดา';
-					$parent->SP_ADDRESS = $studentForm->motherAddress;
-					$parent->SP_PROVINCE = $studentForm->motherProvince;
-					$parent->SP_AMPHUR = $studentForm->motherAmphur;
-					$parent->SP_DISTRICT = $studentForm->motherDistrict;
-					$parent->SP_TEL = $studentForm->motherTel;
-					$parent->SP_PICTURE = $studentForm->motherPic;
-					$parent->SP_PICTURE_TYPE = (string)$tmp->motherPicType;
-					$parent->SP_RELATION_TYPE = 'M';
-					$parent->SA_ID	= $studentForm->studentId;
-					$parent->CREATE_DATE = new \DateTime();
-					$parent->CREATE_BY = $userId;
-					$parent->UPDATE_DATE = new \DateTime();
-					$parent->UPDATE_BY = $userId;
-
-					$parent->SP_JOB = $studentForm->motherJob;
-					$parent->SP_JOB_REMARK = $studentForm->motherJobRemark;
-					$parent->SP_JOB_SALARY = $studentForm->motherJobSalary;
-					$parent->SP_EMAIL = $studentForm->motherEmail;
-					$parent->SP_HOME_TEL = $studentForm->motherHomeNumber;
-					$parent->SP_CITIZEN_CODE = $studentForm->motherCitizenCode;
-
-					$parent->save();
-
+						$parentFatherFind = StudentParent::where('SA_ID', $studentForm->studentId)->where('USE_FLAG','Y')->where('SP_RELATION_TYPE','D')->first();
+						if($parentFatherFind != null || $parentFatherFind != '' ||$parentFatherFind != []){
+							$parentFather = StudentParent::find($parentFatherFind->SP_ID);
+							if($parentFather != null || $parentFather != '' ||$parentFather != []){
+								$parentFather->USE_FLAG = 'N';
+								$parentFather->save();
+							}
+						}
 				}
 
-			}else{
-				$parentMotherFind = StudentParent::where('SA_ID', $studentForm->studentId)->where('USE_FLAG','Y')->where('SP_RELATION_TYPE','M')->first();
-				if($parentMotherFind != null || $parentMotherFind != '' ||$parentMotherFind != []){
-					$parentMother = StudentParent::find($parentMotherFind->SP_ID);
-					if($parentMother != null || $parentMother != '' ||$parentMother != []){
-						$parentMother->USE_FLAG = 'N';
-						$parentMother->save();
+				if($studentForm->motherParentFlag){
+					$parentMotherFind = StudentParent::where('SA_ID', $studentForm->studentId)->where('USE_FLAG','Y')->where('SP_RELATION_TYPE','M')->first();
+					if($parentMotherFind != null || $parentMotherFind != '' ||$parentMotherFind != []){
+						$parentMother = StudentParent::find($parentMotherFind->SP_ID);
+						if($parentMother != null || $parentMother != '' ||$parentMother != []){
+							$parentMother = new StudentParent();
+							$parentMother->SP_TITLE_NAME = $studentForm->motherPrefix;
+							$parentMother->SP_FIRST_NAME = $studentForm->motherName;
+							$parentMother->SP_LAST_NAME = $studentForm->motherLastName;
+							//$parentMother->SP_RELATION = 'มารดา';
+							$parentMother->SP_ADDRESS = $studentForm->motherAddress;
+							$parentMother->SP_PROVINCE = $studentForm->motherProvince;
+							$parentMother->SP_AMPHUR = $studentForm->motherAmphur;
+							$parentMother->SP_DISTRICT = $studentForm->motherDistrict;
+							$parentMother->SP_TEL = $studentForm->motherTel;
+							$parentMother->SP_PICTURE = $studentForm->motherPic;
+							$parentMother->SP_PICTURE_TYPE = (string)$tmp->motherPicType;
+							$parentMother->SP_RELATION_TYPE = 'M';
+							$parentMother->UPDATE_DATE = new \DateTime();
+							$parentMother->UPDATE_BY = $userId;
+
+							$parentMother->SP_JOB = $studentForm->motherJob;
+							$parentMother->SP_JOB_REMARK = $studentForm->motherJobRemark;
+							$parentMother->SP_JOB_SALARY = $studentForm->motherJobSalary;
+							$parentMother->SP_EMAIL = $studentForm->motherEmail;
+							$parentMother->SP_HOME_TEL = $studentForm->motherHomeNumber;
+							$parentMother->SP_CITIZEN_CODE = $studentForm->motherCitizenCode;
+							
+							$parentMother->save();
+						}
+					}else{
+						$parent = new StudentParent();
+						$parent->SP_TITLE_NAME = $studentForm->motherPrefix;
+						$parent->SP_FIRST_NAME = $studentForm->motherName;
+						$parent->SP_LAST_NAME = $studentForm->motherLastName;
+						$parent->SP_RELATION = 'มารดา';
+						$parent->SP_ADDRESS = $studentForm->motherAddress;
+						$parent->SP_PROVINCE = $studentForm->motherProvince;
+						$parent->SP_AMPHUR = $studentForm->motherAmphur;
+						$parent->SP_DISTRICT = $studentForm->motherDistrict;
+						$parent->SP_TEL = $studentForm->motherTel;
+						$parent->SP_PICTURE = $studentForm->motherPic;
+						$parent->SP_PICTURE_TYPE = (string)$tmp->motherPicType;
+						$parent->SP_RELATION_TYPE = 'M';
+						$parent->SA_ID	= $studentForm->studentId;
+						$parent->CREATE_DATE = new \DateTime();
+						$parent->CREATE_BY = $userId;
+						$parent->UPDATE_DATE = new \DateTime();
+						$parent->UPDATE_BY = $userId;
+
+						$parent->SP_JOB = $studentForm->motherJob;
+						$parent->SP_JOB_REMARK = $studentForm->motherJobRemark;
+						$parent->SP_JOB_SALARY = $studentForm->motherJobSalary;
+						$parent->SP_EMAIL = $studentForm->motherEmail;
+						$parent->SP_HOME_TEL = $studentForm->motherHomeNumber;
+						$parent->SP_CITIZEN_CODE = $studentForm->motherCitizenCode;
+
+						$parent->save();
+
 					}
-				}
-			}	
 
-			if($studentForm->emergencyParentFlag){
-			$parentEmergencyFind = StudentParent::where('SA_ID', $studentForm->studentId)->where('USE_FLAG','Y')->where('SP_RELATION_TYPE','E')->first();
-				if($parentEmergencyFind != null || $parentEmergencyFind != '' ||$parentEmergencyFind != []){
-					$parentEmergency = StudentParent::find($parentEmergencyFind->SP_ID);
-					if($parentEmergency != null || $parentEmergency != '' ||$parentEmergency != []){
-						$parentEmergency->SP_TITLE_NAME = $studentForm->emergencyPrefix;
-						$parentEmergency->SP_FIRST_NAME = $studentForm->emergencyName;
-						$parentEmergency->SP_LAST_NAME = $studentForm->emergencyLastName;
-						$parentEmergency->SP_RELATION = $studentForm->emergencyRelation;
-						$parentEmergency->SP_ADDRESS = $studentForm->emergencyAddress;
-						$parentEmergency->SP_PROVINCE = $studentForm->emergencyProvince;
-						$parentEmergency->SP_AMPHUR = $studentForm->emergencyAmphur;
-						$parentEmergency->SP_DISTRICT = $studentForm->emergencyDistrict;
-						$parentEmergency->SP_TEL = $studentForm->emergencyTel;
-						$parentEmergency->SP_PICTURE = $studentForm->emergencyPic;
-						$parentEmergency->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
-						$parentEmergency->SP_RELATION_TYPE = 'E';
-						$parentEmergency->UPDATE_DATE = new \DateTime();
-						$parentEmergency->UPDATE_BY = $userId;
-
-						$parentEmergency->SP_JOB = $studentForm->emergencyJob;
-						$parentEmergency->SP_JOB_REMARK = $studentForm->emergencyJobRemark;
-						$parentEmergency->SP_JOB_SALARY = $studentForm->emergencyJobSalary;
-						$parentEmergency->SP_EMAIL = $studentForm->emergencyEmail;
-						$parentEmergency->SP_HOME_TEL = $studentForm->emergencyHomeNumber;
-						$parentEmergency->SP_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
-
-						$parentEmergency->save();
-					}
 				}else{
-					$parent = new StudentParent();
-					$parent->SP_TITLE_NAME = $studentForm->emergencyPrefix;
-					$parent->SP_FIRST_NAME = $studentForm->emergencyName;
-					$parent->SP_LAST_NAME = $studentForm->emergencyLastName;
-					$parent->SP_RELATION = $studentForm->emergencyRelation;
-					$parent->SP_ADDRESS = $studentForm->emergencyAddress;
-					$parent->SP_PROVINCE = $studentForm->emergencyProvince;
-					$parent->SP_AMPHUR = $studentForm->emergencyAmphur;
-					$parent->SP_DISTRICT = $studentForm->emergencyDistrict;
-					$parent->SP_TEL = $studentForm->emergencyTel;
-					$parent->SP_PICTURE = $studentForm->emergencyPic;
-					$parent->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
-					$parent->SP_RELATION_TYPE = 'E';
-					$parent->SA_ID	= $studentForm->studentId;
-					$parent->CREATE_DATE = new \DateTime();
-					$parent->CREATE_BY = $userId;
-					$parent->UPDATE_DATE = new \DateTime();
-					$parent->UPDATE_BY = $userId;
+					$parentMotherFind = StudentParent::where('SA_ID', $studentForm->studentId)->where('USE_FLAG','Y')->where('SP_RELATION_TYPE','M')->first();
+					if($parentMotherFind != null || $parentMotherFind != '' ||$parentMotherFind != []){
+						$parentMother = StudentParent::find($parentMotherFind->SP_ID);
+						if($parentMother != null || $parentMother != '' ||$parentMother != []){
+							$parentMother->USE_FLAG = 'N';
+							$parentMother->save();
+						}
+					}
+				}	
 
-					$parent->SP_JOB = $studentForm->emergencyJob;
-					$parent->SP_JOB_REMARK = $studentForm->emergencyJobRemark;
-					$parent->SP_JOB_SALARY = $studentForm->emergencyJobSalary;
-					$parent->SP_EMAIL = $studentForm->emergencyEmail;
-					$parent->SP_HOME_TEL = $studentForm->emergencyHomeNumber;
-					$parent->SP_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
-
-					$parent->save();
-				}
-				
-
-			}else{
-					$parentEmergencyFind = StudentParent::where('SA_ID', $studentForm->studentId)->where('USE_FLAG','Y')->where('SP_RELATION_TYPE','E')->first();
+				if($studentForm->emergencyParentFlag){
+				$parentEmergencyFind = StudentParent::where('SA_ID', $studentForm->studentId)->where('USE_FLAG','Y')->where('SP_RELATION_TYPE','E')->first();
 					if($parentEmergencyFind != null || $parentEmergencyFind != '' ||$parentEmergencyFind != []){
 						$parentEmergency = StudentParent::find($parentEmergencyFind->SP_ID);
 						if($parentEmergency != null || $parentEmergency != '' ||$parentEmergency != []){
-							$parentEmergency->USE_FLAG = 'N';
+							$parentEmergency->SP_TITLE_NAME = $studentForm->emergencyPrefix;
+							$parentEmergency->SP_FIRST_NAME = $studentForm->emergencyName;
+							$parentEmergency->SP_LAST_NAME = $studentForm->emergencyLastName;
+							$parentEmergency->SP_RELATION = $studentForm->emergencyRelation;
+							$parentEmergency->SP_ADDRESS = $studentForm->emergencyAddress;
+							$parentEmergency->SP_PROVINCE = $studentForm->emergencyProvince;
+							$parentEmergency->SP_AMPHUR = $studentForm->emergencyAmphur;
+							$parentEmergency->SP_DISTRICT = $studentForm->emergencyDistrict;
+							$parentEmergency->SP_TEL = $studentForm->emergencyTel;
+							$parentEmergency->SP_PICTURE = $studentForm->emergencyPic;
+							$parentEmergency->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
+							$parentEmergency->SP_RELATION_TYPE = 'E';
+							$parentEmergency->UPDATE_DATE = new \DateTime();
+							$parentEmergency->UPDATE_BY = $userId;
+
+							$parentEmergency->SP_JOB = $studentForm->emergencyJob;
+							$parentEmergency->SP_JOB_REMARK = $studentForm->emergencyJobRemark;
+							$parentEmergency->SP_JOB_SALARY = $studentForm->emergencyJobSalary;
+							$parentEmergency->SP_EMAIL = $studentForm->emergencyEmail;
+							$parentEmergency->SP_HOME_TEL = $studentForm->emergencyHomeNumber;
+							$parentEmergency->SP_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
+
 							$parentEmergency->save();
 						}
+					}else{
+						$parent = new StudentParent();
+						$parent->SP_TITLE_NAME = $studentForm->emergencyPrefix;
+						$parent->SP_FIRST_NAME = $studentForm->emergencyName;
+						$parent->SP_LAST_NAME = $studentForm->emergencyLastName;
+						$parent->SP_RELATION = $studentForm->emergencyRelation;
+						$parent->SP_ADDRESS = $studentForm->emergencyAddress;
+						$parent->SP_PROVINCE = $studentForm->emergencyProvince;
+						$parent->SP_AMPHUR = $studentForm->emergencyAmphur;
+						$parent->SP_DISTRICT = $studentForm->emergencyDistrict;
+						$parent->SP_TEL = $studentForm->emergencyTel;
+						$parent->SP_PICTURE = $studentForm->emergencyPic;
+						$parent->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
+						$parent->SP_RELATION_TYPE = 'E';
+						$parent->SA_ID	= $studentForm->studentId;
+						$parent->CREATE_DATE = new \DateTime();
+						$parent->CREATE_BY = $userId;
+						$parent->UPDATE_DATE = new \DateTime();
+						$parent->UPDATE_BY = $userId;
+
+						$parent->SP_JOB = $studentForm->emergencyJob;
+						$parent->SP_JOB_REMARK = $studentForm->emergencyJobRemark;
+						$parent->SP_JOB_SALARY = $studentForm->emergencyJobSalary;
+						$parent->SP_EMAIL = $studentForm->emergencyEmail;
+						$parent->SP_HOME_TEL = $studentForm->emergencyHomeNumber;
+						$parent->SP_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
+
+						$parent->save();
 					}
+					
+
+				}else{
+						$parentEmergencyFind = StudentParent::where('SA_ID', $studentForm->studentId)->where('USE_FLAG','Y')->where('SP_RELATION_TYPE','E')->first();
+						if($parentEmergencyFind != null || $parentEmergencyFind != '' ||$parentEmergencyFind != []){
+							$parentEmergency = StudentParent::find($parentEmergencyFind->SP_ID);
+							if($parentEmergency != null || $parentEmergency != '' ||$parentEmergency != []){
+								$parentEmergency->USE_FLAG = 'N';
+								$parentEmergency->save();
+							}
+						}
+				}
+
+
+				
+				DB::commit();
+
+				return response ()->json ( [
+						'status' => 'ok'
+				] );
+			
+			
 			}
-
-
-			
-			DB::commit();
-			
-			return response ()->json ( [
-					'status' => 'ok'
-			] );
 			
 		} catch ( \Exception $e ) {
 			DB::rollBack ();
@@ -683,6 +709,31 @@ class StudentController extends Controller
 			return response ()->json ( [
 					'status' => 'ok'
 			] );
+			
+		} catch ( \Exception $e ) {
+			DB::rollBack ();
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $request->userLoginId
+			] );
+		}
+	}
+
+	public function isStudentCardIdDulpicate($studentId,$studentCardId) {
+		$student;
+		try {
+			if($studentId == 'ADD'){
+				$student = StudentAccount::where('USE_FLAG','Y')->where('SA_STUDENT_ID',$studentCardId)->first();
+			}else{
+				$student = StudentAccount::where('SA_ID','<>', $studentForm->studentId)->where('USE_FLAG','Y')->where('SA_STUDENT_ID',$studentCardId)->first();
+			}
+
+			if($student != null || $student != '' ||$student != []){
+				return false;
+			}else{
+				return true;
+			}
+			
 			
 		} catch ( \Exception $e ) {
 			DB::rollBack ();
