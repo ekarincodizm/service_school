@@ -16,8 +16,7 @@
 	<thead>
 		<tr >
 			<th style="width: 10%; height:50px; border-right: 1px solid; border-bottom: 1px solid;">#</th>
-			<th style="width: 50%; border-right: 1px solid; border-bottom: 1px solid;">วิชา</th>
-			<th style="width: 40%; border-bottom: 1px solid;">วันที่เริ่มการเรียน-วันที่สิ้นสุดการเรียน</th>
+			<th style="width: 90%; border-right: 1px solid; border-bottom: 1px solid;">วิชา</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -28,23 +27,20 @@
 	@if(count($bills) > 0)
 		{{ $i = 1 }}
 		@foreach ($bills as $bill)
-			@if ($term != $bill->CR_TERM || $year!= $bill->CR_YEAR)
+			@if ($term != $bill->BD_TERM || $year!= $bill->BD_YEAR)
                 <tr>
                     <td colspan="3" style="background-color: #EEE;padding-left: 10px;height:20px;text-align: left;border-bottom: 1px solid;">
-                        ภาคเรียนที่ {{$bill->CR_TERM}} ปีการศึกษา {{$bill->CR_YEAR}}
+                        ภาคเรียนที่ {{$bill->BD_TERM}} ปีการศึกษา {{$bill->BD_YEAR}}
                     </td>
                 </tr> 
                 <?php 
-                    $term = $bill->CR_TERM;
-                    $year = $bill->CR_YEAR;
+                    $term = $bill->BD_TERM;
+                    $year = $bill->BD_YEAR;
                 ?>
             @endif
 			<tr>
 				<td style="width: 10%; text-align: center; border-right: 1px solid;border-bottom: 1px solid;">{{$i++}}</td>
-				<td style="width: 50%;text-align: left; border-right: 1px solid; border-bottom: 1px solid;">&nbsp;&nbsp;{{$bill->SUBJECT_CODE}} - {{$bill->SUBJECT_NAME}}</td>
-				<td style="width: 40%; text-align: center; border-bottom: 1px solid;">
-				{{App\Http\Controllers\UtilController\DateUtil::convertDateStringToTextThai(App\Http\Controllers\UtilController\DateUtil::getDisplaytoStore($bill->BD_START_LEARN))}}
-				- {{App\Http\Controllers\UtilController\DateUtil::convertDateStringToTextThai(App\Http\Controllers\UtilController\DateUtil::getDisplaytoStore($bill->BD_END_LEARN))}}</td>
+				<td style="width: 90%;text-align: left; border-right: 1px solid; border-bottom: 1px solid;">&nbsp;&nbsp;{{$bill->SUBJECT_CODE}} - {{$bill->SUBJECT_NAME}}</td>
 			</tr>
 
 		@endforeach

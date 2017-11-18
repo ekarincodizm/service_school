@@ -150,6 +150,17 @@ class StudentController extends Controller
 				$student->SA_EMERGENCY_HOME_TEL = $studentForm->emergencyHomeNumber;
 				$student->SA_EMERGENCY_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
 				$student->SA_EMERGENCY_RELATION = $studentForm->emergencyRelation;
+
+				$student->SA_READY_ROOM_ID = $studentForm->readyRoom;
+				$student->SA_READY_YEAR = $studentForm->readyRoomYear;
+				$student->SA_G1_ROOM_ID = $studentForm->G1Room;
+				$student->SA_G1_YEAR = $studentForm->G1RoomYear;
+				$student->SA_G2_ROOM_ID = $studentForm->G2Room;
+				$student->SA_G2_YEAR = $studentForm->G2RoomYear;
+				$student->SA_G3_ROOM_ID = $studentForm->G3Room;
+				$student->SA_G3_YEAR = $studentForm->G3RoomYear;
+
+
 				$student->save();
 
 				if($studentForm->fatherParentFlag){
@@ -314,7 +325,7 @@ class StudentController extends Controller
 			}
 			// $student = StudentAccount::where('SA_FIRST_NAME_TH', 'LIKE', $studentName)->where('SA_STUDENT_ID', 'LIKE', $studentId)->where('USE_FLAG', 'Y')->get();
 			$student = DB::select('SELECT * from STUDENT_ACCOUNT a '.$where .'
-									GROUP BY a.SA_ID');
+									GROUP BY a.SA_ID ORDER BY SA_ID DESC');
 			return response()->json($student);
 
 			
@@ -455,6 +466,15 @@ class StudentController extends Controller
 				$student->SA_EMERGENCY_HOME_TEL = $studentForm->emergencyHomeNumber;
 				$student->SA_EMERGENCY_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
 				$student->SA_EMERGENCY_RELATION = $studentForm->emergencyRelation;
+
+				$student->SA_READY_ROOM_ID = $studentForm->readyRoom;
+				$student->SA_READY_YEAR = $studentForm->readyRoomYear;
+				$student->SA_G1_ROOM_ID = $studentForm->G1Room;
+				$student->SA_G1_YEAR = $studentForm->G1RoomYear;
+				$student->SA_G2_ROOM_ID = $studentForm->G2Room;
+				$student->SA_G2_YEAR = $studentForm->G2RoomYear;
+				$student->SA_G3_ROOM_ID = $studentForm->G3Room;
+				$student->SA_G3_YEAR = $studentForm->G3RoomYear;
 
 				$student->save();
 				
