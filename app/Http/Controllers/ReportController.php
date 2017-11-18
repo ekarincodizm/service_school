@@ -219,8 +219,8 @@ class ReportController extends Controller{
         INNER JOIN SUBJECT s ON (bd.SUBJECT_ID = s.SUBJECT_ID)
         WHERE 1 = 1 
         AND b.SA_ID = '.$sid ;
-        $reportSql .= ' GROUP BY  cr.CR_YEAR, cr.CR_TERM, s.SUBJECT_CODE
-        ORDER BY cr.CR_YEAR, cr.CR_TERM,s.SUBJECT_CODE';
+        $reportSql .= ' GROUP BY  bd.BD_YEAR, bd.BD_TERM, s.SUBJECT_CODE
+        ORDER BY bd.BD_YEAR, bd.BD_TERM,s.SUBJECT_CODE';
 
         $bill = DB::select(DB::raw($reportSql));
 
