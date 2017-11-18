@@ -88,29 +88,35 @@ class RegisterClassController extends Controller{
 			//BillDetail
 			for ($i = 0; $i < count($billDetails); $i++) {
 				//ตรวจสอบอีกทีว่าห้องเต็มหรือยัง
-				$totalStudent = json_decode($this->getCountCurrentStudentClassRoom($billDetails[$i]->billDetail->startLearnString, $billDetails[$i]->billDetail->endLearnString, $billDetails[$i]->billDetail->classRoom->classRoomId)->getContent());
-				
-				if($totalStudent->status == 'ok'){
-					$currentStudent = $totalStudent->totalStudent;
-					$maxStudent = $billDetails[$i]->billDetail->classRoom->maxStudent;
-					if($currentStudent >= $maxStudent){
-						return response ()->json ( [
-							'status' => 'warning',
-							'warningDetail' => ' ห้อง: '.$billDetails[$i]->billDetail->classRoom->roomShow->roomName.' วิชา: '.$billDetails[$i]->billDetail->classRoom->subjectShow->subjectCode.' - '.$billDetails[$i]->billDetail->classRoom->subjectShow->subjectName.' ได้มีผู้ลงทะเบียนเต็มแล้ว'
-						] );
-					}
-				}else{
-					return response ()->json ( [
-						'status' => 'error',
-						'errorDetail' => $totalStudent->errorDetail
-					] );
-				}
+				//$totalStudent = json_decode($this->getCountCurrentStudentClassRoom($billDetails[$i]->billDetail->startLearnString, $billDetails[$i]->billDetail->endLearnString, $billDetails[$i]->billDetail->classRoom->classRoomId)->getContent());
+				//20171118 ไม่ต้องตรวจแล้ว
+				//if($totalStudent->status == 'ok'){
+				//	$currentStudent = $totalStudent->totalStudent;
+				//	$maxStudent = $billDetails[$i]->billDetail->classRoom->maxStudent;
+				//	if($currentStudent >= $maxStudent){
+				//		return response ()->json ( [
+				//			'status' => 'warning',
+				//			'warningDetail' => ' ห้อง: '.$billDetails[$i]->billDetail->classRoom->roomShow->roomName.' วิชา: '.$billDetails[$i]->billDetail->classRoom->subjectShow->subjectCode.' - '.$billDetails[$i]->billDetail->classRoom->subjectShow->subjectName.' ได้มีผู้ลงทะเบียนเต็มแล้ว'
+				//		] );
+				//	}
+				//}else{
+				//	return response ()->json ( [
+				//		'status' => 'error',
+				//		'errorDetail' => $totalStudent->errorDetail
+				//	] );
+				//}
 
 				 $billDetail = new BillDetail();
 				 $billDetail->BILL_ID = $bill->BILL_ID;
-				 $billDetail->CR_ID = $billDetails[$i]->billDetail->classRoom->classRoomId;
-				 $billDetail->BD_START_LEARN = $billDetails[$i]->billDetail->startLearnString;
-				 $billDetail->BD_END_LEARN = $billDetails[$i]->billDetail->endLearnString;
+				 
+				 if($billDetails[$i]->billDetail->subject->subjectId == null || $billDetails[$i]->billDetail->subject->subjectId == '0'){
+					$billDetail->BD_REMARK = $billDetails[$i]->billDetail->remark;
+				 }else{
+					$billDetail->SUBJECT_ID = $billDetails[$i]->billDetail->subject->subjectId;
+				 }
+
+				 $billDetail->BD_YEAR = $billDetails[$i]->billDetail->year;
+				 $billDetail->BD_TERM = $billDetails[$i]->billDetail->term;
 				 $billDetail->BD_PRICE = $billDetails[$i]->billDetail->price;
 				 $billDetail->CREATE_DATE = new \DateTime();
 				 $billDetail->CREATE_BY = $userLoginId;
@@ -190,10 +196,27 @@ class RegisterClassController extends Controller{
 			$registerClasses = [];
 			foreach($billDetails as $billDetail){
 				$registerClass['billDetail'] = $billDetail;
-				$registerClass['classRoom'] = ClassRoom::find($billDetail->CR_ID);
-				$registerClass['room'] = Room::find($registerClass['classRoom']->ROOM_ID);
-				$registerClass['subject'] = Subject::find($registerClass['classRoom']->SUBJECT_ID);
-				$registerClass['roomType'] = RoomType::find($registerClass['classRoom']->RT_ID);
+				//$registerClass['classRoom'] = ClassRoom::find($billDetail->CR_ID);
+				//$registerClass['room'] = Room::find($registerClass['classRoom']->ROOM_ID);
+
+				if($billDetail->SUBJECT_ID == null || $billDetail->SUBJECT_ID == ''){
+					$registerClass['subject'] = array(
+						'SUBJECT_CODE' => 'ค่าใช้จ่าย',
+						'SUBJECT_NAME' => $billDetail->BD_REMARK
+					);
+				}else{
+					$subject = Subject::find($billDetail->SUBJECT_ID);
+					if($subject->SUBJECT_TYPE == 'S'){
+						$registerClass['subject'] = $subject;
+					}else{
+						$registerClass['subject'] = array(
+							'SUBJECT_CODE' => 'ค่าใช้จ่าย',
+							'SUBJECT_NAME' => $subject->SUBJECT_NAME
+						);
+					}
+				}
+ 
+				//$registerClass['roomType'] = RoomType::find($registerClass['classRoom']->RT_ID);
 				array_push($registerClasses, $registerClass);
 			}
 			
