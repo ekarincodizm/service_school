@@ -216,7 +216,7 @@ class ReportController extends Controller{
         $reportSql = 'SELECT bd.BD_YEAR, bd.BD_TERM,s.SUBJECT_CODE ,s.SUBJECT_NAME
         FROM BILL b
         INNER JOIN BILL_DETAIL bd ON (bd.BILL_ID = b.BILL_ID and b.BILL_STATUS = "P")
-        INNER JOIN SUBJECT s ON (bd.SUBJECT_ID = s.SUBJECT_ID)
+        INNER JOIN SUBJECT s ON (bd.SUBJECT_ID = s.SUBJECT_ID and s.SUBJECT_TYPE = "S")
         WHERE 1 = 1 
         AND b.SA_ID = '.$sid ;
         $reportSql .= ' GROUP BY  bd.BD_YEAR, bd.BD_TERM, s.SUBJECT_CODE
