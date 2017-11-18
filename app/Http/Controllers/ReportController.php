@@ -32,10 +32,9 @@ class ReportController extends Controller{
         $studentAccount = StudentAccount::find($bill->SA_ID);
         $billDetails = BillDetail::select('BILL_DETAIL.*')
                         ->where("BILL_ID", $bill->BILL_ID)
-                        ->join('CLASS_ROOM', 'BILL_DETAIL.CR_ID', '=', 'CLASS_ROOM.CR_ID')
-                        ->join('SUBJECT', 'CLASS_ROOM.SUBJECT_ID', '=', 'SUBJECT.SUBJECT_ID')
+                        ->leftJoin('SUBJECT', 'BILL_DETAIL.SUBJECT_ID', '=', 'SUBJECT.SUBJECT_ID')
                         ->orderBy('SUBJECT.SUBJECT_CODE')
-                        ->get();
+                        ->get();       
                         
         $value = [
             'bill'=>$bill,
@@ -62,8 +61,7 @@ class ReportController extends Controller{
         $studentAccount = StudentAccount::find($bill->SA_ID);
         $billDetails = BillDetail::select('BILL_DETAIL.*')
                         ->where("BILL_ID", $bill->BILL_ID)
-                        ->join('CLASS_ROOM', 'BILL_DETAIL.CR_ID', '=', 'CLASS_ROOM.CR_ID')
-                        ->join('SUBJECT', 'CLASS_ROOM.SUBJECT_ID', '=', 'SUBJECT.SUBJECT_ID')
+                        ->leftJoin('SUBJECT', 'BILL_DETAIL.SUBJECT_ID', '=', 'SUBJECT.SUBJECT_ID')
                         ->orderBy('SUBJECT.SUBJECT_CODE')
                         ->get();
                         
@@ -245,31 +243,24 @@ class ReportController extends Controller{
         
     public function getSubjectReport($startSchoolYear, $endSchoolYear, $userPrint){
 
-        $reportSql = 'SELECT cr.CR_YEAR, cr.CR_TERM, rt.RT_NAME, s.SUBJECT_CODE ,s.SUBJECT_NAME, COUNT(s.SUBJECT_CODE) AS SUM_SUBJECT
-        FROM CLASS_ROOM cr
-        INNER JOIN SUBJECT s ON (cr.SUBJECT_ID = s.SUBJECT_ID)
-        INNER JOIN BILL_DETAIL bd ON (cr.CR_ID = bd.CR_ID)
-        INNER JOIN BILL b ON (bd.BILL_ID = b.BILL_ID and b.BILL_STATUS = "P")
-        INNER JOIN ROOM_TYPE rt ON (rt.RT_ID = cr.RT_ID) 
-        WHERE 1 = 1 ';
+        $reportSql = 'SELECT bd.BD_YEAR, bd.BD_TERM, s.SUBJECT_CODE ,s.SUBJECT_NAME, COUNT(s.SUBJECT_CODE) AS SUM_SUBJECT
+                        FROM BILL b
+                        LEFT JOIN BILL_DETAIL bd ON (bd.BILL_ID = b.BILL_ID)
+                        LEFT JOIN SUBJECT s ON (bd.SUBJECT_ID = s.SUBJECT_ID)
+                        WHERE b.BILL_STATUS = "P"
+                        AND s.SUBJECT_TYPE = "S" ';
 
         if($startSchoolYear != "null" && $endSchoolYear != "null"){
-            $reportSql .= ' AND cr.CR_YEAR >= '.$startSchoolYear;
-            $reportSql .= ' AND cr.CR_YEAR <= '.$endSchoolYear;
+            $reportSql .= ' AND bd.BD_YEAR >= '.$startSchoolYear;
+            $reportSql .= ' AND bd.BD_YEAR <= '.$endSchoolYear;
         }else if($startSchoolYear != "null" && $endSchoolYear == "null"){
-            $reportSql .= ' AND cr.CR_YEAR = '.$startSchoolYear;
+            $reportSql .= ' AND bd.BD_YEAR = '.$startSchoolYear;
         }else if($startSchoolYear == "null" && $endSchoolYear != "null"){
-            $reportSql .= ' AND cr.CR_YEAR = '.$endSchoolYear;
+            $reportSql .= ' AND bd.BD_YEAR = '.$endSchoolYear;
         }
 
-        $reportSql .= ' GROUP BY  cr.CR_YEAR, cr.CR_TERM, rt.RT_NAME, s.SUBJECT_CODE
-        ORDER BY cr.CR_YEAR, cr.CR_TERM,
-                (CASE rt.RT_NAME
-                    WHEN "เตรียมอนุบาล" 	THEN 1
-                    WHEN "อนุบาล 1" 	THEN 2
-                    WHEN "อนุบาล 2" 	THEN 3
-                    WHEN "อนุบาล 3" 	THEN 4 END),
-                s.SUBJECT_CODE';
+        $reportSql .= ' GROUP BY  bd.BD_YEAR, bd.BD_TERM, s.SUBJECT_CODE 
+                        ORDER BY bd.BD_YEAR, bd.BD_TERM, s.SUBJECT_CODE';
 
         $subjectReport = DB::select(DB::raw($reportSql));
 
@@ -302,41 +293,35 @@ class ReportController extends Controller{
         $user = User::find($userPrint);
         $currentTime = 'วันที่ '.DateUtil::getCurrentDay().' '.DateUtil::genMonthList()[DateUtil::getCurrentMonth2Digit()].' พ.ศ. '.DateUtil::getCurrentThaiYear().' '.DateUtil::getCurrentTime().' น.';
         
-        $reportSql = 'SELECT cr.CR_TERM, b.BILL_NO, rt.RT_NAME, s.SUBJECT_CODE ,s.SUBJECT_NAME, DATE_FORMAT(DATE_ADD(b.BILL_PAY_DATE, INTERVAL 543 YEAR), "%d/%m/%Y") AS PAY_DATE , Format(SUM(bd.BD_PRICE), "##,##0")  AS SUM_SUBJECT_PRICE 
-        FROM CLASS_ROOM cr
-        INNER JOIN SUBJECT s ON (cr.SUBJECT_ID = s.SUBJECT_ID)
-        INNER JOIN BILL_DETAIL bd ON (cr.CR_ID = bd.CR_ID)
-        INNER JOIN BILL b ON (bd.BILL_ID = b.BILL_ID and b.BILL_STATUS = "P")
-        INNER JOIN ROOM_TYPE rt ON (rt.RT_ID = cr.RT_ID) 
-        WHERE 1 = 1 ';
-        $reportSql .= ' AND cr.CR_YEAR = '.$schoolYear;
-        $reportSql .= ' GROUP BY  b.BILL_NO, cr.CR_TERM, rt.RT_NAME, s.SUBJECT_CODE
-        ORDER BY b.BILL_NO, cr.CR_TERM,
-                (CASE rt.RT_NAME
-                    WHEN "เตรียมอนุบาล" 	THEN 1
-                    WHEN "อนุบาล 1" 	THEN 2
-                    WHEN "อนุบาล 2" 	THEN 3
-                    WHEN "อนุบาล 3" 	THEN 4 END),
-                s.SUBJECT_CODE';
+        $reportSql = '  SELECT bd.BD_TERM, b.BILL_NO, s.SUBJECT_CODE ,s.SUBJECT_NAME, DATE_FORMAT(DATE_ADD(b.BILL_PAY_DATE, INTERVAL 543 YEAR), "%d/%m/%Y") AS PAY_DATE , Format(SUM(bd.BD_PRICE), "##,##0")  AS SUM_SUBJECT_PRICE 
+                        FROM BILL b
+                        LEFT JOIN BILL_DETAIL bd ON (bd.BILL_ID = b.BILL_ID)
+                        LEFT JOIN SUBJECT s ON (bd.SUBJECT_ID = s.SUBJECT_ID)
+                        WHERE b.BILL_STATUS = "P"
+                        AND s.SUBJECT_TYPE = "S" ';
+
+        $reportSql .= ' AND bd.BD_YEAR = '.$schoolYear;
+        $reportSql .= ' GROUP BY  b.BILL_NO, bd.BD_TERM, s.SUBJECT_CODE
+                        ORDER BY b.BILL_NO, bd.BD_TERM, s.SUBJECT_CODE ';
 
         $paymentReport = DB::select(DB::raw($reportSql));
 
         if(count($paymentReport) > 0){
-            $sumTermPrice = DB::select(DB::raw('SELECT cr.CR_TERM , Format(SUM(bd.BD_PRICE), "##,##0")  AS SUM_TERM_PRICE
-            FROM CLASS_ROOM cr
-            INNER JOIN SUBJECT s ON (cr.SUBJECT_ID = s.SUBJECT_ID)
-            INNER JOIN BILL_DETAIL bd ON (cr.CR_ID = bd.CR_ID)
-            INNER JOIN BILL b ON (bd.BILL_ID = b.BILL_ID and b.BILL_STATUS = "P")
-            INNER JOIN ROOM_TYPE rt ON (rt.RT_ID = cr.RT_ID) 
-            WHERE 1 = 1 AND cr.CR_YEAR = '.$schoolYear.' GROUP BY  cr.CR_TERM ORDER BY  cr.CR_TERM'));
+            $sumTermPrice = DB::select(DB::raw('SELECT bd.BD_TERM , Format(SUM(bd.BD_PRICE), "##,##0")  AS SUM_TERM_PRICE
+                                                FROM BILL b
+                                                LEFT JOIN BILL_DETAIL bd ON (bd.BILL_ID = b.BILL_ID)
+                                                LEFT JOIN SUBJECT s ON (s.SUBJECT_ID = bd.SUBJECT_ID)
+                                                WHERE b.BILL_STATUS = "P"
+                                                AND s.SUBJECT_TYPE = "S" 
+                                                AND bd.BD_YEAR = '.$schoolYear.'
+                                                GROUP BY  bd.BD_TERM ORDER BY  bd.BD_TERM'));
 
             $sumPrice = DB::select(DB::raw('SELECT Format(SUM(bd.BD_PRICE), "##,##0")  AS SUM_PRICE
-            FROM CLASS_ROOM cr
-            INNER JOIN SUBJECT s ON (cr.SUBJECT_ID = s.SUBJECT_ID)
-            INNER JOIN BILL_DETAIL bd ON (cr.CR_ID = bd.CR_ID)
-            INNER JOIN BILL b ON (bd.BILL_ID = b.BILL_ID and b.BILL_STATUS = "P")
-            INNER JOIN ROOM_TYPE rt ON (rt.RT_ID = cr.RT_ID) 
-            WHERE 1 = 1 AND cr.CR_YEAR = '.$schoolYear));
+                                            FROM BILL b
+                                            LEFT JOIN BILL_DETAIL bd ON (bd.BILL_ID = b.BILL_ID)
+                                            LEFT JOIN SUBJECT s ON (s.SUBJECT_ID = bd.SUBJECT_ID)
+                                            WHERE b.BILL_STATUS = "P"
+                                            AND s.SUBJECT_TYPE = "S"  AND bd.BD_YEAR = '.$schoolYear));
     
             
     

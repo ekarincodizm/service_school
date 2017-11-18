@@ -41,17 +41,16 @@ table {
 <table style="width:100%;">
 	<thead>
 		<tr >
-            <th style="width: 15%; height:50px;">ระดับชั้น</th>
-            <th style="width: 15%;">รหัสวิชา</th>
-			<th style="width: 65%;">ชื่อวิชา</th>
-			<th style="width: 15%;">จำนวนการลงทะเบียน (ครั้ง)</th>
+            <th style="width: 20%;">รหัสวิชา</th>
+			<th style="width: 60%;">ชื่อวิชา</th>
+			<th style="width: 20%;">จำนวนการลงทะเบียน (ครั้ง)</th>
 		</tr>
     </thead>
     <tbody>
 
     @if(count($values) == 0)
         <tr>
-            <td colspan="4" style="text-align:center;">
+            <td colspan="3" style="text-align:center;">
                 ไม่พบข้อมูล
             </td>
         </tr>
@@ -64,20 +63,19 @@ table {
 
         @foreach ($values as $value)
 
-            @if ($term != $value->CR_TERM || $year!= $value->CR_YEAR)
+            @if ($term != $value->BD_TERM || $year!= $value->BD_YEAR)
                 <tr>
                     <td colspan="4" style="background-color: #EEE;padding-left: 10px; height:30px;">
-                        ภาคเรียนที่ {{$value->CR_TERM}} ปีการศึกษา {{$value->CR_YEAR}}
+                        ภาคเรียนที่ {{$value->BD_TERM}} ปีการศึกษา {{$value->BD_YEAR}}
                     </td>
                 </tr> 
                 <?php 
-                    $term = $value->CR_TERM;
-                    $year = $value->CR_YEAR;
+                    $term = $value->BD_TERM;
+                    $year = $value->BD_YEAR;
                 ?>
             @endif
             
             <tr>
-                <td style="text-align:center;">{{$value->RT_NAME}}</td>
                 <td style="text-align:center;">{{$value->SUBJECT_CODE}}</td>
                 <td style="padding-left: 10px; height:30px; text-align:left;">{{$value->SUBJECT_NAME}}</td>
                 <td style="text-align:center;">{{$value->SUM_SUBJECT}}</td>

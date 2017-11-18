@@ -16,6 +16,7 @@
 		</tr>
 	</tbody>
 </table>
+
 <table style="width: 100%; border: 1px solid; border-top-style: none; border-spacing: 0px;">
 	<tbody>
 		<tr>
@@ -57,7 +58,11 @@
 						<td style="border-bottom: 1px solid;" valign="top">
 							<p>
 								@foreach ($billDetails as $index =>$billDetail)
-									{{$billDetail->classRoom->subject->SUBJECT_CODE}}&nbsp;
+									@if(isset($billDetail->subject))
+										@if(isset($billDetail->subject->SUBJECT_CODE))
+											{{$billDetail->subject->SUBJECT_CODE}}&nbsp;
+										@endif		
+									@endif
 								@endforeach
 							</p>
 						</td>
@@ -101,6 +106,7 @@
 
 	</tbody>
 </table>
+
 <table style="width: 100%; border: 1px solid; border-top-style: none; border-spacing: 0px;">
 	<tbody>
 
@@ -148,23 +154,69 @@
 		</tr>
 
 	</tbody>
-</table>
+</table> 
+
 <table style="width: 100%; border: 1px solid; border-top-style: none; border-bottom-style: none;border-spacing: 0px;">
 	<tbody>
 		<tr>
-			<td valign="top" style="text-align:center; width:15%; height: 180px;">
-				<p style="text-decoration: underline;">กิจกรรมที่เลือก</p>
+			<td valign="top" style="text-align:center; width:15%; height: 230px;">
+				<p style="text-decoration: underline;">รายละเอียด</p>
 			</td>
 			<td valign="top" style="text-align:left;">
+				<?php 
+					$isPrintSubject = false;
+					$isPrintOthers = false;
+				?>
 				@foreach ($billDetails as $index =>$billDetail)
-				<p>
-					{{$billDetail->classRoom->subject->SUBJECT_CODE}} {{$billDetail->classRoom->subject->SUBJECT_NAME}} = {{number_format($billDetail->BD_PRICE)}} บาท คอร์ส
-				</p>
+					@if(isset($billDetail->subject))
+						@if(isset($billDetail->subject->SUBJECT_CODE))
+							@if(!$isPrintSubject)
+								<p style="text-decoration: underline;">
+									กิจกรรมที่เลือก
+								</p>
+								<?php $isPrintSubject = true; ?>
+
+							@endif
+							<p>
+								{{$billDetail->subject->SUBJECT_CODE}} {{$billDetail->subject->SUBJECT_NAME}} จำนวน {{number_format($billDetail->BD_PRICE)}} บาท
+							</p>
+						@endif		
+					@endif
+				@endforeach
+				@foreach ($billDetails as $index =>$billDetail)
+					@if(isset($billDetail->subject))
+						@if(!isset($billDetail->subject->SUBJECT_CODE))
+
+							@if(!$isPrintOthers)
+								<p style="text-decoration: underline;">
+									ค่าใช้จ่ายอื่นๆ
+								</p>
+								<?php $isPrintOthers = true; ?>
+
+							@endif
+
+							<p>
+								{{$billDetail->subject->SUBJECT_NAME}} จำนวน {{number_format($billDetail->BD_PRICE)}} บาท
+							</p>
+						@endif		
+					@else
+						@if(!$isPrintOthers)
+							<p style="text-decoration: underline;">
+								ค่าใช้จ่ายอื่นๆ
+							</p>
+							<?php $isPrintOthers = true; ?>
+
+						@endif
+						<p>
+							{{$billDetail->BD_REMARK}} จำนวน {{number_format($billDetail->BD_PRICE)}} บาท
+						</p>
+					@endif
 				@endforeach
 			</td>
 		</tr>
 	</tbody>
 </table>
+
 <table style="width: 100%; border: 1px solid; border-top-style: none; border-bottom-style: dotted;border-spacing: 0px;">
 	<tbody>
 		<tr>
@@ -176,7 +228,7 @@
 </table>
 
 <!-- ====================================================== -->
-<table style="border: none; "><tbody><tr><td style="height:50px;"></td></tr></tbody></table>
+<table style="border: none; "><tbody><tr><td style="height:30px;"></td></tr></tbody></table>
 <!-- ====================================================== -->
 
 <table style="width: 100%; border: 1px solid;">
@@ -238,7 +290,11 @@
 						<td style="border-bottom: 1px solid;" valign="top">
 							<p>
 								@foreach ($billDetails as $index =>$billDetail)
-									{{$billDetail->classRoom->subject->SUBJECT_CODE}}&nbsp;
+									@if(isset($billDetail->subject))
+										@if(isset($billDetail->subject->SUBJECT_CODE))
+											{{$billDetail->subject->SUBJECT_CODE}}&nbsp;
+										@endif		
+									@endif
 								@endforeach
 							</p>
 						</td>
@@ -282,6 +338,7 @@
 
 	</tbody>
 </table>
+
 <table style="width: 100%; border: 1px solid; border-top-style: none; border-spacing: 0px;">
 	<tbody>
 

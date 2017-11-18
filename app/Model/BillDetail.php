@@ -3,7 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Model\ClassRoom;
+use App\Model\Subject;
 
 class BillDetail extends Model
 {
@@ -11,7 +11,9 @@ class BillDetail extends Model
 	protected $primaryKey = 'BD_ID';
 	public $timestamps = false;
 
-	public function classRoom() {
-		return $this->belongsTo(ClassRoom::class,'CR_ID');
+	public function getSubjectAttribute() {
+		return Subject::find($this->attributes['SUBJECT_ID']);
+
+		//return $this->belongsTo(Subject::class,'SUBJECT_ID');
 	}
 }

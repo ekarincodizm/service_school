@@ -71,7 +71,7 @@
         </tr>
 	</tbody>
 </table>
-
+<?php $count = 1; ?>
 <table style="width: 100%; border: 1px solid;  border-spacing: 0px;">
 	<tbody>
 		<tr>
@@ -80,12 +80,43 @@
             <td style="width: 20%; text-align:center; border-bottom: 1px solid;" valign="middle"> <p>จำนวนเงิน</p> </td>
         </tr>
         @foreach ($billDetails as $index =>$billDetail)
-            <tr>
-                <td style="text-align:center; border-right: 1px solid; " valign="middle"> <p>{{$index+1}}</p> </td>
-                <td style="text-align:left; border-right: 1px solid; " valign="middle"> <p>&nbsp;{{$billDetail->classRoom->subject->SUBJECT_CODE}} : {{$billDetail->classRoom->subject->SUBJECT_NAME}}</p> </td>
-                <td style="text-align:right; " valign="middle"> <p>{{number_format($billDetail->BD_PRICE)}} -&nbsp;</p> </td>
-            </tr>
+
+            @if(isset($billDetail->subject))
+                @if(isset($billDetail->subject->SUBJECT_CODE))
+                    <tr>
+                        <td style="text-align:center; border-right: 1px solid; " valign="middle"> <p><?php echo $count; $count++; ?></p> </td>
+                        <td style="text-align:left; border-right: 1px solid; " valign="middle"> <p>&nbsp;{{$billDetail->subject->SUBJECT_CODE}} : {{$billDetail->subject->SUBJECT_NAME}}</p> </td>
+                        <td style="text-align:right; " valign="middle"> <p>{{number_format($billDetail->BD_PRICE)}} -&nbsp;</p> </td>
+                    </tr>
+                @endif		
+            @endif
+           
         @endforeach
+
+        @foreach ($billDetails as $index =>$billDetail)
+            @if(isset($billDetail->subject))
+                @if(!isset($billDetail->subject->SUBJECT_CODE))
+                    <tr>
+                        <td style="text-align:center; border-right: 1px solid; " valign="middle"> <p><?php echo $count; $count++; ?></p> </td>
+                        <td style="text-align:left; border-right: 1px solid; " valign="middle"> <p>&nbsp;{{$billDetail->subject->SUBJECT_NAME}}</p> </td>
+                        <td style="text-align:right; " valign="middle"> <p>{{number_format($billDetail->BD_PRICE)}} -&nbsp;</p> </td>
+                    </tr>
+                @endif		
+            @endif	
+        @endforeach
+
+        @foreach ($billDetails as $index =>$billDetail)
+            @if(isset($billDetail->subject))
+            @else
+                <tr>
+                    <td style="text-align:center; border-right: 1px solid; " valign="middle"> <p><?php echo $count; $count++; ?></p> </td>
+                    <td style="text-align:left; border-right: 1px solid; " valign="middle"> <p>&nbsp;{{$billDetail->BD_REMARK}}</p> </td>
+                    <td style="text-align:right; " valign="middle"> <p>{{number_format($billDetail->BD_PRICE)}} -&nbsp;</p> </td>
+                </tr>
+               
+            @endif
+        @endforeach
+
         <tr>
             <td style="height:50px; border-right: 1px solid;"></td>
             <td style="border-right: 1px solid;"></td>

@@ -29,10 +29,9 @@ table {
 <table style="width:100%;">
 	<thead>
 		<tr >
-            <th style="width: 10%; height:50px;">เลขที่บิล</th>
-            <th style="width: 10%;">ระดับชั้น</th>
+            <th style="width: 15%; height:50px;">เลขที่บิล</th>
             <th style="width: 10%;">รหัสวิชา</th>
-			<th style="width: 50%;">ชื่อวิชา</th>
+			<th style="width: 55%;">ชื่อวิชา</th>
 			<th style="width: 10%;">วันที่ชำระเงิน</th>
             <th style="width: 10%;">จำนวนเงิน (บาท)</th>
 		</tr>
@@ -53,25 +52,24 @@ table {
 
         @foreach ($values as $value)
 
-            @if ($term != $value->CR_TERM)
+            @if ($term != $value->BD_TERM)
                 <tr>
-                    <td colspan="5" style="background-color: #EEE;padding-left: 10px; height:30px;">
-                        ภาคเรียนที่ {{$value->CR_TERM}}
+                    <td colspan="4" style="background-color: #EEE;padding-left: 10px; height:30px;">
+                        ภาคเรียนที่ {{$value->BD_TERM}}
                     </td>
                         @foreach ($sumTermPrice as $price)
-                            @if($price->CR_TERM == $value->CR_TERM)
+                            @if($price->BD_TERM == $value->BD_TERM)
                                 <td colspan="1" style="background-color: #EEE;text-align:right;padding-right: 5px;">{{$price->SUM_TERM_PRICE}} -</td>
                             @endif
                         @endforeach
                 </tr> 
                 <?php 
-                    $term = $value->CR_TERM;
+                    $term = $value->BD_TERM;
                 ?>
             @endif
             
             <tr>
                 <td style="text-align:center;">{{$value->BILL_NO}}</td>
-                <td style="text-align:center;">{{$value->RT_NAME}}</td>
                 <td style="text-align:center;">{{$value->SUBJECT_CODE}}</td>
                 <td style="padding-left: 10px; height:30px; text-align:left;">{{$value->SUBJECT_NAME}}</td>
                 <td style="text-align:center;">{{$value->PAY_DATE}}</td>
@@ -82,7 +80,7 @@ table {
 
         <tr>
             <td colspan="1" style="background-color: #EEE;padding-right: 10px; height:30px; text-align:right;"> รวมทั้งหมด </td>
-            <td colspan="4" style="background-color: #EEE;padding-right: 10px; text-align:center;"> {{ $sumPriceText }} </td>
+            <td colspan="3" style="background-color: #EEE;padding-right: 10px; text-align:center;"> {{ $sumPriceText }} </td>
             <td style="text-align:right; background-color: #EEE;padding-right: 5px;">{{ $sumPrice[0]->SUM_PRICE }} - </td>
         </tr>
     @endif
