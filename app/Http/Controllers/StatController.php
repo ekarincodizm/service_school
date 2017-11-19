@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use App\Http\Controllers\UtilController\DateUtil;
-
+use App\Model\Room;
 
 class StatController extends Controller{
     
@@ -16,58 +16,46 @@ class StatController extends Controller{
 
     public function getRoomStudent() {
 
-       $roomStudentValue = array();
+        $roomStudentValue = array();
 
-       $currentDate = DateUtil::getCurrentYear().DateUtil::getCurrentMonth().DateUtil::getCurrentDay();
+        $startYear = DateUtil::getCurrentThaiYear()-2;
+        $endYear = DateUtil::getCurrentThaiYear();
 
-       $roomStudentSql = "SELECT r.ROOM_ID, r.ROOM_NAME, COUNT(cr.CR_ID) AS STUDENT_ROOM
-       FROM ROOM r
-       LEFT JOIN CLASS_ROOM cr ON (cr.ROOM_ID = r.ROOM_ID AND cr.USE_FLAG = 'Y')
-       LEFT JOIN BILL_DETAIL bd ON (bd.CR_ID = cr.CR_ID)
-       LEFT JOIN BILL b ON (b.BILL_ID = bd.BILL_ID)
-       WHERE r.USE_FLAG = 'Y'
-       AND b.BILL_STATUS <> 'C'
-       AND ".$currentDate." BETWEEN bd.BD_START_LEARN AND bd.BD_END_LEARN
-       GROUP BY r.ROOM_ID" ;
+        $allRooms = Room::where('USE_FLAG', 'Y')->get();
 
-       $roomStudent = DB::select(DB::raw($roomStudentSql));
+        for($i = $startYear; $i <= $endYear; $i++){
 
-       $roomStudentEmptySql = "SELECT r.ROOM_ID, r.ROOM_NAME
-       FROM ROOM r
-       WHERE r.USE_FLAG = 'Y'";
+            foreach ($allRooms as $key => $value) {
 
-       if(count($roomStudent) > 0){
+                $numberRoomStudentOfYearQuery = '   SELECT COUNT(sa.SA_ID) AS SA_COUNT
+                                                    FROM STUDENT_ACCOUNT sa
+                                                    WHERE (sa.SA_READY_ROOM_ID = '.$value->ROOM_ID.' AND sa.SA_READY_YEAR = '.$i.')
+                                                    OR (sa.SA_G1_ROOM_ID = '.$value->ROOM_ID.' AND sa.SA_G1_YEAR = '.$i.')
+                                                    OR (sa.SA_G2_ROOM_ID = '.$value->ROOM_ID.' AND sa.SA_G2_YEAR = '.$i.')
+                                                    OR (sa.SA_G3_ROOM_ID = '.$value->ROOM_ID.' AND sa.SA_G3_YEAR = '.$i.')';
 
-        $roomStudentEmptySql.= "AND r.ROOM_ID NOT IN (";
+                $numberRoomStudentOfYear =          DB::select(DB::raw($numberRoomStudentOfYearQuery));
 
-        foreach ($roomStudent as $key => $value) {
-            if($key > 0){
-                $roomStudentEmptySql.= ",";
+                 $roomStudentValue[$i][$key] = array(
+                                             'year' => $i,
+                                             'name' => $value->ROOM_NAME,
+                                             'number' => $numberRoomStudentOfYear[0]->SA_COUNT
+                                         );
+
             }
-            $roomStudentEmptySql.= $value->ROOM_ID;
+            
         }
-        $roomStudentEmptySql.= ")";
-       }
 
-       $roomStudentEmpty = DB::select(DB::raw($roomStudentEmptySql));
        
-       foreach ($roomStudent as $key => $value) {
-            $roomStudentValue[$key] = array(
-                                    'roomId' => $value->ROOM_ID,
-                                    'roomName' => $value->ROOM_NAME,
-                                    'studentNum' => $value->STUDENT_ROOM
-                                    );
-       }
 
-       foreach ($roomStudentEmpty as $key => $value) {
-        $roomStudentValue[$key+count($roomStudent)] = array(
-                                'roomId' => $value->ROOM_ID,
-                                'roomName' => $value->ROOM_NAME,
-                                'studentNum' => 0
-                                );
-        }    
-
-        return response()->json($roomStudentValue);
+        return response()->json([
+            'room'=>$allRooms, 
+            'data' => $roomStudentValue, 
+            'startYear' =>  $startYear, 
+            'endYear' => $endYear, 
+            'color'.$startYear => '#42A5F5',
+            'color'.($startYear+1) => '#9CCC65',
+            'color'.$endYear => '#FC44B5', ]);
       
     }
 

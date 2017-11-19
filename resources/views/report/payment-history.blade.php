@@ -31,7 +31,7 @@ table {
 		<tr >
             <th style="width: 15%; height:50px;">เลขที่บิล</th>
             <th style="width: 10%;">รหัสวิชา</th>
-			<th style="width: 55%;">ชื่อวิชา</th>
+			<th style="width: 55%;">วิชา/ค่าใช้จ่าย</th>
 			<th style="width: 10%;">วันที่ชำระเงิน</th>
             <th style="width: 10%;">จำนวนเงิน (บาท)</th>
 		</tr>
@@ -70,8 +70,18 @@ table {
             
             <tr>
                 <td style="text-align:center;">{{$value->BILL_NO}}</td>
-                <td style="text-align:center;">{{$value->SUBJECT_CODE}}</td>
-                <td style="padding-left: 10px; height:30px; text-align:left;">{{$value->SUBJECT_NAME}}</td>
+                @if($value->SUBJECT_CODE == null || $value->SUBJECT_CODE == '')
+                    <td style="text-align:center;">-</td>
+                @else
+                    <td style="text-align:center;">{{$value->SUBJECT_CODE}}</td>
+                @endif
+
+                @if($value->SUBJECT_ID == null || $value->SUBJECT_ID == '')
+                    <td style="padding-left: 10px; height:30px; text-align:left;">{{$value->BD_REMARK}}</td>
+                @else
+                    <td style="padding-left: 10px; height:30px; text-align:left;">{{$value->SUBJECT_NAME}}</td>
+                @endif
+
                 <td style="text-align:center;">{{$value->PAY_DATE}}</td>
                 <td style="text-align:right;padding-right: 5px;">{{$value->SUM_SUBJECT_PRICE}} - </td>
             </tr>

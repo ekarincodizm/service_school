@@ -89,8 +89,8 @@ class ImageController extends Controller{
 
     //bill-pic-default
     public function getBillPicDefault(){
-        $file = 'assets/images/bill-pic-default.jpg';
-        $type = 'image/jpg';
+        $file = 'assets/images/bill-pic-default.png';
+        $type = 'image/png';
         header('Content-Type:'.$type);
         header('Content-Length: ' . filesize($file));
         readfile($file);

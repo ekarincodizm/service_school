@@ -293,16 +293,14 @@ class ReportController extends Controller{
         $user = User::find($userPrint);
         $currentTime = 'วันที่ '.DateUtil::getCurrentDay().' '.DateUtil::genMonthList()[DateUtil::getCurrentMonth2Digit()].' พ.ศ. '.DateUtil::getCurrentThaiYear().' '.DateUtil::getCurrentTime().' น.';
         
-        $reportSql = '  SELECT bd.BD_TERM, b.BILL_NO, s.SUBJECT_CODE ,s.SUBJECT_NAME, DATE_FORMAT(DATE_ADD(b.BILL_PAY_DATE, INTERVAL 543 YEAR), "%d/%m/%Y") AS PAY_DATE , Format(SUM(bd.BD_PRICE), "##,##0")  AS SUM_SUBJECT_PRICE 
+        $reportSql = '  SELECT bd.BD_TERM, b.BILL_NO, s.SUBJECT_ID, s.SUBJECT_CODE ,s.SUBJECT_NAME, bd.BD_REMARK, DATE_FORMAT(DATE_ADD(b.BILL_PAY_DATE, INTERVAL 543 YEAR), "%d/%m/%Y") AS PAY_DATE , Format(SUM(bd.BD_PRICE), "##,##0")  AS SUM_SUBJECT_PRICE 
                         FROM BILL b
                         LEFT JOIN BILL_DETAIL bd ON (bd.BILL_ID = b.BILL_ID)
-                        LEFT JOIN SUBJECT s ON (bd.SUBJECT_ID = s.SUBJECT_ID)
+                        LEFT JOIN SUBJECT s ON (s.SUBJECT_ID = bd.SUBJECT_ID) 
                         WHERE b.BILL_STATUS = "P"
-                        AND s.SUBJECT_TYPE = "S" ';
-
-        $reportSql .= ' AND bd.BD_YEAR = '.$schoolYear;
-        $reportSql .= ' GROUP BY  b.BILL_NO, bd.BD_TERM, s.SUBJECT_CODE
-                        ORDER BY b.BILL_NO, bd.BD_TERM, s.SUBJECT_CODE ';
+                        AND bd.BD_YEAR = '.$schoolYear.'
+                        GROUP BY  bd.BD_YEAR, bd.BD_TERM, b.BILL_NO, bd.BD_REMARK
+                        ORDER BY bd.BD_YEAR, bd.BD_TERM, b.BILL_NO, bd.BD_REMARK';
 
         $paymentReport = DB::select(DB::raw($reportSql));
 
@@ -310,18 +308,16 @@ class ReportController extends Controller{
             $sumTermPrice = DB::select(DB::raw('SELECT bd.BD_TERM , Format(SUM(bd.BD_PRICE), "##,##0")  AS SUM_TERM_PRICE
                                                 FROM BILL b
                                                 LEFT JOIN BILL_DETAIL bd ON (bd.BILL_ID = b.BILL_ID)
-                                                LEFT JOIN SUBJECT s ON (s.SUBJECT_ID = bd.SUBJECT_ID)
+                                                LEFT JOIN SUBJECT s ON (s.SUBJECT_ID = bd.SUBJECT_ID) 
                                                 WHERE b.BILL_STATUS = "P"
-                                                AND s.SUBJECT_TYPE = "S" 
-                                                AND bd.BD_YEAR = '.$schoolYear.'
-                                                GROUP BY  bd.BD_TERM ORDER BY  bd.BD_TERM'));
+                                                AND bd.BD_YEAR = '.$schoolYear.' GROUP BY  bd.BD_TERM ORDER BY  bd.BD_TERM'));
 
             $sumPrice = DB::select(DB::raw('SELECT Format(SUM(bd.BD_PRICE), "##,##0")  AS SUM_PRICE
                                             FROM BILL b
                                             LEFT JOIN BILL_DETAIL bd ON (bd.BILL_ID = b.BILL_ID)
-                                            LEFT JOIN SUBJECT s ON (s.SUBJECT_ID = bd.SUBJECT_ID)
+                                            LEFT JOIN SUBJECT s ON (s.SUBJECT_ID = bd.SUBJECT_ID) 
                                             WHERE b.BILL_STATUS = "P"
-                                            AND s.SUBJECT_TYPE = "S"  AND bd.BD_YEAR = '.$schoolYear));
+                                            AND bd.BD_YEAR = '.$schoolYear));
     
             
     
