@@ -325,7 +325,7 @@ class StudentController extends Controller
 			}
 			// $student = StudentAccount::where('SA_FIRST_NAME_TH', 'LIKE', $studentName)->where('SA_STUDENT_ID', 'LIKE', $studentId)->where('USE_FLAG', 'Y')->get();
 			$student = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a '.$where .'
-									GROUP BY a.SA_ID ORDER BY SA_ID DESC');
+									 ORDER BY SA_ID DESC');
 			return response()->json($student);
 
 			
