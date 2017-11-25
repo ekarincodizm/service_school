@@ -324,7 +324,7 @@ class StudentController extends Controller
 
 			}
 			// $student = StudentAccount::where('SA_FIRST_NAME_TH', 'LIKE', $studentName)->where('SA_STUDENT_ID', 'LIKE', $studentId)->where('USE_FLAG', 'Y')->get();
-			$student = DB::select('SELECT * from STUDENT_ACCOUNT a '.$where .'
+			$student = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a '.$where .'
 									GROUP BY a.SA_ID ORDER BY SA_ID DESC');
 			return response()->json($student);
 
@@ -565,7 +565,7 @@ class StudentController extends Controller
 							$parentMother->SP_DISTRICT = $studentForm->motherDistrict;
 							$parentMother->SP_TEL = $studentForm->motherTel;
 							$parentMother->SP_PICTURE = $studentForm->motherPic;
-							$parentMother->SP_PICTURE_TYPE = (string)$tmp->motherPicType;
+							$parentMother->SP_PICTURE_TYPE = (string)$studentForm->motherPicType;
 							$parentMother->SP_RELATION_TYPE = 'M';
 							$parentMother->UPDATE_DATE = new \DateTime();
 							$parentMother->UPDATE_BY = $userId;
@@ -591,7 +591,7 @@ class StudentController extends Controller
 						$parent->SP_DISTRICT = $studentForm->motherDistrict;
 						$parent->SP_TEL = $studentForm->motherTel;
 						$parent->SP_PICTURE = $studentForm->motherPic;
-						$parent->SP_PICTURE_TYPE = (string)$tmp->motherPicType;
+						$parent->SP_PICTURE_TYPE = (string)$studentForm->motherPicType;
 						$parent->SP_RELATION_TYPE = 'M';
 						$parent->SA_ID	= $studentForm->studentId;
 						$parent->CREATE_DATE = new \DateTime();
