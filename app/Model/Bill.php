@@ -15,6 +15,7 @@ class Bill extends Model
 	const BILL_STATUS_PAID = "P";
 	const BILL_STATUS_WAIT_TO_PAID = "W";
 	const BILL_STATUS_CANCLE = "C";
+	const BILL_STATUS_PAID_CANCLE = "PC";
 
 	public function studentAccount() {
 		return $this->belongsTo(StudentAccount::class,'SA_ID');

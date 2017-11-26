@@ -25,25 +25,31 @@ class RegisterClassController extends Controller{
     public function postSearchRegisterClass(Request $request) {
 		$studentAccount;
 		$student;
+		$where = ' where USE_FLAG = "Y" ';
 		try {
 
 			$student = json_decode($request->student);
 
-			$studentAccount = StudentAccount::where('USE_FLAG', 'Y');
+			//$studentAccount = StudentAccount::where('USE_FLAG', 'Y');
 
 			if($student->studentCardId != ''){
-				$studentAccount->where('SA_STUDENT_ID', 'LIKE',  '%'.$student->studentCardId.'%');
+				//$studentAccount->where('SA_STUDENT_ID', 'LIKE',  '%'.$student->studentCardId.'%');
+				$where .= ' AND SA_STUDENT_ID LIKE "%'.$student->studentCardId.'%" ';	
 			}
 
 			if($student->studentFirstNameTH != ''){
-				$studentAccount->whereRaw('CONCAT (SA_FIRST_NAME_TH, \' \' ,SA_LAST_NAME_TH) LIKE \'%'.$student->studentFirstNameTH.'%\'');
+				//$studentAccount->whereRaw('CONCAT (SA_FIRST_NAME_TH, \' \' ,SA_LAST_NAME_TH) LIKE \'%'.$student->studentFirstNameTH.'%\'');
+				$where .= ' AND CONCAT (SA_FIRST_NAME_TH, \' \' ,SA_LAST_NAME_TH) LIKE \'%'.$student->studentFirstNameTH.'%\' ';
 			}
 
 			if($student->studentNickNameTH != ''){
-				$studentAccount->where('SA_NICK_NAME_TH', 'LIKE',  '%'.$student->studentNickNameTH.'%');
+				//$studentAccount->where('SA_NICK_NAME_TH', 'LIKE',  '%'.$student->studentNickNameTH.'%');
+				$where .= ' AND SA_NICK_NAME_TH LIKE "%'.$student->studentNickNameTH.'%" ';
 			}
 
-			$studentAccount = $studentAccount->get();
+			//$studentAccount = $studentAccount->get();
+
+			$studentAccount = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a '.$where .' ORDER BY SA_ID DESC');
 			
 			return response()->json($studentAccount);
 			
@@ -239,12 +245,17 @@ class RegisterClassController extends Controller{
 
 			$postdata = file_get_contents("php://input");
 			$billId = json_decode($postdata)->billId;
+			$billPaid = json_decode($postdata)->billPaid;
 			$userLoginId = json_decode($postdata)->userLoginId;
 
 			DB::beginTransaction();
 
 			$bill = Bill::find($billId);
-			$bill->BILL_STATUS = Bill::BILL_STATUS_CANCLE;
+			if($billPaid){
+				$bill->BILL_STATUS = Bill::BILL_STATUS_PAID_CANCLE;
+			}else{
+				$bill->BILL_STATUS = Bill::BILL_STATUS_CANCLE;
+			}
 			$bill->UPDATE_DATE = new \DateTime();
 			$bill->UPDATE_BY = $userLoginId;
 			$bill->save();
