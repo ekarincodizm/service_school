@@ -428,14 +428,18 @@ class StudentController extends Controller
 				$student->SA_MOTHER_DISTRICT = $studentForm->motherDistrict;
 				$student->SA_MOTHER_TEL = $studentForm->motherTel;
 				$student->SA_STUDENT_ID	= $studentForm->studentCardId;
-				$student->SA_PICTURE	= $studentForm->studentPic;
-				$student->SA_PICTURE_TYPE	= (string)$studentForm->studentPicType;
-
-				$student->SA_FATHER_PICTURE	= $studentForm->fatherPic;
-				$student->SA_FATHER_PICTURE_TYPE	= (string)$studentForm->fatherPicType;
-
-				$student->SA_MOTHER_PICTURE	= $studentForm->motherPic;
-				$student->SA_MOTHER_PICTURE_TYPE	= (string)$studentForm->motherPicType;
+				if($studentForm->studentPic != '' && !is_null($studentForm->studentPic) && $studentForm->studentPic != "null"){
+					$student->SA_PICTURE	= $studentForm->studentPic;
+					$student->SA_PICTURE_TYPE	= (string)$studentForm->studentPicType;
+				}
+				if($studentForm->fatherPic != '' && !is_null($studentForm->fatherPic) && $studentForm->fatherPic != "null"){
+					$student->SA_FATHER_PICTURE	= $studentForm->fatherPic;
+					$student->SA_FATHER_PICTURE_TYPE	= (string)$studentForm->fatherPicType;
+				}
+				if($studentForm->motherPic != '' && !is_null($studentForm->motherPic) && $studentForm->motherPic != "null"){
+					$student->SA_MOTHER_PICTURE	= $studentForm->motherPic;
+					$student->SA_MOTHER_PICTURE_TYPE	= (string)$studentForm->motherPicType;
+				}
 				$student->SA_FATHER_PARENT_FLAG = 'N';
 				$student->SA_MOTHER_PARENT_FLAG = 'N';
 				if($studentForm->fatherParentFlag){
@@ -453,8 +457,10 @@ class StudentController extends Controller
 				$student->SA_EMERGENCY_AMPHUR = $studentForm->emergencyAmphur;
 				$student->SA_EMERGENCY_DISTRICT = $studentForm->emergencyDistrict;
 				$student->SA_EMERGENCY_TEL = $studentForm->emergencyTel;
-				$student->SA_EMERGENCY_PICTURE	= $studentForm->emergencyPic;
-				$student->SA_EMERGENCY_PICTURE_TYPE	= (string)$studentForm->emergencyPicType;
+				if($studentForm->emergencyPic != '' && !is_null($studentForm->emergencyPic) && $studentForm->emergencyPic != "null"){
+					$student->SA_EMERGENCY_PICTURE	= $studentForm->emergencyPic;
+					$student->SA_EMERGENCY_PICTURE_TYPE	= (string)$studentForm->emergencyPicType;
+				}
 				$student->SA_EMERGENCY_PARENT_FLAG = 'N';
 				if($studentForm->emergencyParentFlag){
 					$student->SA_EMERGENCY_PARENT_FLAG = 'Y';
