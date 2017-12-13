@@ -308,24 +308,57 @@ class StudentController extends Controller
 	public function postSearchStudent(Request $request) {
 		$studentId = '';
         $studentName = '';
-		$where = ' where a.USE_FLAG = "Y" ';
+		$where = ' AND a.USE_FLAG = "Y" ';
 		try {
-			
-			if($request->studentCardId != '' && $request->studentCardId != null){
-				$where = $where.' AND SA_STUDENT_ID LIKE "%'.$request->studentCardId.'%" ';	
+			if($request->studentCardId != ''  && !is_null($request->studentCardId)){
+				$where = $where.' AND a.SA_STUDENT_ID LIKE "%'.$request->studentCardId.'%" ';	
 
 			}
-			if($request->studentFirstNameTH != ''&& $request->studentFirstNameTH != null){
-				$where = $where.' AND (SA_FIRST_NAME_TH LIKE "%'.$request->studentFirstNameTH.'%" OR SA_LAST_NAME_TH LIKE "%'.$request->studentFirstNameTH.'%" )';
+			if($request->studentFirstNameTH != ''&& !is_null($request->studentFirstNameTH)){
+				$where = $where.' AND (a.SA_FIRST_NAME_TH LIKE "%'.$request->studentFirstNameTH.'%" OR a.SA_LAST_NAME_TH LIKE "%'.$request->studentFirstNameTH.'%" )';
 
 			}
-			if($request->studentNickNameTH != '' && $request->studentNickNameTH != null){
-				$where = $where.' AND SA_NICK_NAME_TH LIKE "%'.$request->studentNickNameTH.'%" ';	
+			if($request->studentNickNameTH != '' && !is_null($request->studentNickNameTH)){
+				$where = $where.' AND a.SA_NICK_NAME_TH LIKE "%'.$request->studentNickNameTH.'%" ';	
 
 			}
-			// $student = StudentAccount::where('SA_FIRST_NAME_TH', 'LIKE', $studentName)->where('SA_STUDENT_ID', 'LIKE', $studentId)->where('USE_FLAG', 'Y')->get();
-			$student = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a '.$where .'
+			if($request->readyRoom != '' && !is_null($request->readyRoom) && $request->readyRoom != "null"){
+				$where = $where.' AND a.SA_READY_ROOM_ID  = '.$request->readyRoom.' ';	
+
+			}
+			if($request->G1Room != '' && !is_null($request->G1Room) && $request->G1Room != "null"){
+				$where = $where.' AND a.SA_G1_ROOM_ID  = '.$request->G1Room.' ';	
+
+			}
+			if($request->G2Room != '' && !is_null($request->G2Room) && $request->G2Room != "null"){
+				$where = $where.' AND a.SA_G2_ROOM_ID  = '.$request->G2Room.' ';	
+
+			}
+			if($request->G3Room != '' && !is_null($request->G3Room) && $request->G3Room != "null"){
+				$where = $where.' AND a.SA_G3_ROOM_ID  = '.$request->G3Room.' ';	
+
+			}
+			if($request->subjectIdSearch != '' && !is_null($request->subjectIdSearch) && $request->subjectIdSearch != "null"){
+				$where = $where.' AND s.SUBJECT_ID  = '.$request->subjectIdSearch.' ';
+				$student = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a 
+												,BILL b 
+												, BILL_DETAIL bd 
+												, SUBJECT s 
+										WHERE b.BILL_STATUS = "P"
+										AND a.SA_ID = b.SA_ID
+										AND bd.BILL_ID = b.BILL_ID
+										AND bd.SUBJECT_ID = s.SUBJECT_ID
+										AND s.SUBJECT_TYPE = "S" '.$where .'
+										ORDER BY a.SA_ID DESC');	
+
+			}else{
+				$student = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a WHERE 1=1 '.$where .'
 									 ORDER BY SA_ID DESC');
+			}
+
+			// $student = StudentAccount::where('SA_FIRST_NAME_TH', 'LIKE', $studentName)->where('SA_STUDENT_ID', 'LIKE', $studentId)->where('USE_FLAG', 'Y')->get();
+			// $student = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a '.$where .'
+			// 						 ORDER BY SA_ID DESC');
 			return response()->json($student);
 
 			
