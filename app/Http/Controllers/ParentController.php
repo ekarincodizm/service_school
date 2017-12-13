@@ -111,8 +111,10 @@ class ParentController extends Controller
 			$parent->SP_AMPHUR = $parentForm->parentAmphur;
 			$parent->SP_DISTRICT = $parentForm->parentDistrict;	
             $parent->SP_TEL = $parentForm->parentTel;
-			$parent->SP_PICTURE = $parentForm->parentPic;
-			$parent->SP_PICTURE_TYPE = (string)$parentForm->parentPicType;
+			if($parentForm->parentPic != '' && !is_null($parentForm->parentPic) && $parentForm->parentPic != "null"){
+				$parent->SP_PICTURE = $parentForm->parentPic;
+				$parent->SP_PICTURE_TYPE = (string)$parentForm->parentPicType;
+			}
 			$parent->UPDATE_DATE = new \DateTime();
 			$parent->UPDATE_BY = $parentForm->userId;
 
