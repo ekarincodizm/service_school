@@ -322,22 +322,49 @@ class StudentController extends Controller
 				$where = $where.' AND a.SA_NICK_NAME_TH LIKE "%'.$request->studentNickNameTH.'%" ';	
 
 			}
-			if($request->readyRoom != '' && !is_null($request->readyRoom) && $request->readyRoom != "null"){
-				$where = $where.' AND a.SA_READY_ROOM_ID  = '.$request->readyRoom.' ';	
+			if($request->searchRoom != '' && !is_null($request->searchRoom) && $request->searchRoom != "null"){
+				if($request->searchG == 0 || $request->searchG == "0"){
+					$where = $where.' AND (a.SA_READY_ROOM_ID  = '.$request->searchRoom.' 
+											OR a.SA_G1_ROOM_ID  = '.$request->searchRoom.' 
+											OR a.SA_G2_ROOM_ID  = '.$request->searchRoom.' 
+											OR a.SA_G3_ROOM_ID  = '.$request->searchRoom.'
+											)';
+				}else if($request->searchG == 1 || $request->searchG == "1"){
+					$where = $where.' AND a.SA_READY_ROOM_ID  = '.$request->searchRoom.' ';
 
-			}
-			if($request->G1Room != '' && !is_null($request->G1Room) && $request->G1Room != "null"){
-				$where = $where.' AND a.SA_G1_ROOM_ID  = '.$request->G1Room.' ';	
+				}else if($request->searchG == 2 || $request->searchG == "2"){
+					$where = $where.' AND a.SA_G1_ROOM_ID  = '.$request->searchRoom.' ';
 
-			}
-			if($request->G2Room != '' && !is_null($request->G2Room) && $request->G2Room != "null"){
-				$where = $where.' AND a.SA_G2_ROOM_ID  = '.$request->G2Room.' ';	
+				}else if($request->searchG == 3 || $request->searchG == "3"){
+					$where = $where.' AND a.SA_G2_ROOM_ID  = '.$request->searchRoom.' ';
 
-			}
-			if($request->G3Room != '' && !is_null($request->G3Room) && $request->G3Room != "null"){
-				$where = $where.' AND a.SA_G3_ROOM_ID  = '.$request->G3Room.' ';	
+				}else if($request->searchG == 4 || $request->searchG == "4"){
+					$where = $where.' AND a.SA_G3_ROOM_ID  = '.$request->searchRoom.' ';
 
+				}
 			}
+			if($request->searchYear != '' && !is_null($request->searchYear) && $request->searchYear != "null"){
+				if($request->searchG == 0 || $request->searchG == "0"){
+					$where = $where.' AND (a.SA_READY_YEAR = '.$request->searchYear.' 
+											OR a.SA_G1_YEAR  = '.$request->searchYear.' 
+											OR a.SA_G2_YEAR  = '.$request->searchYear.' 
+											OR a.SA_G3_YEAR  = '.$request->searchYear.'
+											)';
+				}else if($request->searchG == 1 || $request->searchG == "1"){
+					$where = $where.' AND a.SA_READY_YEAR  = '.$request->searchYear.' ';
+
+				}else if($request->searchG == 2 || $request->searchG == "2"){
+					$where = $where.' AND a.SA_G1_YEAR  = '.$request->searchYear.' ';
+
+				}else if($request->searchG == 3 || $request->searchG == "3"){
+					$where = $where.' AND a.SA_G2_YEAR  = '.$request->searchYear.' ';
+
+				}else if($request->searchG == 4 || $request->searchG == "4"){
+					$where = $where.' AND a.SA_G3_YEAR  = '.$request->searchYear.' ';
+
+				}
+			}
+
 			if($request->subjectIdSearch != '' && !is_null($request->subjectIdSearch) && $request->subjectIdSearch != "null"){
 				$where = $where.' AND s.SUBJECT_ID  = '.$request->subjectIdSearch.' ';
 				$student = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a 

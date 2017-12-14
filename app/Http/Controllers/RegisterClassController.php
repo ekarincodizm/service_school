@@ -25,7 +25,7 @@ class RegisterClassController extends Controller{
     public function postSearchRegisterClass(Request $request) {
 		$studentAccount;
 		$student;
-		$where = ' where USE_FLAG = "Y" ';
+		$where = ' AND a.USE_FLAG = "Y" ';
 		try {
 
 			$student = json_decode($request->student);
@@ -34,22 +34,86 @@ class RegisterClassController extends Controller{
 
 			if($student->studentCardId != ''){
 				//$studentAccount->where('SA_STUDENT_ID', 'LIKE',  '%'.$student->studentCardId.'%');
-				$where .= ' AND SA_STUDENT_ID LIKE "%'.$student->studentCardId.'%" ';	
+				$where .= ' AND a.SA_STUDENT_ID LIKE "%'.$student->studentCardId.'%" ';	
 			}
 
 			if($student->studentFirstNameTH != ''){
 				//$studentAccount->whereRaw('CONCAT (SA_FIRST_NAME_TH, \' \' ,SA_LAST_NAME_TH) LIKE \'%'.$student->studentFirstNameTH.'%\'');
-				$where .= ' AND CONCAT (SA_FIRST_NAME_TH, \' \' ,SA_LAST_NAME_TH) LIKE \'%'.$student->studentFirstNameTH.'%\' ';
+				$where .= ' AND CONCAT (a.SA_FIRST_NAME_TH, \' \' ,a.SA_LAST_NAME_TH) LIKE \'%'.$student->studentFirstNameTH.'%\' ';
 			}
 
 			if($student->studentNickNameTH != ''){
 				//$studentAccount->where('SA_NICK_NAME_TH', 'LIKE',  '%'.$student->studentNickNameTH.'%');
-				$where .= ' AND SA_NICK_NAME_TH LIKE "%'.$student->studentNickNameTH.'%" ';
+				$where .= ' AND a.SA_NICK_NAME_TH LIKE "%'.$student->studentNickNameTH.'%" ';
 			}
 
 			//$studentAccount = $studentAccount->get();
 
-			$studentAccount = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a '.$where .' ORDER BY SA_ID DESC');
+			if($student->searchRoom != '' && !is_null($student->searchRoom) && $student->searchRoom != "null"){
+				if($student->searchG == 0 || $student->searchG == "0"){
+					$where = $where.' AND (a.SA_READY_ROOM_ID  = '.$student->searchRoom.' 
+											OR a.SA_G1_ROOM_ID  = '.$student->searchRoom.' 
+											OR a.SA_G2_ROOM_ID  = '.$student->searchRoom.' 
+											OR a.SA_G3_ROOM_ID  = '.$student->searchRoom.'
+											)';
+				}else if($student->searchG == 1 || $student->searchG == "1"){
+					$where = $where.' AND a.SA_READY_ROOM_ID  = '.$student->searchRoom.' ';
+
+				}else if($student->searchG == 2 || $student->searchG == "2"){
+					$where = $where.' AND a.SA_G1_ROOM_ID  = '.$student->searchRoom.' ';
+
+				}else if($student->searchG == 3 || $student->searchG == "3"){
+					$where = $where.' AND a.SA_G2_ROOM_ID  = '.$student->searchRoom.' ';
+
+				}else if($student->searchG == 4 || $student->searchG == "4"){
+					$where = $where.' AND a.SA_G3_ROOM_ID  = '.$student->searchRoom.' ';
+
+				}
+			}
+
+			if($student->searchYear != '' && !is_null($student->searchYear) && $student->searchYear != "null"){
+				if($student->searchG == 0 || $student->searchG == "0"){
+					$where = $where.' AND (a.SA_READY_YEAR = '.$student->searchYear.' 
+											OR a.SA_G1_YEAR  = '.$student->searchYear.' 
+											OR a.SA_G2_YEAR  = '.$student->searchYear.' 
+											OR a.SA_G3_YEAR  = '.$student->searchYear.'
+											)';
+				}else if($student->searchG == 1 || $student->searchG == "1"){
+					$where = $where.' AND a.SA_READY_YEAR  = '.$student->searchYear.' ';
+
+				}else if($student->searchG == 2 || $student->searchG == "2"){
+					$where = $where.' AND a.SA_G1_YEAR  = '.$student->searchYear.' ';
+
+				}else if($student->searchG == 3 || $student->searchG == "3"){
+					$where = $where.' AND a.SA_G2_YEAR  = '.$student->searchYear.' ';
+
+				}else if($student->searchG == 4 || $student->searchG == "4"){
+					$where = $where.' AND a.SA_G3_YEAR  = '.$student->searchYear.' ';
+
+				}
+			}
+
+			if($student->subjectIdSearch != '' && !is_null($student->subjectIdSearch) && $student->subjectIdSearch != "null"){
+				$where = $where.' AND s.SUBJECT_ID  = '.$student->subjectIdSearch.' ';
+				$studentAccount = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a 
+												,BILL b 
+												, BILL_DETAIL bd 
+												, SUBJECT s 
+										WHERE b.BILL_STATUS = "P"
+										AND a.SA_ID = b.SA_ID
+										AND bd.BILL_ID = b.BILL_ID
+										AND bd.SUBJECT_ID = s.SUBJECT_ID
+										AND s.SUBJECT_TYPE = "S" '.$where .'
+										ORDER BY a.SA_ID DESC');	
+
+			}else{
+				$studentAccount = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a WHERE 1=1 '.$where .'
+									 ORDER BY SA_ID DESC');
+			}
+			
+			// $studentAccount = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a '.$where .' ORDER BY a.SA_ID DESC');
+
+			
 			
 			return response()->json($studentAccount);
 			
