@@ -177,7 +177,7 @@ class StudentController extends Controller
 					$student->SA_EMERGENCY_FOREIGNER_FLAG = 'Y';
 				}
 
-				$student->SA_STUDENT_FOREIGNER = $studentForm->fatherForeigner;
+				$student->SA_STUDENT_FOREIGNER = $studentForm->studentForeigner;
 				$student->SA_FATHER_FOREIGNER = $studentForm->fatherForeigner;
 				$student->SA_MOTHER_FOREIGNER = $studentForm->motherForeigner;
 				$student->SA_EMERGENCY_FOREIGNER = $studentForm->emergencyForeigner;
