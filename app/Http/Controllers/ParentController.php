@@ -76,6 +76,11 @@ class ParentController extends Controller
 				$parent->SP_EMAIL = $parentForm->parentEmail;
 				$parent->SP_HOME_TEL = $parentForm->parentHomeNumber;
 				$parent->SP_CITIZEN_CODE = $parentForm->parentCitizenCode;
+
+				$parent->SP_FOREIGNER_FLAG = 'N';
+				if($parentForm->parentForeignerFlag){
+					$parent->SP_FOREIGNER_FLAG = 'Y';
+				}
 				$parent->save();
 
 			DB::commit(); 
@@ -125,6 +130,11 @@ class ParentController extends Controller
 			$parent->SP_HOME_TEL = $parentForm->parentHomeNumber;
 			$parent->SP_CITIZEN_CODE = $parentForm->parentCitizenCode;
 
+			$parent->SP_FOREIGNER_FLAG = 'N';
+			if($parentForm->parentForeignerFlag){
+				$parent->SP_FOREIGNER_FLAG = 'Y';
+			}
+
 			$parent->save();
 
 			if($parent->SP_RELATION_TYPE == 'D'){
@@ -140,12 +150,16 @@ class ParentController extends Controller
 				$student->SA_FATHER_PICTURE	= $parentForm->parentPic;
 				$student->SA_FATHER_PICTURE_TYPE	= (string)$parentForm->parentPicType;
 
-				$student->SA_FATHER_JOB = $parentForm->fatherJob;
-				$student->SA_FATHER_JOB_REMARK = $parentForm->fatherJobRemark;
-				$student->SA_FATHER_JOB_SALARY = $parentForm->fatherJobSalary;
-				$student->SA_FATHER_EMAIL = $parentForm->fatherEmail;
-				$student->SA_FATHER_HOME_TEL = $parentForm->fatherHomeNumber;
-				$student->SA_FATHER_CITIZEN_CODE = $parentForm->fatherCitizenCode;
+				$student->SA_FATHER_JOB = $parentForm->parentJob;
+				$student->SA_FATHER_JOB_REMARK = $parentForm->parentJobRemark;
+				$student->SA_FATHER_JOB_SALARY = $parentForm->parentJobSalary;
+				$student->SA_FATHER_EMAIL = $parentForm->parentEmail;
+				$student->SA_FATHER_HOME_TEL = $parentForm->parentHomeNumber;
+				$student->SA_FATHER_CITIZEN_CODE = $parentForm->parentCitizenCode;
+				$student->SA_FATHER_FOREIGNER_FLAG = 'N';
+				if($parentForm->parentForeignerFlag){
+					$student->SA_FATHER_FOREIGNER_FLAG = 'Y';
+				}
 			
 				$student->save();
 			}
@@ -161,12 +175,18 @@ class ParentController extends Controller
 				$student->SA_MOTHER_TEL = $parentForm->parentTel;
 				$student->SA_MOTHER_PICTURE	= $parentForm->parentPic;
 				$student->SA_MOTHER_PICTURE_TYPE	= (string)$parentForm->parentPicType;
-				$student->SA_MOTHER_EMAIL = $parentForm->motherEmail;
-				$student->SA_MOTHER_HOME_TEL = $parentForm->motherHomeNumber;
-				$student->SA_MOTHER_CITIZEN_CODE = $parentForm->motherCitizenCode;
-				$student->SA_MOTHER_JOB = $parentForm->motherJob;
-				$student->SA_MOTHER_JOB_REMARK = $parentForm->motherJobRemark;
-				$student->SA_MOTHER_JOB_SALARY = $parentForm->motherJobSalary;
+				$student->SA_MOTHER_EMAIL = $parentForm->parentEmail;
+				$student->SA_MOTHER_HOME_TEL = $parentForm->parentHomeNumber;
+				$student->SA_MOTHER_CITIZEN_CODE = $parentForm->parentCitizenCode;
+				$student->SA_MOTHER_JOB = $parentForm->parentJob;
+				$student->SA_MOTHER_JOB_REMARK = $parentForm->parentJobRemark;
+				$student->SA_MOTHER_JOB_SALARY = $parentForm->parentJobSalary;
+				$student->SA_MOTHER_FOREIGNER_FLAG = 'N';
+				if($parentForm->parentForeignerFlag){
+					$student->SA_MOTHER_FOREIGNER_FLAG = 'Y';
+				}
+			
+
 				$student->save();
 			}
 
@@ -189,6 +209,12 @@ class ParentController extends Controller
 				$student->SA_EMERGENCY_HOME_TEL = $parentForm->parentHomeNumber;
 				$student->SA_EMERGENCY_CITIZEN_CODE = $parentForm->parentCitizenCode;
 				$student->SA_EMERGENCY_RELATION = $parentForm->relationship;
+
+				$student->SA_EMERGENCY_FOREIGNER_FLAG = 'N';
+				if($parentForm->parentForeignerFlag){
+					$student->SA_EMERGENCY_FOREIGNER_FLAG = 'Y';
+				}
+
 				$student->save();
 			}
 			

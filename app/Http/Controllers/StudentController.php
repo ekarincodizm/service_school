@@ -160,6 +160,28 @@ class StudentController extends Controller
 				$student->SA_G3_ROOM_ID = $studentForm->G3Room;
 				$student->SA_G3_YEAR = $studentForm->G3RoomYear;
 
+				$student->SA_STUDENT_FOREIGNER_FLAG = 'N';
+				if($studentForm->studentForeignerFlag){
+					$student->SA_STUDENT_FOREIGNER_FLAG = 'Y';
+				}
+				$student->SA_FATHER_FOREIGNER_FLAG = 'N';
+				if($studentForm->fatherForeignerFlag){
+					$student->SA_FATHER_FOREIGNER_FLAG = 'Y';
+				}
+				$student->SA_MOTHER_FOREIGNER_FLAG = 'N';
+				if($studentForm->motherForeignerFlag){
+					$student->SA_MOTHER_FOREIGNER_FLAG = 'Y';
+				}
+				$student->SA_EMERGENCY_FOREIGNER_FLAG = 'N';
+				if($studentForm->emergencyForeignerFlag){
+					$student->SA_EMERGENCY_FOREIGNER_FLAG = 'Y';
+				}
+
+				$student->SA_STUDENT_FOREIGNER = $studentForm->fatherForeigner;
+				$student->SA_FATHER_FOREIGNER = $studentForm->fatherForeigner;
+				$student->SA_MOTHER_FOREIGNER = $studentForm->motherForeigner;
+				$student->SA_EMERGENCY_FOREIGNER = $studentForm->emergencyForeigner;
+
 
 				$student->save();
 
@@ -189,6 +211,13 @@ class StudentController extends Controller
 					$parent->SP_EMAIL = $studentForm->fatherEmail;
 					$parent->SP_HOME_TEL = $studentForm->fatherHomeNumber;
 					$parent->SP_CITIZEN_CODE = $studentForm->fatherCitizenCode;
+
+					$parent->SP_FOREIGNER_FLAG = $studentForm->fatherForeignerFlag;
+					$parent->SP_FOREIGNER_FLAG = 'N';
+					if($studentForm->fatherForeignerFlag){
+						$parent->SP_FOREIGNER_FLAG = 'Y';
+					}
+					$parent->SP_FOREIGNER = $studentForm->fatherForeigner;
 
 					$parent->save();
 
@@ -221,6 +250,12 @@ class StudentController extends Controller
 					$parent->SP_HOME_TEL = $studentForm->motherHomeNumber;
 					$parent->SP_CITIZEN_CODE = $studentForm->motherCitizenCode;
 
+					$parent->SP_FOREIGNER_FLAG = 'N';
+					if($studentForm->motherForeignerFlag){
+						$parent->SP_FOREIGNER_FLAG = 'Y';
+					}
+					$parent->SP_FOREIGNER = $studentForm->motherForeigner;
+
 					$parent->save();
 
 				}
@@ -252,6 +287,12 @@ class StudentController extends Controller
 					$parent->SP_HOME_TEL = $studentForm->emergencyHomeNumber;
 					$parent->SP_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
 					$parent->SP_RELATION = $studentForm->emergencyRelation;
+
+					$parent->SP_FOREIGNER_FLAG = 'N';
+					if($studentForm->emergencyForeignerFlag){
+						$parent->SP_FOREIGNER_FLAG = 'Y';
+					}
+					$parent->SP_FOREIGNER = $studentForm->emergencyForeigner;
 
 					$parent->save();
 
@@ -542,6 +583,28 @@ class StudentController extends Controller
 				$student->SA_G3_ROOM_ID = $studentForm->G3Room;
 				$student->SA_G3_YEAR = $studentForm->G3RoomYear;
 
+				$student->SA_STUDENT_FOREIGNER_FLAG = 'N';
+				if($studentForm->studentForeignerFlag){
+					$student->SA_STUDENT_FOREIGNER_FLAG = 'Y';
+				}
+				$student->SA_FATHER_FOREIGNER_FLAG = 'N';
+				if($studentForm->fatherForeignerFlag){
+					$student->SA_FATHER_FOREIGNER_FLAG = 'Y';
+				}
+				$student->SA_MOTHER_FOREIGNER_FLAG = 'N';
+				if($studentForm->motherForeignerFlag){
+					$student->SA_MOTHER_FOREIGNER_FLAG = 'Y';
+				}
+				$student->SA_EMERGENCY_FOREIGNER_FLAG = 'N';
+				if($studentForm->emergencyForeignerFlag){
+					$student->SA_EMERGENCY_FOREIGNER_FLAG = 'Y';
+				}
+				$student->SA_STUDENT_FOREIGNER = $studentForm->fatherForeigner;
+				$student->SA_FATHER_FOREIGNER = $studentForm->fatherForeigner;
+				$student->SA_MOTHER_FOREIGNER = $studentForm->motherForeigner;
+				$student->SA_EMERGENCY_FOREIGNER = $studentForm->emergencyForeigner;
+
+
 				$student->save();
 				
 				if($studentForm->fatherParentFlag){
@@ -571,6 +634,12 @@ class StudentController extends Controller
 							$parentFather->SP_HOME_TEL = $studentForm->fatherHomeNumber;
 							$parentFather->SP_CITIZEN_CODE = $studentForm->fatherCitizenCode;
 
+							$parentFather->SP_FOREIGNER_FLAG = 'N';
+							if($studentForm->fatherForeignerFlag){
+								$parentFather->SP_FOREIGNER_FLAG = 'Y';
+							}
+							$parentFather->SP_FOREIGNER = $studentForm->fatherForeigner;
+
 							$parentFather->save();
 						}
 					}else{
@@ -599,6 +668,12 @@ class StudentController extends Controller
 						$parent->SP_EMAIL = $studentForm->fatherEmail;
 						$parent->SP_HOME_TEL = $studentForm->fatherHomeNumber;
 						$parent->SP_CITIZEN_CODE = $studentForm->fatherCitizenCode;
+
+						$parent->SP_FOREIGNER_FLAG = 'N';
+						if($studentForm->fatherForeignerFlag){
+							$parent->SP_FOREIGNER_FLAG = 'Y';
+						}
+						$parent->SP_FOREIGNER = $studentForm->fatherForeigner;
 
 						$parent->save();
 					}
@@ -642,6 +717,12 @@ class StudentController extends Controller
 							$parentMother->SP_EMAIL = $studentForm->motherEmail;
 							$parentMother->SP_HOME_TEL = $studentForm->motherHomeNumber;
 							$parentMother->SP_CITIZEN_CODE = $studentForm->motherCitizenCode;
+
+							$parentMother->SP_FOREIGNER_FLAG = 'N';
+							if($studentForm->motherForeignerFlag){
+								$parentMother->SP_FOREIGNER_FLAG = 'Y';
+							}
+							$parentMother->SP_FOREIGNER = $studentForm->motherForeigner;
 							
 							$parentMother->save();
 						}
@@ -671,6 +752,12 @@ class StudentController extends Controller
 						$parent->SP_EMAIL = $studentForm->motherEmail;
 						$parent->SP_HOME_TEL = $studentForm->motherHomeNumber;
 						$parent->SP_CITIZEN_CODE = $studentForm->motherCitizenCode;
+
+						$parent->SP_FOREIGNER_FLAG = 'N';
+						if($studentForm->motherForeignerFlag){
+							$parent->SP_FOREIGNER_FLAG = 'Y';
+						}
+						$parent->SP_FOREIGNER = $studentForm->motherForeigner;
 
 						$parent->save();
 
@@ -714,6 +801,13 @@ class StudentController extends Controller
 							$parentEmergency->SP_HOME_TEL = $studentForm->emergencyHomeNumber;
 							$parentEmergency->SP_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
 
+							$parentEmergency->SP_FOREIGNER_FLAG = 'N';
+							if($studentForm->emergencyForeignerFlag){
+								$parentEmergency->SP_FOREIGNER_FLAG = 'Y';
+							}
+
+							$parentEmergency->SP_FOREIGNER = $studentForm->emergencyForeigner;
+
 							$parentEmergency->save();
 						}
 					}else{
@@ -742,6 +836,12 @@ class StudentController extends Controller
 						$parent->SP_EMAIL = $studentForm->emergencyEmail;
 						$parent->SP_HOME_TEL = $studentForm->emergencyHomeNumber;
 						$parent->SP_CITIZEN_CODE = $studentForm->emergencyCitizenCode;
+
+						$parent->SP_FOREIGNER_FLAG = 'N';
+						if($studentForm->emergencyForeignerFlag){
+							$parent->SP_FOREIGNER_FLAG = 'Y';
+						}
+						$parent->SP_FOREIGNER = $studentForm->emergencyForeigner;
 
 						$parent->save();
 					}
