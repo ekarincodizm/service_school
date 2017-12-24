@@ -21,9 +21,14 @@
 		<td style=" width:35%;text-align: left;">{{$parent->SP_RELATION}}</td>
 	<tr>
 	<tr>
+	@if($parent->SA_FATHER_FOREIGNER_FLAG == "N")
 		<td style=" width:10%;text-align: right;">เลขบัตรประชาชน: </td>
 		<td style=" width:35%;text-align: left;" colspan = "3">{{$parent->SP_CITIZEN_CODE}}</td>
-	<tr>
+	@else
+		<td style=" width:10%;text-align: right;">เลขหนังสือเดินทาง: </td>
+		<td style=" width:35%;text-align: left;" colspan = "3">{{$parent->SP_FOREIGNER}}</td>
+	@endif
+	</tr>
 	<tr>
 		<td style=" width:10%;text-align: right;">ที่อยู่: </td>
 		<td style=" width:35%;text-align: left;" colspan = "3">{{$address}}</td>

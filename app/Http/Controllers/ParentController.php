@@ -81,6 +81,9 @@ class ParentController extends Controller
 				if($parentForm->parentForeignerFlag){
 					$parent->SP_FOREIGNER_FLAG = 'Y';
 				}
+
+				$parent->SP_FOREIGNER = $parentForm->parentForeigner;
+
 				$parent->save();
 
 			DB::commit(); 
@@ -134,6 +137,7 @@ class ParentController extends Controller
 			if($parentForm->parentForeignerFlag){
 				$parent->SP_FOREIGNER_FLAG = 'Y';
 			}
+			$parent->SP_FOREIGNER = $parentForm->parentForeigner;
 
 			$parent->save();
 
@@ -160,6 +164,7 @@ class ParentController extends Controller
 				if($parentForm->parentForeignerFlag){
 					$student->SA_FATHER_FOREIGNER_FLAG = 'Y';
 				}
+				$parent->SA_FATHER_FOREIGNER = $parentForm->parentForeigner;
 			
 				$student->save();
 			}
@@ -185,7 +190,7 @@ class ParentController extends Controller
 				if($parentForm->parentForeignerFlag){
 					$student->SA_MOTHER_FOREIGNER_FLAG = 'Y';
 				}
-			
+				$parent->SA_MOTHER_FOREIGNER = $parentForm->parentForeigner;
 
 				$student->save();
 			}
@@ -214,6 +219,7 @@ class ParentController extends Controller
 				if($parentForm->parentForeignerFlag){
 					$student->SA_EMERGENCY_FOREIGNER_FLAG = 'Y';
 				}
+				$parent->SA_EMERGENCY_FOREIGNER = $parentForm->parentForeigner;
 
 				$student->save();
 			}
