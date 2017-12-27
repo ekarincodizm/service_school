@@ -163,24 +163,28 @@ class StudentController extends Controller
 				$student->SA_STUDENT_FOREIGNER_FLAG = 'N';
 				if($studentForm->studentForeignerFlag){
 					$student->SA_STUDENT_FOREIGNER_FLAG = 'Y';
+					$student->SA_STUDENT_FOREIGNER = $studentForm->studentForeigner;
 				}
 				$student->SA_FATHER_FOREIGNER_FLAG = 'N';
 				if($studentForm->fatherForeignerFlag){
 					$student->SA_FATHER_FOREIGNER_FLAG = 'Y';
+					$student->SA_FATHER_FOREIGNER = $studentForm->fatherForeigner;
 				}
 				$student->SA_MOTHER_FOREIGNER_FLAG = 'N';
 				if($studentForm->motherForeignerFlag){
 					$student->SA_MOTHER_FOREIGNER_FLAG = 'Y';
+					$student->SA_MOTHER_FOREIGNER = $studentForm->motherForeigner;
 				}
 				$student->SA_EMERGENCY_FOREIGNER_FLAG = 'N';
 				if($studentForm->emergencyForeignerFlag){
 					$student->SA_EMERGENCY_FOREIGNER_FLAG = 'Y';
+					$student->SA_EMERGENCY_FOREIGNER = $studentForm->emergencyForeigner;
 				}
 
-				$student->SA_STUDENT_FOREIGNER = $studentForm->studentForeigner;
-				$student->SA_FATHER_FOREIGNER = $studentForm->fatherForeigner;
-				$student->SA_MOTHER_FOREIGNER = $studentForm->motherForeigner;
-				$student->SA_EMERGENCY_FOREIGNER = $studentForm->emergencyForeigner;
+				
+				
+				
+				
 
 
 				$student->save();
@@ -212,12 +216,12 @@ class StudentController extends Controller
 					$parent->SP_HOME_TEL = $studentForm->fatherHomeNumber;
 					$parent->SP_CITIZEN_CODE = $studentForm->fatherCitizenCode;
 
-					$parent->SP_FOREIGNER_FLAG = $studentForm->fatherForeignerFlag;
 					$parent->SP_FOREIGNER_FLAG = 'N';
 					if($studentForm->fatherForeignerFlag){
 						$parent->SP_FOREIGNER_FLAG = 'Y';
+						$parent->SP_FOREIGNER = $studentForm->fatherForeigner;
 					}
-					$parent->SP_FOREIGNER = $studentForm->fatherForeigner;
+					
 
 					$parent->save();
 
@@ -586,23 +590,27 @@ class StudentController extends Controller
 				$student->SA_STUDENT_FOREIGNER_FLAG = 'N';
 				if($studentForm->studentForeignerFlag){
 					$student->SA_STUDENT_FOREIGNER_FLAG = 'Y';
+					$student->SA_STUDENT_FOREIGNER = $studentForm->studentForeigner;
 				}
 				$student->SA_FATHER_FOREIGNER_FLAG = 'N';
 				if($studentForm->fatherForeignerFlag){
 					$student->SA_FATHER_FOREIGNER_FLAG = 'Y';
+					$student->SA_FATHER_FOREIGNER = $studentForm->fatherForeigner;
 				}
 				$student->SA_MOTHER_FOREIGNER_FLAG = 'N';
 				if($studentForm->motherForeignerFlag){
 					$student->SA_MOTHER_FOREIGNER_FLAG = 'Y';
+					$student->SA_MOTHER_FOREIGNER = $studentForm->motherForeigner;
 				}
 				$student->SA_EMERGENCY_FOREIGNER_FLAG = 'N';
 				if($studentForm->emergencyForeignerFlag){
 					$student->SA_EMERGENCY_FOREIGNER_FLAG = 'Y';
+					$student->SA_EMERGENCY_FOREIGNER = $studentForm->emergencyForeigner;
 				}
-				$student->SA_STUDENT_FOREIGNER = $studentForm->fatherForeigner;
-				$student->SA_FATHER_FOREIGNER = $studentForm->fatherForeigner;
-				$student->SA_MOTHER_FOREIGNER = $studentForm->motherForeigner;
-				$student->SA_EMERGENCY_FOREIGNER = $studentForm->emergencyForeigner;
+				
+				
+				
+				
 
 
 				$student->save();
@@ -637,8 +645,9 @@ class StudentController extends Controller
 							$parentFather->SP_FOREIGNER_FLAG = 'N';
 							if($studentForm->fatherForeignerFlag){
 								$parentFather->SP_FOREIGNER_FLAG = 'Y';
+								$parentFather->SP_FOREIGNER = $studentForm->fatherForeigner;
 							}
-							$parentFather->SP_FOREIGNER = $studentForm->fatherForeigner;
+							
 
 							$parentFather->save();
 						}
@@ -672,8 +681,9 @@ class StudentController extends Controller
 						$parent->SP_FOREIGNER_FLAG = 'N';
 						if($studentForm->fatherForeignerFlag){
 							$parent->SP_FOREIGNER_FLAG = 'Y';
+							$parent->SP_FOREIGNER = $studentForm->fatherForeigner;
 						}
-						$parent->SP_FOREIGNER = $studentForm->fatherForeigner;
+						
 
 						$parent->save();
 					}
