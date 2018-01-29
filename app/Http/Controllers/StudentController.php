@@ -629,8 +629,12 @@ class StudentController extends Controller
 							$parentFather->SP_AMPHUR = $studentForm->fatherAmphur;
 							$parentFather->SP_DISTRICT = $studentForm->fatherDistrict;
 							$parentFather->SP_TEL = $studentForm->fatherTel;
-							$parentFather->SP_PICTURE = $studentForm->fatherPic;
-							$parentFather->SP_PICTURE_TYPE = (string)$studentForm->fatherPicType;
+							// $parentFather->SP_PICTURE = $studentForm->fatherPic;
+							// $parentFather->SP_PICTURE_TYPE = (string)$studentForm->fatherPicType;
+							if($studentForm->fatherPic != '' && !is_null($studentForm->fatherPic) && $studentForm->fatherPic != "null"){
+								$parentFather->SP_PICTURE = $studentForm->fatherPic;
+								$parentFather->SP_PICTURE_TYPE = (string)$studentForm->fatherPicType;
+							}
 							$parentFather->SP_RELATION_TYPE = 'D';
 							$parentFather->UPDATE_DATE = new \DateTime();
 							$parentFather->UPDATE_BY = $userId;
@@ -662,8 +666,12 @@ class StudentController extends Controller
 						$parent->SP_AMPHUR = $studentForm->fatherAmphur;
 						$parent->SP_DISTRICT = $studentForm->fatherDistrict;
 						$parent->SP_TEL = $studentForm->fatherTel;
-						$parent->SP_PICTURE = $studentForm->fatherPic;
-						$parent->SP_PICTURE_TYPE = (string)$studentForm->fatherPicType;
+						// $parent->SP_PICTURE = $studentForm->fatherPic;
+						// $parent->SP_PICTURE_TYPE = (string)$studentForm->fatherPicType;
+						if($studentForm->fatherPic != '' && !is_null($studentForm->fatherPic) && $studentForm->fatherPic != "null"){
+							$parentFather->SP_PICTURE = $studentForm->fatherPic;
+							$parentFather->SP_PICTURE_TYPE = (string)$studentForm->fatherPicType;
+						}
 						$parent->SP_RELATION_TYPE = 'D';
 						$parent->SA_ID	= $studentForm->studentId;
 						$parent->CREATE_DATE = new \DateTime();
@@ -705,7 +713,6 @@ class StudentController extends Controller
 					if($parentMotherFind != null || $parentMotherFind != '' ||$parentMotherFind != []){
 						$parentMother = StudentParent::find($parentMotherFind->SP_ID);
 						if($parentMother != null || $parentMother != '' ||$parentMother != []){
-							$parentMother = new StudentParent();
 							$parentMother->SP_TITLE_NAME = $studentForm->motherPrefix;
 							$parentMother->SP_FIRST_NAME = $studentForm->motherName;
 							$parentMother->SP_LAST_NAME = $studentForm->motherLastName;
@@ -715,8 +722,12 @@ class StudentController extends Controller
 							$parentMother->SP_AMPHUR = $studentForm->motherAmphur;
 							$parentMother->SP_DISTRICT = $studentForm->motherDistrict;
 							$parentMother->SP_TEL = $studentForm->motherTel;
-							$parentMother->SP_PICTURE = $studentForm->motherPic;
-							$parentMother->SP_PICTURE_TYPE = (string)$studentForm->motherPicType;
+							// $parentMother->SP_PICTURE = $studentForm->motherPic;
+							// $parentMother->SP_PICTURE_TYPE = (string)$studentForm->motherPicType;
+							if($studentForm->motherPic != '' && !is_null($studentForm->motherPic) && $studentForm->motherPic != "null"){
+								$parentMother->SP_PICTURE = $studentForm->motherPic;
+								$parentMother->SP_PICTURE_TYPE = (string)$studentForm->motherPicType;
+							}
 							$parentMother->SP_RELATION_TYPE = 'M';
 							$parentMother->UPDATE_DATE = new \DateTime();
 							$parentMother->UPDATE_BY = $userId;
@@ -747,8 +758,12 @@ class StudentController extends Controller
 						$parent->SP_AMPHUR = $studentForm->motherAmphur;
 						$parent->SP_DISTRICT = $studentForm->motherDistrict;
 						$parent->SP_TEL = $studentForm->motherTel;
-						$parent->SP_PICTURE = $studentForm->motherPic;
-						$parent->SP_PICTURE_TYPE = (string)$studentForm->motherPicType;
+						// $parent->SP_PICTURE = $studentForm->motherPic;
+						// $parent->SP_PICTURE_TYPE = (string)$studentForm->motherPicType;
+						if($studentForm->motherPic != '' && !is_null($studentForm->motherPic) && $studentForm->motherPic != "null"){
+							$parentMother->SP_PICTURE = $studentForm->motherPic;
+							$parentMother->SP_PICTURE_TYPE = (string)$studentForm->motherPicType;
+						}
 						$parent->SP_RELATION_TYPE = 'M';
 						$parent->SA_ID	= $studentForm->studentId;
 						$parent->CREATE_DATE = new \DateTime();
@@ -798,8 +813,12 @@ class StudentController extends Controller
 							$parentEmergency->SP_AMPHUR = $studentForm->emergencyAmphur;
 							$parentEmergency->SP_DISTRICT = $studentForm->emergencyDistrict;
 							$parentEmergency->SP_TEL = $studentForm->emergencyTel;
-							$parentEmergency->SP_PICTURE = $studentForm->emergencyPic;
-							$parentEmergency->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
+							// $parentEmergency->SP_PICTURE = $studentForm->emergencyPic;
+							// $parentEmergency->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
+							if($studentForm->emergencyPic != '' && !is_null($studentForm->emergencyPic) && $studentForm->emergencyPic != "null"){
+								$parentEmergency->SP_PICTURE = $studentForm->emergencyPic;
+								$parentEmergency->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
+							}
 							$parentEmergency->SP_RELATION_TYPE = 'E';
 							$parentEmergency->UPDATE_DATE = new \DateTime();
 							$parentEmergency->UPDATE_BY = $userId;
@@ -831,8 +850,12 @@ class StudentController extends Controller
 						$parent->SP_AMPHUR = $studentForm->emergencyAmphur;
 						$parent->SP_DISTRICT = $studentForm->emergencyDistrict;
 						$parent->SP_TEL = $studentForm->emergencyTel;
-						$parent->SP_PICTURE = $studentForm->emergencyPic;
-						$parent->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
+						// $parent->SP_PICTURE = $studentForm->emergencyPic;
+						// $parent->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
+						if($studentForm->emergencyPic != '' && !is_null($studentForm->emergencyPic) && $studentForm->emergencyPic != "null"){
+							$parentEmergency->SP_PICTURE = $studentForm->emergencyPic;
+							$parentEmergency->SP_PICTURE_TYPE = (string)$studentForm->emergencyPicType;
+						}
 						$parent->SP_RELATION_TYPE = 'E';
 						$parent->SA_ID	= $studentForm->studentId;
 						$parent->CREATE_DATE = new \DateTime();
