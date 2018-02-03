@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Model\Province;
 use App\Model\Amphur;
 use App\Model\District;
+use App\Model\FutureSchool;
 
 class AddressController extends Controller
 {
@@ -59,6 +60,14 @@ class AddressController extends Controller
 		return response ()->json ( [
 						'status' => 'ok',
 						'address' => $address,
+				] );
+	}
+
+	public function getFutureSchool(){
+        $school = FutureSchool::all();
+		return response ()->json ( [
+						'status' => 'ok',
+                        'school' => $school,
 				] );
 	}
     

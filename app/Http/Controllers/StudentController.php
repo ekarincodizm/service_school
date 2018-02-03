@@ -34,7 +34,7 @@ class StudentController extends Controller
 			// 	$studentId =  $studentIdOld+1;
 			// }
 			
-			$studentCheck = StudentAccount::where('USE_FLAG','Y')->where('SA_STUDENT_ID',$studentForm->studentCardId)->first();
+			$studentCheck = StudentAccount::where('USE_FLAG','<>','N')->where('SA_STUDENT_ID',$studentForm->studentCardId)->first();
 			if($studentCheck != null || $studentCheck != '' ||$studentCheck != []){
 				return response ()->json ( [
 					'status' => 'error',
@@ -181,7 +181,7 @@ class StudentController extends Controller
 					$student->SA_EMERGENCY_FOREIGNER = $studentForm->emergencyForeigner;
 				}
 
-				
+				$student->SA_FUTURE_SCHOOL = $studentForm->studentFutureSchoolCode;
 				
 				
 				
@@ -322,7 +322,7 @@ class StudentController extends Controller
 	public function postSearchParent(Request $request) {
 		try {
 			$studentId = $request->studentId;
-			$parents = StudentParent::where('SA_ID',$studentId)->where('USE_FLAG' , 'Y')->get();
+			$parents = StudentParent::where('SA_ID',$studentId)->where('USE_FLAG','<>','N')->get();
 			$addressList;
 			$postCodeList;
 			foreach ($parents as $key=> $parent){
@@ -353,7 +353,8 @@ class StudentController extends Controller
 	public function postSearchStudent(Request $request) {
 		$studentId = '';
         $studentName = '';
-		$where = ' AND a.USE_FLAG = "Y" ';
+		$where = ' ';
+		// $where = ' AND a.USE_FLAG <> "Y" ';
 		try {
 			if($request->studentCardId != ''  && !is_null($request->studentCardId)){
 				$where = $where.' AND a.SA_STUDENT_ID LIKE "%'.$request->studentCardId.'%" ';	
@@ -410,22 +411,44 @@ class StudentController extends Controller
 				}
 			}
 
+			
+			if($request->searchUseFlag == "Y"){
+				$where = $where.' AND a.USE_FLAG  = "Y" ';
+			}else if($request->searchUseFlag == "A"){
+				$where = $where.' AND a.USE_FLAG  <> "N" ';
+			}
+
 			if($request->subjectIdSearch != '' && !is_null($request->subjectIdSearch) && $request->subjectIdSearch != "null"){
 				$where = $where.' AND s.SUBJECT_ID  = '.$request->subjectIdSearch.' ';
+				if($request->searchUseFlag == "I"){
+					$where = $where.' AND b.BILL_STATUS = "W" ';
+				}
+				else{
+					$where = $where.' AND b.BILL_STATUS = "P" ';
+				}
 				$student = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a 
 												,BILL b 
 												, BILL_DETAIL bd 
 												, SUBJECT s 
-										WHERE b.BILL_STATUS = "P"
-										AND a.SA_ID = b.SA_ID
+										WHERE a.SA_ID = b.SA_ID
 										AND bd.BILL_ID = b.BILL_ID
 										AND bd.SUBJECT_ID = s.SUBJECT_ID
 										AND s.SUBJECT_TYPE = "S" '.$where .'
 										ORDER BY a.SA_ID DESC');	
 
 			}else{
-				$student = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a WHERE 1=1 '.$where .'
+				if($request->searchUseFlag == "I"){
+					$student = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a 
+										LEFT JOIN BILL b  ON (a.SA_ID = b.SA_ID)
+										WHERE 1=1  
+										AND b.BILL_STATUS = "W"  '.$where .'
+										ORDER BY a.SA_ID DESC');
+
+				}else{
+					$student = DB::select('SELECT * from STUDENT_ACCOUNT_VIEW a WHERE 1=1 '.$where .'
 									 ORDER BY SA_ID DESC');
+				}
+				
 			}
 
 			// $student = StudentAccount::where('SA_FIRST_NAME_TH', 'LIKE', $studentName)->where('SA_STUDENT_ID', 'LIKE', $studentId)->where('USE_FLAG', 'Y')->get();
@@ -609,7 +632,7 @@ class StudentController extends Controller
 				}
 				
 				
-				
+				$student->SA_FUTURE_SCHOOL = $studentForm->studentFutureSchoolCode;
 				
 
 
@@ -938,13 +961,69 @@ class StudentController extends Controller
 		}
 	}
 
+	public function postSuccessStudent(Request $request) {
+		$studentId;
+		try {
+			// $studentForm = json_decode($request->studentModel);
+			
+			DB::beginTransaction();
+			$student = StudentAccount::find($request->studentId);
+			$student->UPDATE_DATE = new \DateTime();
+			$student->UPDATE_BY = $request->userLoginId;
+			$student->USE_FLAG = 'S';
+			$student->save();
+			
+			DB::commit();
+			
+			return response ()->json ( [
+					'status' => 'ok'
+			] );
+			
+		} catch ( \Exception $e ) {
+			DB::rollBack ();
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $request->userLoginId
+			] );
+		}
+	}
+
+
+	public function postCancelSuccessStudent(Request $request) {
+			$studentId;
+			try {
+				// $studentForm = json_decode($request->studentModel);
+				
+				DB::beginTransaction();
+				$student = StudentAccount::find($request->studentId);
+				$student->UPDATE_DATE = new \DateTime();
+				$student->UPDATE_BY = $request->userLoginId;
+				$student->USE_FLAG = 'Y';
+				$student->save();
+				
+				DB::commit();
+				
+				return response ()->json ( [
+						'status' => 'ok'
+				] );
+				
+			} catch ( \Exception $e ) {
+				DB::rollBack ();
+				return response ()->json ( [
+						'status' => 'error',
+						'errorDetail' => $request->userLoginId
+				] );
+			}
+		}
+
+
 	public function isStudentCardIdDulpicate($studentId,$studentCardId) {
 		$student;
 		try {
 			if($studentId == 'ADD'){
-				$student = StudentAccount::where('USE_FLAG','Y')->where('SA_STUDENT_ID',$studentCardId)->first();
+				$student = StudentAccount::where('USE_FLAG','<>','N')->where('SA_STUDENT_ID',$studentCardId)->first();
 			}else{
-				$student = StudentAccount::where('SA_ID','<>', $studentForm->studentId)->where('USE_FLAG','Y')->where('SA_STUDENT_ID',$studentCardId)->first();
+				$student = StudentAccount::where('SA_ID','<>', $studentForm->studentId)->where('USE_FLAG','<>','N')->where('SA_STUDENT_ID',$studentCardId)->first();
 			}
 
 			if($student != null || $student != '' ||$student != []){
