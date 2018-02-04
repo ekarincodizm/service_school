@@ -90,27 +90,26 @@ class ReportController extends Controller{
 
         // $parent = StudentParent::find($pid); 
         $student = StudentAccount::find($sid);  
-        $studentPicUrl = URL::asset('report/student-image/'.$sid.'');
+        $studentPicUrl = URL::asset('image/student-image/'.$sid.'');
         $value = [
             // 'parent'=>$parent,
             'student'=>$student,
             'studentPicUrl'=>$studentPicUrl
         ];
 
-        $pdf =  PDF::loadView('report.student-card', $value, [], [
-            'title' => 'student-card ('.$student->SA_ID.')',
+        $pdf =  PDF::loadView('report.student-card-v2', $value, [], [
+            'title' => 'student-card ('.$student->SA_NICK_NAME_TH.')',
             'author' => '',
-            'margin_top' => 1,
-            'margin_bottom' => 1,
-            'margin_left' => 1,
-            'margin_right' => 1,
-            'format' => 'Legal',
-            'orientation' => 'L'
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'format' => [54, 86]
             ]);
-       return $pdf->stream('student-card('.$student->SA_ID.').pdf');
+
+       return $pdf->stream('student-card('.$student->SA_NICK_NAME_TH.').pdf');
        //return view('report.student-card', $value);
 
-       
     }
 
     public function getParentCard($pid){
@@ -119,8 +118,8 @@ class ReportController extends Controller{
         $parent = StudentParent::find($pid); 
         $student = StudentAccount::find($parent->SA_ID);  
         
-        $studentPicUrl = URL::asset('report/student-image/'.$parent->SA_ID.'');
-        $parentPicUrl = URL::asset('report/parent-image/'.$pid.'');
+        $studentPicUrl = URL::asset('image/student-image/'.$parent->SA_ID.'');
+        $parentPicUrl = URL::asset('image/parent-image/'.$pid.'');
 
         $value = [
             'parent'=>$parent,
@@ -130,17 +129,16 @@ class ReportController extends Controller{
 
         ];
 
-        $pdf =  PDF::loadView('report.parent-card', $value, [], [
-            'title' => 'parent-card ('.$parent->SP_ID.')',
+        $pdf =  PDF::loadView('report.parent-card-v2', $value, [], [
+            'title' => 'parent-card ('.$parent->SP_TITLE_NAME.$parent->SP_FIRST_NAME.' '.$parent->SP_LAST_NAME.')',
             'author' => '',
-            'margin_top' => 1,
-            'margin_bottom' => 1,
-            'margin_left' => 1,
-            'margin_right' => 1,
-            'format' => 'Legal',
-            'orientation' => 'L'
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'format' => [54, 86]
             ]);
-        return $pdf->stream('parent-card('.$parent->SP_ID.').pdf');
+        return $pdf->stream('parent-card('.$parent->SP_TITLE_NAME.$parent->SP_FIRST_NAME.' '.$parent->SP_LAST_NAME.').pdf');
         // return view('report.parent-card');
     }
 
