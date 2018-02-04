@@ -30,6 +30,7 @@ class ConfirmPaymentController extends Controller{
 			$postdata = file_get_contents("php://input");
 			$billNo = json_decode($postdata)->billNo;
 			$studentName = json_decode($postdata)->studentName;
+			$studentCardId = json_decode($postdata)->studentCardId;
 
 			$bill = BILL::select('BILL.*')
 							->where('BILL.USE_FLAG', 'Y')
@@ -38,6 +39,10 @@ class ConfirmPaymentController extends Controller{
 
 			if($studentName != ''){
 				$bill->whereRaw('CONCAT (STUDENT_ACCOUNT.SA_FIRST_NAME_TH, \' \' ,STUDENT_ACCOUNT.SA_LAST_NAME_TH) LIKE \'%'.$studentName.'%\'');
+			}
+
+			if($studentCardId != ''){
+				$bill = $bill->where('STUDENT_ACCOUNT.SA_STUDENT_ID', 'LIKE', '%'.$studentCardId.'%');
 			}
 			
 			if($billNo != null){
