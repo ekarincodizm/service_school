@@ -9,6 +9,7 @@ use App\Model\StudentAccount;
 use App\Model\StudentParent;
 use App\Model\User;
 use App\Model\ClassRoom;
+use App\Model\Room;
 use DB;
 use URL;
 use App\Http\Controllers\UtilController\DateUtil;
@@ -349,6 +350,53 @@ class ReportController extends Controller{
             ]);
 
         return $pdf->stream('payment-history.pdf');
+
+    }
+
+
+    public function getStudentNameReport($schoolYear, $schoolTerm, $roomType, $roomId, $userPrint){
+
+        $studentAccount;
+        $roomTypeName;
+        $roomName;
+        $user = User::find($userPrint);
+        $currentTime = 'วันเวลาที่พิมพ์รายงาน '.DateUtil::getCurrentDay().' '.DateUtil::genMonthList()[DateUtil::getCurrentMonth2Digit()].' พ.ศ. '.DateUtil::getCurrentThaiYear().' '.DateUtil::getCurrentTime().' น.';
+
+        if($roomType == '1'){ //เตรียมอนุบาล
+            $roomTypeName = "เตรียมอนุบาล";
+            $studentAccount = StudentAccount::where('SA_READY_YEAR', $schoolYear)->where('SA_READY_ROOM_ID', $roomId)->get();
+        }else if($roomType == '2'){ //อนุบาล 1
+            $roomTypeName = "อนุบาล 1";
+            $studentAccount = StudentAccount::where('SA_G1_YEAR', $schoolYear)->where('SA_G1_ROOM_ID', $roomId)->get();
+        }else if($roomType == '3'){ //อนุบาล 2
+            $roomTypeName = "อนุบาล 2";
+            $studentAccount = StudentAccount::where('SA_G2_YEAR', $schoolYear)->where('SA_G2_ROOM_ID', $roomId)->get();
+        }else if($roomType == '4'){ //อนุบาล 3
+            $roomTypeName = "อนุบาล 3";
+            $studentAccount = StudentAccount::where('SA_G3_YEAR', $schoolYear)->where('SA_G3_ROOM_ID', $roomId)->get();
+        }
+
+
+        $roomName = Room::find($roomId)->ROOM_NAME;
+
+        $value = [
+            'schoolYear'=>$schoolYear,
+            'roomTypeName'=>$roomTypeName,
+            'studentAccountes'=>$studentAccount,
+            'roomName' => $roomName,
+            'currentTime'=>$currentTime
+        ];
+
+        $pdf =  PDF::loadView('report.student-name', $value, [], [
+            'title' => 'student-name-report',
+            'author' => '',
+            'margin_top' => 5,
+            'margin_bottom' => 5,
+            'margin_left' => 5,
+            'margin_right' => 5,
+            ]);
+
+        return $pdf->stream('student-name-report.pdf');
 
     }
 
