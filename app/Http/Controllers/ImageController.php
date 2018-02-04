@@ -21,10 +21,18 @@ class ImageController extends Controller{
         $student = StudentAccount::find($sid);  
         $data = $student->SA_PICTURE; 
 
-        header("Content-type: image/gif");
-        echo base64_decode($data);
-        exit;
-        
+        if($data != null && $data != ''){
+            header("Content-type: image/gif");
+            echo base64_decode($data);
+            exit;
+        }else{
+            $file = 'assets/images/no-image.jpg';
+            $type = 'image/jpg';
+            header('Content-Type:'.$type);
+            header('Content-Length: ' . filesize($file));
+            readfile($file);
+        }
+
     }
 
     //student-father-image/...
@@ -33,9 +41,17 @@ class ImageController extends Controller{
         $student = StudentAccount::find($sid);  
         $data = $student->SA_FATHER_PICTURE; 
 
-        header("Content-type: image/gif");
-        echo base64_decode($data);
-        exit;
+        if($data != null && $data != ''){
+            header("Content-type: image/gif");
+            echo base64_decode($data);
+            exit;
+        }else{
+            $file = 'assets/images/no-image.jpg';
+            $type = 'image/jpg';
+            header('Content-Type:'.$type);
+            header('Content-Length: ' . filesize($file));
+            readfile($file);
+        }
         
     }
 
@@ -45,9 +61,17 @@ class ImageController extends Controller{
         $student = StudentAccount::find($sid);  
         $data = $student->SA_MOTHER_PICTURE; 
 
-        header("Content-type: image/gif");
-        echo base64_decode($data);
-        exit;
+        if($data != null && $data != ''){
+            header("Content-type: image/gif");
+            echo base64_decode($data);
+            exit;
+        }else{
+            $file = 'assets/images/no-image.jpg';
+            $type = 'image/jpg';
+            header('Content-Type:'.$type);
+            header('Content-Length: ' . filesize($file));
+            readfile($file);
+        }
         
     }
 
@@ -57,9 +81,17 @@ class ImageController extends Controller{
         $student = StudentAccount::find($sid);  
         $data = $student->SA_EMERGENCY_PICTURE; 
 
-        header("Content-type: image/gif");
-        echo base64_decode($data);
-        exit;
+        if($data != null && $data != ''){
+            header("Content-type: image/gif");
+            echo base64_decode($data);
+            exit;
+        }else{
+            $file = 'assets/images/no-image.jpg';
+            $type = 'image/jpg';
+            header('Content-Type:'.$type);
+            header('Content-Length: ' . filesize($file));
+            readfile($file);
+        }
         
     }
 
@@ -69,9 +101,17 @@ class ImageController extends Controller{
         $parent = StudentParent::find($sid);  
         $data = $parent->SP_PICTURE; 
 
-        header("Content-type: image/gif");
-        echo base64_decode($data);
-        exit;
+        if($data != null && $data != ''){
+            header("Content-type: image/gif");
+            echo base64_decode($data);
+            exit;
+        }else{
+            $file = 'assets/images/no-image.jpg';
+            $type = 'image/jpg';
+            header('Content-Type:'.$type);
+            header('Content-Length: ' . filesize($file));
+            readfile($file);
+        }
         
     }
 
