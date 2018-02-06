@@ -5,6 +5,7 @@ namespace App\Model;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Controllers\UtilController\DateUtil;
 use App\Model\FutureSchool;
+use App\Model\StudentParent;
 
 class StudentAccount extends Model
 {
@@ -18,6 +19,11 @@ class StudentAccount extends Model
 		}else{
 			return "";
 		}
+	}
+
+	public function getParentAttribute() {
+		return StudentParent::where('SA_ID',$this->attributes['SA_ID'])->where('USE_FLAG' , 'Y')->get();
+		
 	}
 
 	public function getBirthDayAttribute()
