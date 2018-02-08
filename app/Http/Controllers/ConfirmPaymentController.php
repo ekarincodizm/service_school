@@ -55,9 +55,15 @@ class ConfirmPaymentController extends Controller{
 			
 			foreach ($bill as $value) {
 				$billForm['bill'] = $value;
-				$billForm['student'] = StudentAccount::find($value->SA_ID);
+				$student = StudentAccount::find($value->SA_ID);
 
-				if($billForm['student']->USE_FLAG == "Y"){
+                $billForm['student']['SA_STUDENT_ID'] = $student->SA_STUDENT_ID;
+                $billForm['student']['SA_TITLE_NAME_TH'] = $student->SA_TITLE_NAME_TH;
+                $billForm['student']['SA_FIRST_NAME_TH'] = $student->SA_FIRST_NAME_TH;
+                $billForm['student']['SA_LAST_NAME_TH'] = $student->SA_LAST_NAME_TH;
+
+
+				if($student->USE_FLAG == "Y"){
 					array_push($billForms, $billForm);	
 				}
 
