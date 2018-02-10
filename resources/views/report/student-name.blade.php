@@ -38,7 +38,7 @@ table {
 	<thead>
         <tr>
             <th colspan="6">
-                <h2 style="text-align: center; font-weight: bold; margin: 0;">รายงานชื่อนักเรียนโรงเรียนอนุบาลเปล่งปรัสิทธิ์ศรีนครินทร์</h2>
+                <h2 style="text-align: center; font-weight: bold; margin: 0;">รายงานชื่อนักเรียนโรงเรียนอนุบาลเปล่งประสิทธิ์ศรีนครินทร์</h2>
                 <h3 style="text-align: center; font-weight: bold; margin: 0;">ปีการศึกษา {{$schoolYear}}</h3>
                 <h3 style="text-align: center; font-weight: bold; margin: 0;">ระดับชั้น {{$roomTypeName}} ห้อง {{$roomName}}</h3>
             </th>

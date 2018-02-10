@@ -37,5 +37,17 @@ class StudentParent extends Model
 
 		return $address;
 	}
+
+	public function getDistrictAttribute() {
+		return District::find($this->attributes['SP_DISTRICT']);
+	}
+
+	public function getAmphurAttribute() {
+		return Amphur::find($this->attributes['SP_AMPHUR']);
+	}
+
+	public function getProvinceAttribute() {
+		return Province::find($this->attributes['SP_PROVINCE']);
+	}
 	
 }
