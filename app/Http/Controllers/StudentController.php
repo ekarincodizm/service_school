@@ -257,8 +257,9 @@ class StudentController extends Controller
 					$parent->SP_FOREIGNER_FLAG = 'N';
 					if($studentForm->motherForeignerFlag){
 						$parent->SP_FOREIGNER_FLAG = 'Y';
+						$parent->SP_FOREIGNER = $studentForm->motherForeigner;
 					}
-					$parent->SP_FOREIGNER = $studentForm->motherForeigner;
+					
 
 					$parent->save();
 
@@ -295,8 +296,9 @@ class StudentController extends Controller
 					$parent->SP_FOREIGNER_FLAG = 'N';
 					if($studentForm->emergencyForeignerFlag){
 						$parent->SP_FOREIGNER_FLAG = 'Y';
+						$parent->SP_FOREIGNER = $studentForm->emergencyForeigner;
 					}
-					$parent->SP_FOREIGNER = $studentForm->emergencyForeigner;
+					
 
 					$parent->save();
 
@@ -765,8 +767,9 @@ class StudentController extends Controller
 							$parentMother->SP_FOREIGNER_FLAG = 'N';
 							if($studentForm->motherForeignerFlag){
 								$parentMother->SP_FOREIGNER_FLAG = 'Y';
+								$parentMother->SP_FOREIGNER = $studentForm->motherForeigner;
 							}
-							$parentMother->SP_FOREIGNER = $studentForm->motherForeigner;
+							
 							
 							$parentMother->save();
 						}
@@ -804,8 +807,9 @@ class StudentController extends Controller
 						$parent->SP_FOREIGNER_FLAG = 'N';
 						if($studentForm->motherForeignerFlag){
 							$parent->SP_FOREIGNER_FLAG = 'Y';
+							$parent->SP_FOREIGNER = $studentForm->motherForeigner;
 						}
-						$parent->SP_FOREIGNER = $studentForm->motherForeigner;
+						
 
 						$parent->save();
 
@@ -856,9 +860,10 @@ class StudentController extends Controller
 							$parentEmergency->SP_FOREIGNER_FLAG = 'N';
 							if($studentForm->emergencyForeignerFlag){
 								$parentEmergency->SP_FOREIGNER_FLAG = 'Y';
+								$parentEmergency->SP_FOREIGNER = $studentForm->emergencyForeigner;
 							}
 
-							$parentEmergency->SP_FOREIGNER = $studentForm->emergencyForeigner;
+							
 
 							$parentEmergency->save();
 						}
@@ -896,8 +901,9 @@ class StudentController extends Controller
 						$parent->SP_FOREIGNER_FLAG = 'N';
 						if($studentForm->emergencyForeignerFlag){
 							$parent->SP_FOREIGNER_FLAG = 'Y';
+							$parent->SP_FOREIGNER = $studentForm->emergencyForeigner;
 						}
-						$parent->SP_FOREIGNER = $studentForm->emergencyForeigner;
+						
 
 						$parent->save();
 					}
