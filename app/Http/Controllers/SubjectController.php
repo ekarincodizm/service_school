@@ -136,7 +136,8 @@ class SubjectController extends Controller {
 			
 			$others = Subject::where('SUBJECT_NAME', 'LIKE', $othersName)
 				->where('USE_FLAG', 'Y')
-				->where('SUBJECT_TYPE', 'O')->get();
+				->where('SUBJECT_TYPE', 'O')
+				->orderByRaw('case when SUBJECT_ORDER is null then 1 else 0 end, SUBJECT_ORDER')->get();
 			
 			return response()->json($others);
 
@@ -194,6 +195,38 @@ class SubjectController extends Controller {
  			$subject->UPDATE_BY = $request->userLoginId;
 			$subject->save();
 			
+			DB::commit();
+			
+			return response ()->json ( [
+					'status' => 'ok'
+			] );
+			
+		} catch ( \Exception $e ) {
+			DB::rollBack ();
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
+	}
+
+	public function postUpdateOrder(Request $request) {
+		$i = 1;
+		try {
+
+			$postdata = file_get_contents("php://input");
+			$sortCharges = json_decode($postdata)->sortChargs;
+
+			DB::beginTransaction();
+
+			DB::table('SUBJECT')->update(['SUBJECT_ORDER' => null]);
+
+			foreach ($sortCharges as $sortCharg) {
+				$subject = Subject::find($sortCharg->subjectId);
+				$subject->SUBJECT_ORDER = $i++;
+				$subject->save();
+			}
+
 			DB::commit();
 			
 			return response ()->json ( [

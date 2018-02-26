@@ -63,7 +63,7 @@ class ReportController extends Controller{
         $billDetails = BillDetail::select('BILL_DETAIL.*')
                         ->where("BILL_ID", $bill->BILL_ID)
                         ->leftJoin('SUBJECT', 'BILL_DETAIL.SUBJECT_ID', '=', 'SUBJECT.SUBJECT_ID')
-                        ->orderBy('SUBJECT.SUBJECT_CODE')
+                        ->orderByRaw('case when SUBJECT.SUBJECT_ORDER is null then 1 else 0 end, SUBJECT.SUBJECT_ORDER, SUBJECT.SUBJECT_CODE')
                         ->get();
                         
          $value = [
@@ -77,9 +77,9 @@ class ReportController extends Controller{
             'author' => '',
             'margin_top' => 10,
             'margin_bottom' => 10,
-            'margin_left' => 15,
-            'margin_right' => 15,
-            'format' => 'Letter',
+            'margin_left' => 5,
+            'margin_right' => 5,
+            'format' => 'A5',
             ]);
 
         return $pdf->stream('bill-slip('.$bill->BILL_NO.').pdf');
