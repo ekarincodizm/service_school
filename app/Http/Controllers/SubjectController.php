@@ -124,8 +124,6 @@ class SubjectController extends Controller {
 			] );
 		}
 	}
-
-
 	
 
 	public function postSearchOthers(Request $request) {
@@ -210,6 +208,7 @@ class SubjectController extends Controller {
 		}
 	}
 
+	
 	public function postUpdateOrder(Request $request) {
 		$i = 1;
 		try {
@@ -241,6 +240,97 @@ class SubjectController extends Controller {
 			] );
 		}
 	}
+
+	public function postStoreSummer(Request $request) {
+		$subjectName;
+		$subjectCode;
+		try {
+			$subjectName = $request->subjectName;
+			$subjectCode = $request->subjectCode;
+			
+			DB::beginTransaction();
+			$subject = new Subject();
+			$subject->SUBJECT_NAME = $subjectName;
+			$subject->SUBJECT_CODE = $subjectCode;
+			$subject->SUBJECT_TYPE = 'SM';
+			$subject->CREATE_DATE = new \DateTime();
+			$subject->CREATE_BY = $request->userLoginId;
+			$subject->UPDATE_DATE = new \DateTime();
+			$subject->UPDATE_BY = $request->userLoginId;
+			$subject->save();
+			
+			DB::commit(); 
+			
+			return response ()->json ( [
+					'status' => 'ok'
+			] );
+			
+		} catch ( \Exception $e ) {
+			DB::rollBack ();
+			return response ()->json ( [ 
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
+	}
+	
+	public function postSearchSummer(Request $request) {
+		$subjectName;
+		$subjectCode;
+		try {
+			
+			$subjectName = '%'.$request->subjectName.'%';
+			$subjectCode = '%'.$request->subjectCode.'%';
+			
+			$subject = Subject::where('SUBJECT_NAME', 'LIKE', $subjectName)
+				->where('SUBJECT_CODE', 'LIKE', $subjectCode)
+				->where('USE_FLAG', 'Y')
+				->where('SUBJECT_TYPE', 'SM')
+				->orderBy('SUBJECT_CODE', 'asc')->get();
+			
+			return response()->json($subject);
+
+			
+		} catch ( \Exception $e ) {
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
+	}
+
+	public function postUpdateSummer(Request $request) {
+		$subjectName;
+		$subjectId;
+		$subjectCode;
+		try {
+			$subjectId = $request->subjectId;
+			$subjectName = $request->subjectName;
+			$subjectCode = $request->subjectCode;
+			
+			DB::beginTransaction();
+			$subject = Subject::find($subjectId);
+			$subject->SUBJECT_NAME = $subjectName;
+			$subject->SUBJECT_CODE = $subjectCode;
+			$subject->UPDATE_DATE = new \DateTime();
+ 			$subject->UPDATE_BY = $request->userLoginId;
+			$subject->save();
+			
+			DB::commit();
+			
+			return response ()->json ( [
+					'status' => 'ok'
+			] );
+			
+		} catch ( \Exception $e ) {
+			DB::rollBack ();
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
+	}
+
 
 	public function postSearchAll(Request $request) {
 
