@@ -129,8 +129,12 @@ class SubjectController extends Controller {
 	public function postSearchOthers(Request $request) {
 		$othersName;
 		try {
+			if($request->subjectName != null){
+				$othersName = '%'.$request->subjectName.'%';
+			}else{
+				$othersName = '%%';
+			}
 			
-			$othersName = '%'.$request->subjectName.'%';
 			
 			$others = Subject::where('SUBJECT_NAME', 'LIKE', $othersName)
 				->where('USE_FLAG', 'Y')
