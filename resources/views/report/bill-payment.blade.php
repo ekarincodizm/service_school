@@ -51,6 +51,36 @@
 						<td style="border-bottom: 1px solid;" valign="top">{{$studentAccount->SA_STUDENT_ID}}</td>
 						<td></td>
 					</tr>
+					@if($bill->BILL_REGISTER_STATUS == 'N' || $bill->BILL_REGISTER_STATUS == 'C')
+					<tr>
+						<td valign="top" style="border-left: 1px solid;">
+							<p>ปีการศึกษาเทอม (Ref.2)</p>
+						</td>
+						<td style="border-bottom: 1px solid;" valign="top">
+							<p>
+								{{$bill->BILL_YEAR}}0{{$bill->BILL_TERM}}
+							</p>
+						</td>
+						<td></td>
+					</tr>
+					@elseif($bill->BILL_REGISTER_STATUS == 'SM')
+					<tr>
+						<td valign="top" style="border-left: 1px solid;">
+							<p>ปีการศึกษาซัมเมอร์ (Ref.2)</p>
+						</td>
+						<td style="border-bottom: 1px solid;" valign="top">
+							<p>
+								{{$bill->BILL_YEAR}}
+								@foreach ($billDetails as $index =>$billDetail)
+									@if($billDetail->BD_TERM_FLAG == 'Y')
+										{{$billDetail->subject->SUBJECT_CODE}}
+									@endif
+								@endforeach
+							</p>
+						</td>
+						<td></td>
+					</tr>
+					@else
 					<tr>
 						<td valign="top" style="border-left: 1px solid;">
 							<p>รหัสกิจกรรมที่เลือกเรียน (Ref.2)</p>
@@ -68,6 +98,7 @@
 						</td>
 						<td></td>
 					</tr>
+					@endif
 					<tr>
 						<td valign="bottom" colspan="2" style="text-align:right; border-left: 1px solid; border-bottom: 1px solid;">
 							<p>&nbsp;</p>
@@ -171,9 +202,16 @@
 					@if(isset($billDetail->subject))
 						@if(isset($billDetail->subject->SUBJECT_CODE))
 							@if(!$isPrintSubject)
-								<p style="text-decoration: underline;">
-									กิจกรรมที่เลือก
-								</p>
+
+								@if($bill->BILL_REGISTER_STATUS == 'SM')
+									<p style="text-decoration: underline;">
+										ซัมเมอร์ที่เลือก
+									</p>
+								@else
+									<p style="text-decoration: underline;">
+										กิจกรรมที่เลือก
+									</p>
+								@endif
 								<?php $isPrintSubject = true; ?>
 
 							@endif
@@ -189,7 +227,7 @@
 
 							@if(!$isPrintOthers)
 								<p style="text-decoration: underline;">
-									ค่าใช้จ่ายอื่นๆ
+									ค่าใช้จ่าย
 								</p>
 								<?php $isPrintOthers = true; ?>
 
@@ -202,7 +240,7 @@
 					@else
 						@if(!$isPrintOthers)
 							<p style="text-decoration: underline;">
-								ค่าใช้จ่ายอื่นๆ
+								ค่าใช้จ่าย
 							</p>
 							<?php $isPrintOthers = true; ?>
 
@@ -283,6 +321,36 @@
 						<td style="border-bottom: 1px solid;" valign="top">{{$studentAccount->SA_STUDENT_ID}}</td>
 						<td></td>
 					</tr>
+					@if($bill->BILL_REGISTER_STATUS == 'N' || $bill->BILL_REGISTER_STATUS == 'C')
+					<tr>
+						<td valign="top" style="border-left: 1px solid;">
+							<p>ปีการศึกษาเทอม (Ref.2)</p>
+						</td>
+						<td style="border-bottom: 1px solid;" valign="top">
+							<p>
+								{{$bill->BILL_YEAR}}0{{$bill->BILL_TERM}}
+							</p>
+						</td>
+						<td></td>
+					</tr>
+					@elseif($bill->BILL_REGISTER_STATUS == 'SM')
+					<tr>
+						<td valign="top" style="border-left: 1px solid;">
+							<p>ปีการศึกษาซัมเมอร์ (Ref.2)</p>
+						</td>
+						<td style="border-bottom: 1px solid;" valign="top">
+							<p>
+								{{$bill->BILL_YEAR}}
+								@foreach ($billDetails as $index =>$billDetail)
+									@if($billDetail->BD_TERM_FLAG == 'Y')
+										{{$billDetail->subject->SUBJECT_CODE}}
+									@endif
+								@endforeach
+							</p>
+						</td>
+						<td></td>
+					</tr>
+					@else
 					<tr>
 						<td valign="top" style="border-left: 1px solid;">
 							<p>รหัสกิจกรรมที่เลือกเรียน (Ref.2)</p>
@@ -300,6 +368,7 @@
 						</td>
 						<td></td>
 					</tr>
+					@endif
 					<tr>
 						<td valign="bottom" colspan="2" style="text-align:right; border-left: 1px solid; border-bottom: 1px solid;">
 							<p>&nbsp;</p>

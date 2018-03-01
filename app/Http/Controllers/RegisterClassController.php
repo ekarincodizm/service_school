@@ -133,6 +133,7 @@ class RegisterClassController extends Controller{
 		$studentAccount;
 		$billNumber;
 		$totalPrice;
+		$billRequest;
 		try {
 			$postdata = file_get_contents("php://input");
 			$userLoginId = json_decode($postdata)->userLogin;
@@ -140,6 +141,7 @@ class RegisterClassController extends Controller{
 			$studentAccount = json_decode($postdata)->student;
 			$totalPrice = json_decode($postdata)->totalPrice;
 			$billNumber = $this->findBillNumber();
+			$billRequest = json_decode($postdata)->bill;
 
 			DB::beginTransaction();
 
@@ -149,6 +151,10 @@ class RegisterClassController extends Controller{
 			$bill->BILL_NO = $billNumber;
 			$bill->BILL_STATUS = Bill::BILL_STATUS_WAIT_TO_PAID;
 			$bill->BILL_TOTAL_PRICE = $totalPrice;
+			$bill->BILL_YEAR = $billRequest->billYear;
+			$bill->BILL_TERM = $billRequest->billTerm;
+			$bill->BILL_ROOM_TYPE = $billRequest->billRoomType;
+			$bill->BILL_REGISTER_STATUS	= $billRequest->billRegisterStatus;
 			$bill->CREATE_DATE = new \DateTime();
 			$bill->CREATE_BY = $userLoginId;
 			$bill->UPDATE_DATE = new \DateTime();
@@ -178,6 +184,10 @@ class RegisterClassController extends Controller{
 
 				 $billDetail = new BillDetail();
 				 $billDetail->BILL_ID = $bill->BILL_ID;
+
+				 if($billDetails[$i]->billDetail->isTerm && $billRequest->billRegisterStatus == 'SM'){
+					$billDetail->SUBJECT_ID = $billRequest->billSummerId;
+				 }
 				 
 				 if($billDetails[$i]->billDetail->subject->subjectId == null || $billDetails[$i]->billDetail->subject->subjectId == '0'){
 					$billDetail->BD_REMARK = $billDetails[$i]->billDetail->remark;
@@ -185,9 +195,14 @@ class RegisterClassController extends Controller{
 					$billDetail->SUBJECT_ID = $billDetails[$i]->billDetail->subject->subjectId;
 				 }
 
-				 $billDetail->BD_YEAR = $billDetails[$i]->billDetail->year;
-				 $billDetail->BD_TERM = $billDetails[$i]->billDetail->term;
+				 $billDetail->BD_YEAR = $billRequest->billYear;
+				 $billDetail->BD_TERM = $billRequest->billTerm;
 				 $billDetail->BD_PRICE = $billDetails[$i]->billDetail->price;
+
+				 if($billDetails[$i]->billDetail->isTerm){
+					$billDetail->BD_TERM_FLAG = 'Y';
+				 }
+
 				 $billDetail->CREATE_DATE = new \DateTime();
 				 $billDetail->CREATE_BY = $userLoginId;
 				 $billDetail->UPDATE_DATE = new \DateTime();

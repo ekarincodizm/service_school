@@ -282,9 +282,18 @@ class SubjectController extends Controller {
 		$subjectName;
 		$subjectCode;
 		try {
-			
-			$subjectName = '%'.$request->subjectName.'%';
-			$subjectCode = '%'.$request->subjectCode.'%';
+
+			if($request->subjectName != null){
+				$subjectName = '%'.$request->subjectName.'%';
+			}else{
+				$subjectName = '%%';
+			}
+
+			if($request->subjectCode != null){
+				$subjectCode = '%'.$request->subjectCode.'%';
+			}else{
+				$subjectCode = '%%';
+			}
 			
 			$subject = Subject::where('SUBJECT_NAME', 'LIKE', $subjectName)
 				->where('SUBJECT_CODE', 'LIKE', $subjectCode)
