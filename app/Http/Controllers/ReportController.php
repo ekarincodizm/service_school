@@ -55,21 +55,34 @@ class ReportController extends Controller{
         return $pdf->stream('bill-payment('.$bill->BILL_NO.').pdf');
     }
 
-    public function getBillSlip($billNo){
+    public function getBillSlip($billNo, $billDetailIds){
         ini_set('memory_limit', '128M');
         
         $bill = Bill::where('BILL_NO', $billNo)->first();
         $studentAccount = StudentAccount::find($bill->SA_ID);
         $billDetails = BillDetail::select('BILL_DETAIL.*')
-                        ->where("BILL_ID", $bill->BILL_ID)
-                        ->leftJoin('SUBJECT', 'BILL_DETAIL.SUBJECT_ID', '=', 'SUBJECT.SUBJECT_ID')
-                        ->orderByRaw('case when SUBJECT.SUBJECT_ORDER is null then 1 else 0 end, SUBJECT.SUBJECT_ORDER, SUBJECT.SUBJECT_CODE')
+                        ->where("BILL_ID", $bill->BILL_ID);
+
+        if($billDetailIds != 'null' && $billDetailIds != null){
+            $billDetails = $billDetails->whereRaw('BILL_DETAIL.BD_ID IN ('.$billDetailIds.')');
+        }
+
+        $billDetails =  $billDetails->leftJoin('SUBJECT', 'BILL_DETAIL.SUBJECT_ID', '=', 'SUBJECT.SUBJECT_ID')
+                        ->orderByRaw('case when BILL_DETAIL.BD_TERM_FLAG = "Y" then 1 else 0 end,case when SUBJECT.SUBJECT_ORDER is null then 1 else 0 end, SUBJECT.SUBJECT_ORDER, SUBJECT.SUBJECT_CODE')
                         ->get();
+
+        $billPrice = 0;
+
+        foreach ($billDetails as $billDetail) {
+            $billPrice += $billDetail->BD_PRICE;
+        }
                         
+        
          $value = [
                'bill'=>$bill,
                'billDetails'=>$billDetails,
-               'studentAccount'=>$studentAccount
+               'studentAccount'=>$studentAccount,
+               'billPrice'=>$billPrice
          ];
 
         $pdf =  PDF::loadView('report.bill-slip', $value, [], [
@@ -364,16 +377,16 @@ class ReportController extends Controller{
 
         if($roomType == '1'){ //เตรียมอนุบาล
             $roomTypeName = "เตรียมอนุบาล";
-            $studentAccount = StudentAccount::where('SA_READY_YEAR', $schoolYear)->where('SA_READY_ROOM_ID', $roomId)->get();
+            $studentAccount = StudentAccount::where('SA_READY_YEAR', $schoolYear)->where('SA_READY_ROOM_ID', $roomId)->orderBy('SA_STUDENT_ID')->get();
         }else if($roomType == '2'){ //อนุบาล 1
             $roomTypeName = "อนุบาล 1";
-            $studentAccount = StudentAccount::where('SA_G1_YEAR', $schoolYear)->where('SA_G1_ROOM_ID', $roomId)->get();
+            $studentAccount = StudentAccount::where('SA_G1_YEAR', $schoolYear)->where('SA_G1_ROOM_ID', $roomId)->orderBy('SA_STUDENT_ID')->get();
         }else if($roomType == '3'){ //อนุบาล 2
             $roomTypeName = "อนุบาล 2";
-            $studentAccount = StudentAccount::where('SA_G2_YEAR', $schoolYear)->where('SA_G2_ROOM_ID', $roomId)->get();
+            $studentAccount = StudentAccount::where('SA_G2_YEAR', $schoolYear)->where('SA_G2_ROOM_ID', $roomId)->orderBy('SA_STUDENT_ID')->get();
         }else if($roomType == '4'){ //อนุบาล 3
             $roomTypeName = "อนุบาล 3";
-            $studentAccount = StudentAccount::where('SA_G3_YEAR', $schoolYear)->where('SA_G3_ROOM_ID', $roomId)->get();
+            $studentAccount = StudentAccount::where('SA_G3_YEAR', $schoolYear)->where('SA_G3_ROOM_ID', $roomId)->orderBy('SA_STUDENT_ID')->get();
         }
 
 
@@ -410,16 +423,16 @@ class ReportController extends Controller{
 
         if($roomType == '1'){ //เตรียมอนุบาล
             $roomTypeName = "เตรียมอนุบาล";
-            $studentAccount = StudentAccount::where('SA_READY_YEAR', $schoolYear)->where('SA_READY_ROOM_ID', $roomId)->get();
+            $studentAccount = StudentAccount::where('SA_READY_YEAR', $schoolYear)->where('SA_READY_ROOM_ID', $roomId)->orderBy('SA_STUDENT_ID')->get();
         }else if($roomType == '2'){ //อนุบาล 1
             $roomTypeName = "อนุบาล 1";
-            $studentAccount = StudentAccount::where('SA_G1_YEAR', $schoolYear)->where('SA_G1_ROOM_ID', $roomId)->get();
+            $studentAccount = StudentAccount::where('SA_G1_YEAR', $schoolYear)->where('SA_G1_ROOM_ID', $roomId)->orderBy('SA_STUDENT_ID')->get();
         }else if($roomType == '3'){ //อนุบาล 2
             $roomTypeName = "อนุบาล 2";
-            $studentAccount = StudentAccount::where('SA_G2_YEAR', $schoolYear)->where('SA_G2_ROOM_ID', $roomId)->get();
+            $studentAccount = StudentAccount::where('SA_G2_YEAR', $schoolYear)->where('SA_G2_ROOM_ID', $roomId)->orderBy('SA_STUDENT_ID')->get();
         }else if($roomType == '4'){ //อนุบาล 3
             $roomTypeName = "อนุบาล 3";
-            $studentAccount = StudentAccount::where('SA_G3_YEAR', $schoolYear)->where('SA_G3_ROOM_ID', $roomId)->get();
+            $studentAccount = StudentAccount::where('SA_G3_YEAR', $schoolYear)->where('SA_G3_ROOM_ID', $roomId)->orderBy('SA_STUDENT_ID')->get();
         }
 
 

@@ -276,7 +276,11 @@ class RegisterClassController extends Controller{
 			$postdata = file_get_contents("php://input");
 			$billId = json_decode($postdata)->billId;
 
-			$billDetails = BillDetail::where('BILL_ID', $billId)->get();
+			$billDetails = BillDetail::select('BILL_DETAIL.*')
+						->where("BILL_ID", $billId)
+						->leftJoin('SUBJECT', 'BILL_DETAIL.SUBJECT_ID', '=', 'SUBJECT.SUBJECT_ID')
+                        ->orderByRaw('case when BILL_DETAIL.BD_TERM_FLAG = "Y" then 1 else 0 end,case when SUBJECT.SUBJECT_ORDER is null then 1 else 0 end, SUBJECT.SUBJECT_ORDER, SUBJECT.SUBJECT_CODE')
+                        ->get();
 
 			$registerClasses = [];
 			foreach($billDetails as $billDetail){
