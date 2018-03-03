@@ -107,7 +107,8 @@ class ConfirmPaymentController extends Controller{
 			
 			return response ()->json ( [
 				'status' => 'ok',
-				'billNo' => $bill->BILL_NO
+				'billNo' => $bill->BILL_NO,
+				'billId' => $bill->BILL_Id
 		] );
 			
 			
