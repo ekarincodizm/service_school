@@ -1,3 +1,10 @@
+
+<style>
+    body {
+	    font-family: 'sarabunnew';
+    }
+</style>
+
 <div 
 	style="	width:5.4cm; 
 			height:8.6cm; 
