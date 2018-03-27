@@ -1,4 +1,3 @@
-
 <div 
 	style="	width:5.4cm; 
 			height:8.6cm; 
@@ -35,9 +34,9 @@
 		<tbody>
 			<tr>
 				<td style="text-align:center;" valign="middle">
-					<span style="font-size:16px;">ผู้รับนักเรียน</span ><br/>
+					<span style="font-size:12px;">ผู้รับนักเรียน</span ><br/>
 					<span style="font-size:16px;">{{$student->SA_TITLE_NAME_TH}} {{$student->SA_FIRST_NAME_TH}} {{$student->SA_LAST_NAME_TH}}</span ><br/>
-					<h3>น้อง{{$student->SA_NICK_NAME_TH}}</h3>
+					<span style="font-size:18px;"><b>น้อง{{$student->SA_NICK_NAME_TH}}</b></span >
 				</td>
 			</tr>
 		</tbody>
