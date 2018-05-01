@@ -152,11 +152,29 @@
             @endif
         @endforeach
 
-        <tr>
-            <td style="height:50px; border-right: 1px solid;"></td>
-            <td style="border-right: 1px solid;"></td>
-            <td></td>
-        </tr>
+        @if($bill->BILL_REGISTER_STATUS != '' && $bill->BILL_REGISTER_STATUS != 'A' && $bill->BILL_ROOM_TYPE != '1')
+        
+             @if(count($billDetails) < 3)
+                <tr>
+                    <td style="height:50px; border-right: 1px solid;"></td>
+                    <td style="border-right: 1px solid;"></td>
+                    <td></td>
+                </tr>
+            @endif
+        
+        @else
+        
+        
+             @if(count($billDetails) < 9)
+                <tr>
+                    <td style="height:50px; border-right: 1px solid;"></td>
+                    <td style="border-right: 1px solid;"></td>
+                    <td></td>
+                </tr>
+            @endif
+        
+        @endif
+         
         <tr>
             <td style="text-align:center; border-right: 1px solid; border-top: 1px solid;" valign="middle"> <p>รวม</p> </td>
             <td bgcolor="#c2c2d6" style="text-align:center; border-right: 1px solid; border-top: 1px solid;" valign="middle"> <p>({{App\Http\Controllers\UtilController\StringUtil::convertNumberToText($billPrice)}})</p> </td>
@@ -193,8 +211,8 @@
                 <img style="width:9px;" src="{{ URL::asset('assets/images/square.jpg')}}">
             </td>
             <td style="text-align:left;" valign="middle">
-                <p>&nbsp;เช็ค ธนาคาร ................................................ สาขา ..................................... 
-                    เลขที่ ............................... วันที่ ...........................
+                <p>&nbsp;เช็ค ธนาคาร ............................................................................................ สาขา ....................................................................... 
+                    เลขที่ ............................................. วันที่ .........................................
                 </p>
             </td>
         </tr>
@@ -235,13 +253,13 @@
             <td style="width: 7%; text-align:left;" valign="middle">
                 <p>&nbsp;บัตรเครดิต</p>
             </td>
-            <td style="width: 1%; text-align:right;" valign="middle">
+            <td style="width: 4%; text-align:right;" valign="middle">
                 <img style="width:9px;" src="{{ URL::asset('assets/images/square.jpg')}}">
             </td>
             <td style="width: 7%; text-align:left;" valign="middle">
                 <p>&nbsp;โอน</p>
             </td>
-            <td style="width: 69%; text-align:right;" valign="middle">
+            <td style="width: 66%;text-align:right;" valign="middle">
             <p>ผู้รับเงิน ................................&nbsp;&nbsp;&nbsp;</p>
             </td>
         </tr>
@@ -250,8 +268,8 @@
                 <img style="width:9px;" src="{{ URL::asset('assets/images/square.jpg')}}">
             </td>
             <td colspan="6" style="text-align:left;" valign="middle">
-                <p>&nbsp;เช็ค ธนาคาร .................................................... สาขา ......................................... 
-                    เลขที่ ................................ วันที่ ...............................
+                <p>&nbsp;เช็ค ธนาคาร ........................................................................................................ สาขา ............................................... 
+                    เลขที่ ............................................. วันที่ ..........................................................
                 </p>
             </td>
         </tr>
