@@ -125,6 +125,12 @@ class DateUtil {
 		return $currTime;
 	}
 	
+	public static function getCurrentTimeWithSec() {
+		$currTime = Carbon::now ('Asia/Bangkok');
+		$currTime = (str_pad((String)$currTime->hour, 2, "0", STR_PAD_LEFT)).':'.(str_pad((String)$currTime->minute, 2, "0", STR_PAD_LEFT)).':'.(str_pad((String)$currTime->second, 2, "0", STR_PAD_LEFT));
+		
+		return $currTime;
+	}
 	
 	public static function getThaiYearLastMonth() {
 		$currTime = Carbon::now ();
@@ -195,7 +201,7 @@ class DateUtil {
 	}
 
 	public static function convertDateStringToTextThai($dateString){
-		$day = substr($dateString,6,2);
+		$day = intval(substr($dateString,6,2));
 		$month = DateUtil::genMonthList()[substr($dateString,4,2)];
 		$year = (substr($dateString,0,4))+543;
 		return $day.' '.$month.' '.$year;

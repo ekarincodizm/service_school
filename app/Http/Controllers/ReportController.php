@@ -366,6 +366,60 @@ class ReportController extends Controller{
 
     }
 
+    public function getPaymentReport2($startDate, $endDate, $userPrint){
+        
+        $startDateThai = DateUtil::convertDateStringToTextThai($startDate);
+        $endDateThai = DateUtil::convertDateStringToTextThai($endDate);
+        $userPrint = User::find($userPrint);
+        $currentDatePrint = DateUtil::getCurrentDay().'/'.DateUtil::getCurrentMonth2Digit().'/'.DateUtil::getCurrentThaiYear();
+        $currentTimePrint = DateUtil::getCurrentTimeWithSec();
+
+         $reportSql = "SELECT sa.SA_STUDENT_ID as STUDENT_ID, 
+                CONCAT(sa.SA_TITLE_NAME_TH, ' ' , sa.SA_FIRST_NAME_TH, ' ',  sa.SA_LAST_NAME_TH) as STUDENT_NAME,
+                (CASE WHEN b.BILL_ROOM_TYPE = '1' THEN 'เตรียมอนุบาล' WHEN b.BILL_ROOM_TYPE = '2'  THEN 'อนุบาล 1' WHEN b.BILL_ROOM_TYPE = '3'  THEN 'อนุบาล 2' WHEN b.BILL_ROOM_TYPE = '4'  THEN 'อนุบาล 3' ELSE 'ไม่ได้ระบุ' END) AS ROOM_TYPE,
+                CONCAT(SUBSTRING(b.BILL_PAY_DATE, 7, 2), '/',SUBSTRING(b.BILL_PAY_DATE, 5, 2), '/', CONVERT(SUBSTRING(b.BILL_PAY_DATE, 1, 4) ,UNSIGNED INTEGER)  + 543) AS PAY_DATE,
+                (CASE WHEN b.BILL_TERM IS NULL THEN 'ไม่ได้ระบุ' ELSE b.BILL_TERM END) AS BILL_TERM,
+                (CASE WHEN b.BILL_YEAR IS NULL THEN 'ไม่ได้ระบุ' ELSE b.BILL_YEAR END) AS BILL_YEAR,
+                FORMAT(b.BILL_TOTAL_PRICE,2) AS BILL_PRICE,
+                u.USER_LOGIN AS USER_RECEIVED
+                FROM BILL b
+                LEFT JOIN STUDENT_ACCOUNT sa ON (sa.SA_ID = b.SA_ID)
+                LEFT JOIN USER u ON (u.USER_ID = b.UPDATE_BY)
+                WHERE b.BILL_STATUS = 'P'
+                AND BILL_PAY_DATE BETWEEN '".$startDate."' AND '".$endDate."' 
+                ORDER BY b.BILL_PAY_DATE";
+                
+        $sumPriceSql = "SELECT FORMAT(SUM(b.BILL_TOTAL_PRICE),2) AS SUM_PRICE
+                        FROM BILL b
+                        WHERE b.BILL_STATUS = 'P'
+                        AND BILL_PAY_DATE BETWEEN '".$startDate."' AND '".$endDate."'";
+        
+        $bill = DB::select(DB::raw($reportSql));
+        $sumPrice = DB::select(DB::raw($sumPriceSql));
+
+        $value = [
+            'bills'=>$bill,
+            'sumPrice'=>$sumPrice,
+            'startDateThai'=>$startDateThai,
+            'endDateThai'=>$endDateThai,
+            'userPrint'=>$userPrint,
+            'currentDatePrint'=>$currentDatePrint,
+            'currentTimePrint'=>$currentTimePrint
+            
+        ];
+
+        $pdf =  PDF::loadView('report.payment-history2', $value, [], [
+            'title' => 'payment-history',
+            'author' => '',
+            'margin_top' => 5,
+            'margin_bottom' => 5,
+            'margin_left' => 5,
+            'margin_right' => 5,
+            'format' => 'A4',
+            ]);
+        return $pdf->stream('payment-history.pdf');
+        
+    }
 
     public function getStudentNameReport($schoolYear, $schoolTerm, $roomType, $roomId, $userPrint){
 
@@ -414,7 +468,7 @@ class ReportController extends Controller{
     }
 
     public function getParentNameReport($schoolYear, $schoolTerm, $roomType, $roomId, $userPrint){
-
+        ini_set('memory_limit', '-1');
         $studentAccount;
         $roomTypeName;
         $roomName;

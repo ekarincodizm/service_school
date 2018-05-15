@@ -95,6 +95,7 @@ class ConfirmPaymentController extends Controller{
 
 			$bill = Bill::find($billParam->billId);
 			$bill->BILL_STATUS = 'P';
+			$bill->RECEIPT_NO = $this->findReceiptNumber();
 			$bill->BILL_PAY_DATE = $billParam->billPayDateString;
 			$bill->BILL_PAY_REF = $billParam->billPayRef;
 			$bill->BILL_PIC = $billParam->billPic;
@@ -108,7 +109,7 @@ class ConfirmPaymentController extends Controller{
 			return response ()->json ( [
 				'status' => 'ok',
 				'billNo' => $bill->BILL_NO,
-				'billId' => $bill->BILL_Id
+				'billId' => $bill->BILL_ID
 		] );
 			
 			
@@ -119,6 +120,21 @@ class ConfirmPaymentController extends Controller{
 					'errorDetail' => $e->getMessage()
 			] );
 		}
+	}
+
+	public function findReceiptNumber(){
+		$currentYear = DateUtil::getCurrentThaiYear();
+		$currentMonth = DateUtil::getCurrentMonth2Digit();
+		$currentday = DateUtil::getCurrentDay();
+		$receiptBillNo = Bill::where('RECEIPT_NO', 'LIKE', $currentYear.$currentMonth.'%')->max("RECEIPT_NO");
+
+		if($receiptBillNo == null){
+			$receiptBillNo = "0001";
+		}else{
+			$receiptBillNo = str_pad((((int) substr($receiptBillNo, 6)) + 1),4,"0",STR_PAD_LEFT);
+		}
+
+		return $currentYear.$currentMonth.$receiptBillNo;
 	}
     
 }
