@@ -422,7 +422,7 @@ class ReportController extends Controller{
     }
 
     public function getStudentNameReport($schoolYear, $schoolTerm, $roomType, $roomId, $userPrint){
-
+        ini_set('memory_limit', '-1');
         $studentAccount;
         $roomTypeName;
         $roomName;
