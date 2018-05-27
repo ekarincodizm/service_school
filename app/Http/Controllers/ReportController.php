@@ -10,6 +10,7 @@ use App\Model\StudentParent;
 use App\Model\User;
 use App\Model\ClassRoom;
 use App\Model\Room;
+use App\Model\Subject;
 use DB;
 use URL;
 use App\Http\Controllers\UtilController\DateUtil;
@@ -517,6 +518,64 @@ class ReportController extends Controller{
             ]);
 
         return $pdf->stream('parent-name-report.pdf');
+
+    }
+
+    public function getSubjectPaymentReport($subjectId, $term, $year, $userPrint){
+
+        $reportSql = 'SELECT DATE_FORMAT(DATE_ADD(b.UPDATE_DATE, INTERVAL 543 YEAR), "%d/%m/%y") AS DATE,
+                        b.RECEIPT_NO, sa.SA_STUDENT_ID, CONCAT(sa.SA_TITLE_NAME_TH, " " , sa.SA_FIRST_NAME_TH, " ",  sa.SA_LAST_NAME_TH) as STUDENT_NAME, 
+                        CONCAT(CONVERT(SUBSTRING(b.BILL_PAY_DATE, 5, 2),UNSIGNED INTEGER), "/", SUBSTRING(CONVERT(CONVERT(SUBSTRING(b.BILL_PAY_DATE, 1, 4) ,UNSIGNED INTEGER)  + 543, CHAR), 3, 2)) AS PAY_DATE,
+                        FORMAT(bd.BD_PRICE,2) AS BILL_DETAIL_PRICE , bd.BD_PRICE
+                        FROM BILL_DETAIL bd
+                        LEFT JOIN BILL b ON (b.BILL_ID = bd.BILL_ID)
+                        LEFT JOIN STUDENT_ACCOUNT sa ON (sa.SA_ID = b.SA_ID)
+                        WHERE b.BILL_STATUS = "P" ';
+
+        if($subjectId != "null" && $subjectId != "null"){
+            $reportSql .= ' AND bd.SUBJECT_ID = '.$subjectId;
+        }else if($term != "null" && $term == "null"){
+            $reportSql .= ' AND b.BILL_TERM = '.$term;
+        }else if($year == "null" && $year != "null"){
+            $reportSql .= ' AND b.BILL_YEAR = '.$year;
+        }
+
+        $reportSql .= ' ORDER BY b.BILL_PAY_DATE ';
+
+        
+
+        $subjectReport = DB::select(DB::raw($reportSql));
+
+        $user = User::find($userPrint);
+        $subject = Subject::find($subjectId);
+        $currentTime = 'วันที่ '.DateUtil::getCurrentDay().' '.DateUtil::genMonthList()[DateUtil::getCurrentMonth2Digit()].' พ.ศ. '.DateUtil::getCurrentThaiYear().' '.DateUtil::getCurrentTime().' น.';
+        $sumPrice = "";
+        if(count($subjectReport) > 0){
+            $reportSumSql = 'SELECT FORMAT(SUM(a.BD_PRICE),2) AS SUM_PRICE FROM ( '.$reportSql.' ) a';
+            $subjectSumReport = DB::select(DB::raw($reportSumSql));
+            $sumPrice = $subjectSumReport[0]->SUM_PRICE;
+        }
+        
+        $value = [
+            'values'=>$subjectReport,
+            'user'=>$user,
+            'year'=>substr($year,2),
+            'term'=>$term,
+            'subjectName'=>$subject->SUBJECT_NAME,
+            'subjectSum'=>$sumPrice,
+            'currentTime'=>$currentTime
+        ];
+
+        $pdf =  PDF::loadView('report.subject-payment', $value, [], [
+            'title' => 'subject-payment',
+            'author' => '',
+            'margin_top' => 10,
+            'margin_bottom' => 15,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            ]);
+
+        return $pdf->stream('subject-payment.pdf');
 
     }
 
