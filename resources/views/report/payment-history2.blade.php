@@ -21,7 +21,7 @@ table {
 <div style="height:22px;"></div>
 <table width="100%" style=" border: 0px !important;">
 	<tr>
-		<td style="border: 0px !important; width:85%" rowspan="3"></td>
+		<td style="border: 0px !important; width:80%" rowspan="3"></td>
 		<td style="border: 0px !important; width:10%">หน้า</td>
 		<td style="border: 0px !important;;">{PAGENO}/{nbpg}</td>
 	</tr>
@@ -55,9 +55,9 @@ table {
 		<th style="width: 10%; border-bottom: 1px solid black;">ชั้น</th>
 		<th style="width: 15%; border-bottom: 1px solid black;">วันที่ชำระ</th>
 		<th style="width: 10%; border-bottom: 1px solid black;">ภาคเรียน</th>
-		<th style="width: 10%; border-bottom: 1px solid black;">ปีการศึกษา</th>
-		<th style="width: 15%; border-bottom: 1px solid black;">จำนวนเงิน</th>
-		<th style="width: 10%; border-bottom: 1px solid black;">ผู้รับเงิน</th>
+		<th style="width: 8%; border-bottom: 1px solid black;">ปีการศึกษา</th>
+		<th style="width: 12%; border-bottom: 1px solid black;">จำนวนเงิน</th>
+		<th style="width: 15%; border-bottom: 1px solid black;">ผู้รับเงิน</th>
 	</tr>
 	<tr>
             <th colspan="8" style="height:10px;"> </th>
