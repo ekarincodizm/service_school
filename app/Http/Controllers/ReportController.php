@@ -72,9 +72,13 @@ class ReportController extends Controller{
                         ->get();
 
         $billPrice = 0;
+        $billPriceNoMain = 0;
 
         foreach ($billDetails as $billDetail) {
             $billPrice += $billDetail->BD_PRICE;
+            if($billDetail->BD_TERM_FLAG != 'Y'){
+                $billPriceNoMain += $billDetail->BD_PRICE;
+            }
         }
                         
         
@@ -82,17 +86,19 @@ class ReportController extends Controller{
                'bill'=>$bill,
                'billDetails'=>$billDetails,
                'studentAccount'=>$studentAccount,
-               'billPrice'=>$billPrice
+               'billPrice'=>$billPrice,
+               'billPriceNoMain'=>$billPriceNoMain
          ];
 
-         $pdf =  PDF::loadView('report.bill-slip', $value, [], [
+         $pdf =  PDF::loadView('report.bill-slip-2', $value, [], [
             'title' => 'bill-slip ('.$bill->BILL_NO.')',
             'author' => '',
             'margin_top' => 10,
             'margin_bottom' => 10,
             'margin_left' => 10,
             'margin_right' => 10,
-            'format' => [228.6, 139.7]
+            'format' => [139.7, 228.6],
+            'orientation' => 'L'
             ]);
 
         return $pdf->stream('bill-slip('.$bill->BILL_NO.').pdf');

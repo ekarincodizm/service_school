@@ -23,7 +23,6 @@ class StudentAccount extends Model
 
 	public function getParentAttribute() {
 		return StudentParent::where('SA_ID',$this->attributes['SA_ID'])->where('USE_FLAG' , 'Y')->get();
-		
 	}
 
 	public function getBirthDayAttribute()
@@ -71,5 +70,20 @@ class StudentAccount extends Model
 		return number_format(($differentYearCal) + ($differentMonthCal/12) + (($differentDayCal/30)/12), 2, '.', ' ');;
 	}
 
+	public function getReadyRoomAttribute() {
+		return Room::find($this->attributes['SA_READY_ROOM_ID']);
+	}
+
+	public function getG1RoomAttribute() {
+		return Room::find($this->attributes['SA_G1_ROOM_ID']);
+	}
+
+	public function getG2RoomAttribute() {
+		return Room::find($this->attributes['SA_G2_ROOM_ID']);
+	}
+
+	public function getG3RoomAttribute() {
+		return Room::find($this->attributes['SA_G3_ROOM_ID']);
+	}
 
 }
