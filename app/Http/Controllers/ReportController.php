@@ -98,7 +98,9 @@ class ReportController extends Controller{
             'margin_bottom' => 10,
             'margin_left' => 10,
             'margin_right' => 10,
-            'format' => [228.6, 139.7]
+            'format' => [228.6, 139.7],
+            'margin_right'=> 30,
+            'default_font_size' => '16'
             // 'format' => [139.7, 228.6],
             // 'orientation' => 'L'
             ]);
