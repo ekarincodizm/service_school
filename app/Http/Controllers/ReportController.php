@@ -98,8 +98,9 @@ class ReportController extends Controller{
             'margin_bottom' => 10,
             'margin_left' => 10,
             'margin_right' => 10,
-            'format' => [139.7, 228.6],
-            'orientation' => 'L'
+            'format' => [228.6, 139.7]
+            // 'format' => [139.7, 228.6],
+            // 'orientation' => 'L'
             ]);
 
         return $pdf->stream('bill-slip('.$bill->BILL_NO.').pdf');
