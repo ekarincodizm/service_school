@@ -91,7 +91,7 @@ class ReportController extends Controller{
                'billPriceNoMain'=>$billPriceNoMain
          ];
 
-         $pdf =  PDF::loadView('report.bill-slip-2', $value, [], [
+         $pdf =  PDF::loadView('report.bill-slip-3', $value, [], [
             'title' => 'bill-slip ('.$bill->BILL_NO.')',
             'author' => '',
             'margin_top' => 10,
