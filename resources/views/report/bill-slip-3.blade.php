@@ -6,10 +6,10 @@
 </style>
 
 @if($bill->BILL_REGISTER_STATUS != '' && $bill->BILL_REGISTER_STATUS != 'A' && $bill->BILL_ROOM_TYPE != '1')
-    <h4 style="position: absolute; left: 18cm; top: 3cm;">{{$bill->RECEIPT_NO}}</h4>
-    <h4 style="position: absolute; left: 18cm; top: 3.7cm;">{{App\Http\Controllers\UtilController\DateUtil::convertDateStringToTextThai($bill->BILL_PAY_DATE)}}</h4>
-    <h4 style="position: absolute; left: 4.5cm; top: 5.2cm;">{{$studentAccount->SA_TITLE_NAME_TH.'&nbsp;'.$studentAccount->SA_FIRST_NAME_TH.'&nbsp;&nbsp;&nbsp;'.$studentAccount->SA_LAST_NAME_TH}}</h4>
-    <h4 style="position: absolute; left: 16cm; top: 5.2cm;">
+    <h4 style="position: absolute; left: 16cm; top: 2.3cm;">{{$bill->RECEIPT_NO}}</h4>
+    <h4 style="position: absolute; left: 16cm; top: 3cm;">{{App\Http\Controllers\UtilController\DateUtil::convertDateStringToTextThai($bill->BILL_PAY_DATE)}}</h4>
+    <h4 style="position: absolute; left: 2.5cm; top: 4.5cm;">{{$studentAccount->SA_TITLE_NAME_TH.'&nbsp;'.$studentAccount->SA_FIRST_NAME_TH.'&nbsp;&nbsp;&nbsp;'.$studentAccount->SA_LAST_NAME_TH}}</h4>
+    <h4 style="position: absolute; left: 14cm; top: 4.5cm;">
         @if($studentAccount->SA_G3_ROOM_ID != null)
             {{$studentAccount->g3Room->ROOM_NAME}} 
         @elseif($studentAccount->SA_G2_ROOM_ID != null)
@@ -22,13 +22,13 @@
             -
         @endif
     </h4>
-    <p style="position: absolute; left: 4cm; top: 10.2cm;"><b>({{App\Http\Controllers\UtilController\StringUtil::convertNumberToText($billPrice)}})</b></p>
-    <p style="position: absolute; left: 20.25cm; top: 10.2cm;"><b>{{number_format($billPrice)}} -</b></p>
+    <p style="position: absolute; left: 2cm; top: 10.2cm;"><b>({{App\Http\Controllers\UtilController\StringUtil::convertNumberToText($billPrice)}})</b></p>
+    <p style="position: absolute; left: 17.50cm; top: 10.2cm;"><b>{{number_format($billPrice)}} -</b></p>
 @else
-    <h4 style="position: absolute; left: 17.6cm; top: 2cm;">{{$bill->RECEIPT_NO}}</h4>
-    <h4 style="position: absolute; left: 17.6cm; top: 2.6cm;">{{App\Http\Controllers\UtilController\DateUtil::convertDateStringToTextThai($bill->BILL_PAY_DATE)}}</h4>
-    <h4 style="position: absolute; left: 3.8cm; top: 3.5cm;">{{$studentAccount->SA_TITLE_NAME_TH.'&nbsp;'.$studentAccount->SA_FIRST_NAME_TH.'&nbsp;&nbsp;&nbsp;'.$studentAccount->SA_LAST_NAME_TH}}</h4>
-    <h4 style="position: absolute; left: 16.2cm; top: 3.5cm;">
+    <h4 style="position: absolute; left: 15.6cm; top: 1.3cm;">{{$bill->RECEIPT_NO}}</h4>
+    <h4 style="position: absolute; left: 15.6cm; top: 1.9cm;">{{App\Http\Controllers\UtilController\DateUtil::convertDateStringToTextThai($bill->BILL_PAY_DATE)}}</h4>
+    <h4 style="position: absolute; left: 1.8cm; top: 2.55cm;">{{$studentAccount->SA_TITLE_NAME_TH.'&nbsp;'.$studentAccount->SA_FIRST_NAME_TH.'&nbsp;&nbsp;&nbsp;'.$studentAccount->SA_LAST_NAME_TH}}</h4>
+    <h4 style="position: absolute; left: 14.2cm; top: 2.55cm;">
         @if($studentAccount->SA_G3_ROOM_ID != null)
             {{$studentAccount->g3Room->ROOM_NAME}} 
         @elseif($studentAccount->SA_G2_ROOM_ID != null)
@@ -41,17 +41,17 @@
             -
         @endif
     </h4>
-    <p style="position: absolute; left: 5cm; top: 11cm;"><b>({{App\Http\Controllers\UtilController\StringUtil::convertNumberToText($billPrice)}})</b></p>
-    <p style="position: absolute; left: 20.15cm; top: 11cm;"><b>{{number_format($billPrice)}} -</b></p>
+    <p style="position: absolute; left: 3cm; top: 10.75cm;"><b>({{App\Http\Controllers\UtilController\StringUtil::convertNumberToText($billPrice)}})</b></p>
+    <p style="position: absolute; left: 17.35cm; top: 10.75cm;"><b>{{number_format($billPrice)}} -</b></p>
 
 @endif
 
 <?php $count = 1; ?>
 
 @if($bill->BILL_REGISTER_STATUS != '' && $bill->BILL_REGISTER_STATUS != 'A' && $bill->BILL_ROOM_TYPE != '1')
-    <div style="width:750px; position: absolute; left: 1.75cm; top: 7.3cm;">
+    <div style="width:720px; position: absolute; left: -0.25cm; top: 6.55cm;">
 @else
-    <div style="width:750px; position: absolute; left: 1.75cm; top: 5.55cm;">
+    <div style="width:720px; position: absolute; left: -0.25cm; top: 4.85cm;">
 @endif
     <table style="width: 100%; border: 1px #FFF;  border-spacing: 0px;">
         <tbody>
