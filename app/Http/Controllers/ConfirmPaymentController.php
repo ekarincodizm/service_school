@@ -8,6 +8,7 @@ use DB;
 use Carbon\Carbon;
 use App\Model\StudentAccount;
 use App\Model\Bill;
+use App\Model\SeqBill;
 use App\Model\Room;
 use App\Model\RoomType;
 use App\Model\BillDetail;
@@ -123,18 +124,33 @@ class ConfirmPaymentController extends Controller{
 	}
 
 	public function findReceiptNumber(){
-		$currentYear = DateUtil::getCurrentThaiYear();
-		$currentMonth = DateUtil::getCurrentMonth2Digit();
-		$currentday = DateUtil::getCurrentDay();
-		$receiptBillNo = Bill::where('RECEIPT_NO', 'LIKE', $currentYear.$currentMonth.'%')->max("RECEIPT_NO");
+		try{
+			$currentYear = DateUtil::getCurrentThaiYear();
+			//$currentMonth = DateUtil::getCurrentMonth2Digit();
+			//$currentday = DateUtil::getCurrentDay();
+			$seqBill = SeqBill::where('YEAR', '=', $currentYear)->where('INDICATOR', '=', 'R')->first();
 
-		if($receiptBillNo == null){
-			$receiptBillNo = "0001";
-		}else{
-			$receiptBillNo = str_pad((((int) substr($receiptBillNo, 6)) + 1),4,"0",STR_PAD_LEFT);
+			DB::beginTransaction();
+
+			if($seqBill == null){
+				$seqBill = new SeqBill();
+				$seqBill->RUNNING_NO = 1;
+				$seqBill->YEAR = $currentYear;
+				$seqBill->INDICATOR = 'R';
+				$seqBill->save();
+			}else{
+				$seqBill->RUNNING_NO = $seqBill->RUNNING_NO+1;
+				$seqBill->save();
+			}
+
+			DB::commit(); 
+
+			return $seqBill->RUNNING_NO.'/'.$currentYear;
+
+		}catch ( \Exception $e ){
+			DB::rollBack ();
+			throw $e;
 		}
-
-		return $currentYear.$currentMonth.$receiptBillNo;
 	}
     
 }

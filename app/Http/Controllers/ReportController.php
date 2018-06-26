@@ -27,9 +27,9 @@ class ReportController extends Controller{
         ] );
     }
 
-    public function getBillPayment($billNo){
+    public function getBillPayment($billRunningNo, $billYear){
         ini_set('memory_limit', '128M');
-        
+        $billNo = $billRunningNo.'/'.$billYear;
         $bill = Bill::where('BILL_NO', $billNo)->first();
         $studentAccount = StudentAccount::find($bill->SA_ID);
         $billDetails = BillDetail::select('BILL_DETAIL.*')
@@ -56,9 +56,9 @@ class ReportController extends Controller{
         return $pdf->stream('bill-payment('.$bill->BILL_NO.').pdf');
     }
 
-    public function getBillSlip($billNo, $billDetailIds){
+    public function getBillSlip($billRunningNo,$billYear, $billDetailIds){
         ini_set('memory_limit', '128M');
-        
+        $billNo = $billRunningNo.'/'.$billYear;
         $bill = Bill::where('BILL_NO', $billNo)->first();
         $studentAccount = StudentAccount::find($bill->SA_ID);
         $billDetails = BillDetail::select('BILL_DETAIL.*')

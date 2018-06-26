@@ -6,10 +6,10 @@
 </style>
 
 @if($bill->BILL_REGISTER_STATUS != '' && $bill->BILL_REGISTER_STATUS != 'A' && $bill->BILL_ROOM_TYPE != '1')
-    <h4 style="position: absolute; left: 16cm; top: 2.3cm;">{{$bill->RECEIPT_NO}}</h4>
-    <h4 style="position: absolute; left: 16cm; top: 3cm;">{{App\Http\Controllers\UtilController\DateUtil::convertDateStringToTextThai($bill->BILL_PAY_DATE)}}</h4>
-    <h4 style="position: absolute; left: 2.5cm; top: 4.5cm;">{{$studentAccount->SA_TITLE_NAME_TH.'&nbsp;'.$studentAccount->SA_FIRST_NAME_TH.'&nbsp;&nbsp;&nbsp;'.$studentAccount->SA_LAST_NAME_TH}}</h4>
-    <h4 style="position: absolute; left: 14cm; top: 4.5cm;">
+    <h4 style="position: absolute; left: 16cm; top: 1.8cm;">{{$bill->RECEIPT_NO}}</h4>
+    <h4 style="position: absolute; left: 16cm; top: 2.5cm;">{{App\Http\Controllers\UtilController\DateUtil::convertDateStringToTextThai($bill->BILL_PAY_DATE)}}</h4>
+    <h4 style="position: absolute; left: 2.5cm; top: 4.25cm;">{{$studentAccount->SA_TITLE_NAME_TH.'&nbsp;'.$studentAccount->SA_FIRST_NAME_TH.'&nbsp;&nbsp;&nbsp;'.$studentAccount->SA_LAST_NAME_TH}}</h4>
+    <h4 style="position: absolute; left: 14cm; top: 4.25cm;">
         @if($studentAccount->SA_G3_ROOM_ID != null)
             {{$studentAccount->g3Room->ROOM_NAME}} 
         @elseif($studentAccount->SA_G2_ROOM_ID != null)
@@ -22,13 +22,13 @@
             -
         @endif
     </h4>
-    <p style="position: absolute; left: 2cm; top: 10.2cm;"><b>({{App\Http\Controllers\UtilController\StringUtil::convertNumberToText($billPrice)}})</b></p>
-    <p style="position: absolute; left: 17.50cm; top: 10.2cm;"><b>{{number_format($billPrice)}} -</b></p>
+    <p style="position: absolute; left: 2cm; top: 8.2cm;"><b>({{App\Http\Controllers\UtilController\StringUtil::convertNumberToText($billPrice)}})</b></p>
+    <p style="position: absolute; left: 17.50cm; top: 8.2cm;"><b>{{number_format($billPrice)}} -</b></p>
 @else
-    <h4 style="position: absolute; left: 15.6cm; top: 1.3cm;">{{$bill->RECEIPT_NO}}</h4>
-    <h4 style="position: absolute; left: 15.6cm; top: 1.9cm;">{{App\Http\Controllers\UtilController\DateUtil::convertDateStringToTextThai($bill->BILL_PAY_DATE)}}</h4>
-    <h4 style="position: absolute; left: 1.8cm; top: 2.55cm;">{{$studentAccount->SA_TITLE_NAME_TH.'&nbsp;'.$studentAccount->SA_FIRST_NAME_TH.'&nbsp;&nbsp;&nbsp;'.$studentAccount->SA_LAST_NAME_TH}}</h4>
-    <h4 style="position: absolute; left: 14.2cm; top: 2.55cm;">
+    <h4 style="position: absolute; left: 15.6cm; top: 1.25cm;">{{$bill->RECEIPT_NO}}</h4>
+    <h4 style="position: absolute; left: 15.6cm; top: 2cm;">{{App\Http\Controllers\UtilController\DateUtil::convertDateStringToTextThai($bill->BILL_PAY_DATE)}}</h4>
+    <h4 style="position: absolute; left: 2.3cm; top: 2.75cm;">{{$studentAccount->SA_TITLE_NAME_TH.'&nbsp;'.$studentAccount->SA_FIRST_NAME_TH.'&nbsp;&nbsp;&nbsp;'.$studentAccount->SA_LAST_NAME_TH}}</h4>
+    <h4 style="position: absolute; left: 14.2cm; top: 2.75cm;">
         @if($studentAccount->SA_G3_ROOM_ID != null)
             {{$studentAccount->g3Room->ROOM_NAME}} 
         @elseif($studentAccount->SA_G2_ROOM_ID != null)
@@ -116,7 +116,7 @@
                         @if(isset($billDetail->subject->SUBJECT_CODE))
                             <tr>
                                 <td style="text-align:center; border-right: 1px  #FFF; " valign="middle"> <p><?php echo $count; $count++; ?></p> </td>
-                                <td style="text-align:left; border-right: 1px  #FFF; " valign="middle"> <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$billDetail->subject->SUBJECT_CODE}} : {{$billDetail->subject->SUBJECT_NAME}}</p> </td>
+                                <td style="text-align:left; border-right: 1px  #FFF; " valign="middle"> <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$billDetail->subject->SUBJECT_NAME}}</p> </td>
                                 <td style="text-align:right; " valign="middle"> <p>{{number_format($billDetail->BD_PRICE)}} -&nbsp;</p> </td>
                             </tr>
                         @endif		

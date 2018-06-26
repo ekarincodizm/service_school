@@ -8,6 +8,7 @@ use DB;
 use Carbon\Carbon;
 use App\Model\StudentAccount;
 use App\Model\Bill;
+use App\Model\SeqBill;
 use App\Model\Room;
 use App\Model\RoomType;
 use App\Model\BillDetail;
@@ -254,18 +255,34 @@ class RegisterClassController extends Controller{
 	}
 
 	public function findBillNumber(){
-		$currentYear = DateUtil::getCurrentThaiYear();
-		$currentMonth = DateUtil::getCurrentMonth2Digit();
-		$currentday = DateUtil::getCurrentDay();
-		$maxBillNo = Bill::where('BILL_NO', 'LIKE', $currentYear.$currentMonth.'%')->max("BILL_NO");
+		try{
+			$currentYear = DateUtil::getCurrentThaiYear();
+			//$currentMonth = DateUtil::getCurrentMonth2Digit();
+			//$currentday = DateUtil::getCurrentDay();
+			$seqBill = SeqBill::where('YEAR', '=', $currentYear)->where('INDICATOR', '=', 'B')->first();
 
-		if($maxBillNo == null){
-			$maxBillNo = "0001";
-		}else{
-			$maxBillNo = str_pad((((int) substr($maxBillNo, 6)) + 1),4,"0",STR_PAD_LEFT);
+			DB::beginTransaction();
+
+			if($seqBill == null){
+				$seqBill = new SeqBill();
+				$seqBill->RUNNING_NO = 1;
+				$seqBill->YEAR = $currentYear;
+				$seqBill->INDICATOR = 'B';
+				$seqBill->save();
+			}else{
+				$seqBill->RUNNING_NO = $seqBill->RUNNING_NO+1;
+				$seqBill->save();
+			}
+
+			DB::commit(); 
+
+			return $seqBill->RUNNING_NO.'/'.$currentYear;
+
+		}catch ( \Exception $e ){
+			DB::rollBack ();
+			throw $e;
 		}
-
-		return $currentYear.$currentMonth.$maxBillNo;
+		
 	}
 
 	public function postSearchBillDetailByBillid(Request $request){
