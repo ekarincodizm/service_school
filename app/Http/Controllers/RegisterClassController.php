@@ -227,6 +227,109 @@ class RegisterClassController extends Controller{
 		}
 	}
 
+	public function postStoreReceiptCharge(Request $request){
+		$postdata;
+		$userLoginId;
+		$billDetails;
+		$studentAccount;
+		$billNumber;
+		$totalPrice;
+		$billRequest;
+		try {
+			$postdata = file_get_contents("php://input");
+			$userLoginId = json_decode($postdata)->userLogin;
+			$billDetails = json_decode($postdata)->billDetails;
+			$studentAccount = json_decode($postdata)->student;
+			$totalPrice = json_decode($postdata)->totalPrice;
+			//$billNumber = $this->findBillNumber();
+			$billRequest = json_decode($postdata)->bill;
+			$receiptNo = $this->findReceiptNumber();
+
+			DB::beginTransaction();
+
+			//Bill
+			$bill = new Bill();
+			$bill->SA_ID = $studentAccount->studentId;
+			//$bill->BILL_NO = $billNumber;
+			$bill->RECEIPT_NO = $receiptNo;
+			$bill->BILL_STATUS = 'P';
+			$bill->BILL_PAY_DATE = DateUtil::getCurrentYear().DateUtil::getCurrentMonth2Digit().(str_pad((String)DateUtil::getCurrentDay(), 2, "0", STR_PAD_LEFT));
+			$bill->BILL_TOTAL_PRICE = $totalPrice;
+			$bill->BILL_YEAR = $billRequest->billYear;
+			$bill->BILL_TERM = $billRequest->billTerm;
+			$bill->BILL_ROOM_TYPE = $billRequest->billRoomType;
+			$bill->BILL_REGISTER_STATUS	= $billRequest->billRegisterStatus;
+			$bill->CREATE_DATE = new \DateTime();
+			$bill->CREATE_BY = $userLoginId;
+			$bill->UPDATE_DATE = new \DateTime();
+			$bill->UPDATE_BY = $userLoginId;
+			$bill->save();
+
+			//BillDetail
+			for ($i = 0; $i < count($billDetails); $i++) {
+				//ตรวจสอบอีกทีว่าห้องเต็มหรือยัง
+				//$totalStudent = json_decode($this->getCountCurrentStudentClassRoom($billDetails[$i]->billDetail->startLearnString, $billDetails[$i]->billDetail->endLearnString, $billDetails[$i]->billDetail->classRoom->classRoomId)->getContent());
+				//20171118 ไม่ต้องตรวจแล้ว
+				//if($totalStudent->status == 'ok'){
+				//	$currentStudent = $totalStudent->totalStudent;
+				//	$maxStudent = $billDetails[$i]->billDetail->classRoom->maxStudent;
+				//	if($currentStudent >= $maxStudent){
+				//		return response ()->json ( [
+				//			'status' => 'warning',
+				//			'warningDetail' => ' ห้อง: '.$billDetails[$i]->billDetail->classRoom->roomShow->roomName.' วิชา: '.$billDetails[$i]->billDetail->classRoom->subjectShow->subjectCode.' - '.$billDetails[$i]->billDetail->classRoom->subjectShow->subjectName.' ได้มีผู้ลงทะเบียนเต็มแล้ว'
+				//		] );
+				//	}
+				//}else{
+				//	return response ()->json ( [
+				//		'status' => 'error',
+				//		'errorDetail' => $totalStudent->errorDetail
+				//	] );
+				//}
+
+				 $billDetail = new BillDetail();
+				 $billDetail->BILL_ID = $bill->BILL_ID;
+
+				 if($billDetails[$i]->billDetail->isTerm && $billRequest->billRegisterStatus == 'SM'){
+					$billDetail->SUBJECT_ID = $billRequest->billSummerId;
+				 }
+				 
+				 if($billDetails[$i]->billDetail->subject->subjectId == null || $billDetails[$i]->billDetail->subject->subjectId == '0'){
+					$billDetail->BD_REMARK = $billDetails[$i]->billDetail->remark;
+				 }else{
+					$billDetail->SUBJECT_ID = $billDetails[$i]->billDetail->subject->subjectId;
+				 }
+
+				 $billDetail->BD_YEAR = $billRequest->billYear;
+				 $billDetail->BD_TERM = $billRequest->billTerm;
+				 $billDetail->BD_PRICE = $billDetails[$i]->billDetail->price;
+
+				 if($billDetails[$i]->billDetail->isTerm){
+					$billDetail->BD_TERM_FLAG = 'Y';
+				 }
+
+				 $billDetail->CREATE_DATE = new \DateTime();
+				 $billDetail->CREATE_BY = $userLoginId;
+				 $billDetail->UPDATE_DATE = new \DateTime();
+				 $billDetail->UPDATE_BY = $userLoginId;
+				 $billDetail->save();
+			}
+
+			DB::commit(); 
+
+			return response ()->json ( [
+				'status' => 'ok',
+				'receiptNo' => $receiptNo
+			] );
+
+		}catch ( \Exception $e ) {
+			DB::rollBack ();
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
+	}
+
 	public function postSearchBillHistory(Request $request) {
 		$postdata;
 		$studentAccountId;
@@ -235,13 +338,40 @@ class RegisterClassController extends Controller{
 			$postdata = file_get_contents("php://input");
 			$studentAccountId = json_decode($postdata)->studentAccountId;
 
-			$bill = BILL::where('USE_FLAG', 'Y');
+			$bill = BILL::where('USE_FLAG', 'Y')->whereRaw('BILL_NO IS NOT NULL AND BILL_NO <> ""');
 
 			if($studentAccountId != null){
 				$bill = $bill->where('SA_ID', $studentAccountId);
 			}
 			
 			$bill = $bill->orderBy('BILL_NO', 'desc')->get();
+			
+			return response()->json($bill);
+			
+		} catch ( \Exception $e ) {
+
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
+	}
+
+	public function postSearchReceiptHistory(Request $request) {
+		$postdata;
+		$studentAccountId;
+		try {
+
+			$postdata = file_get_contents("php://input");
+			$studentAccountId = json_decode($postdata)->studentAccountId;
+
+			$bill = BILL::where('USE_FLAG', 'Y')->whereRaw('BILL_NO IS NULL OR BILL_NO = ""');
+
+			if($studentAccountId != null){
+				$bill = $bill->where('SA_ID', $studentAccountId);
+			}
+			
+			$bill = $bill->orderBy('RECEIPT_NO', 'desc')->get();
 			
 			return response()->json($bill);
 			
@@ -295,6 +425,60 @@ class RegisterClassController extends Controller{
 
 			$billDetails = BillDetail::select('BILL_DETAIL.*')
 						->where("BILL_ID", $billId)
+						->leftJoin('SUBJECT', 'BILL_DETAIL.SUBJECT_ID', '=', 'SUBJECT.SUBJECT_ID')
+                        ->orderByRaw('case when BILL_DETAIL.BD_TERM_FLAG = "Y" then 1 else 0 end,case when SUBJECT.SUBJECT_ORDER is null then 1 else 0 end, SUBJECT.SUBJECT_ORDER, SUBJECT.SUBJECT_CODE')
+                        ->get();
+
+			$registerClasses = [];
+			foreach($billDetails as $billDetail){
+				$registerClass['billDetail'] = $billDetail;
+				//$registerClass['classRoom'] = ClassRoom::find($billDetail->CR_ID);
+				//$registerClass['room'] = Room::find($registerClass['classRoom']->ROOM_ID);
+
+				if($billDetail->SUBJECT_ID == null || $billDetail->SUBJECT_ID == ''){
+					$registerClass['subject'] = array(
+						'SUBJECT_CODE' => 'ค่าใช้จ่าย',
+						'SUBJECT_NAME' => $billDetail->BD_REMARK
+					);
+				}else{
+					$subject = Subject::find($billDetail->SUBJECT_ID);
+					if($subject->SUBJECT_TYPE == 'S'){
+						$registerClass['subject'] = $subject;
+					}else{
+						$registerClass['subject'] = array(
+							'SUBJECT_CODE' => 'ค่าใช้จ่าย',
+							'SUBJECT_NAME' => $subject->SUBJECT_NAME
+						);
+					}
+				}
+ 
+				//$registerClass['roomType'] = RoomType::find($registerClass['classRoom']->RT_ID);
+				array_push($registerClasses, $registerClass);
+			}
+			
+			return response()->json($registerClasses);
+			
+		} catch ( \Exception $e ) {
+
+			return response ()->json ( [
+					'status' => 'error',
+					'errorDetail' => $e->getMessage()
+			] );
+		}
+	}
+
+	public function postSearchBillDetailByReceiptno(Request $request){
+		$postdata;
+		$receiptNo;
+		try {
+
+			$postdata = file_get_contents("php://input");
+			$receiptNo = json_decode($postdata)->receiptNo;
+
+			$bill = BILL::where('RECEIPT_NO', $receiptNo)->first();
+
+			$billDetails = BillDetail::select('BILL_DETAIL.*')
+						->where("BILL_ID", $bill->BILL_ID)
 						->leftJoin('SUBJECT', 'BILL_DETAIL.SUBJECT_ID', '=', 'SUBJECT.SUBJECT_ID')
                         ->orderByRaw('case when BILL_DETAIL.BD_TERM_FLAG = "Y" then 1 else 0 end,case when SUBJECT.SUBJECT_ORDER is null then 1 else 0 end, SUBJECT.SUBJECT_ORDER, SUBJECT.SUBJECT_CODE')
                         ->get();
@@ -438,6 +622,36 @@ class RegisterClassController extends Controller{
 			] );
 		}
 
+	}
+
+	public function findReceiptNumber(){
+		try{
+			$currentYear = DateUtil::getCurrentThaiYear();
+			//$currentMonth = DateUtil::getCurrentMonth2Digit();
+			//$currentday = DateUtil::getCurrentDay();
+			$seqBill = SeqBill::where('YEAR', '=', $currentYear)->where('INDICATOR', '=', 'R')->first();
+
+			DB::beginTransaction();
+
+			if($seqBill == null){
+				$seqBill = new SeqBill();
+				$seqBill->RUNNING_NO = 1;
+				$seqBill->YEAR = $currentYear;
+				$seqBill->INDICATOR = 'R';
+				$seqBill->save();
+			}else{
+				$seqBill->RUNNING_NO = $seqBill->RUNNING_NO+1;
+				$seqBill->save();
+			}
+
+			DB::commit(); 
+
+			return $seqBill->RUNNING_NO.'/'.$currentYear;
+
+		}catch ( \Exception $e ){
+			DB::rollBack ();
+			throw $e;
+		}
 	}
 
 }

@@ -116,7 +116,7 @@
                         @if(isset($billDetail->subject->SUBJECT_CODE))
                             <tr>
                                 <td style="text-align:center; border-right: 1px  #FFF; " valign="middle"> <p><?php echo $count; $count++; ?></p> </td>
-                                <td style="text-align:left; border-right: 1px  #FFF; " valign="middle"> <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$billDetail->subject->SUBJECT_NAME}}</p> </td>
+                                <td style="text-align:left; border-right: 1px  #FFF; " valign="middle"> <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$billDetail->subject->SUBJECT_NAME}}</p> </td>
                                 <td style="text-align:right; " valign="middle"> <p>{{number_format($billDetail->BD_PRICE)}} -&nbsp;</p> </td>
                             </tr>
                         @endif		
@@ -129,7 +129,7 @@
                         @if(!isset($billDetail->subject->SUBJECT_CODE))
                             <tr>
                                 <td style="text-align:center; border-right: 1px  #FFF; " valign="middle"> <p><?php echo $count; $count++; ?></p> </td>
-                                <td style="text-align:left; border-right: 1px  #FFF; " valign="middle"> <p>&nbsp;{{$billDetail->subject->SUBJECT_NAME}}</p> </td>
+                                <td style="text-align:left; border-right: 1px  #FFF; " valign="middle"> <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$billDetail->subject->SUBJECT_NAME}}</p> </td>
                                 <td style="text-align:right; " valign="middle"> <p>{{number_format($billDetail->BD_PRICE)}} -&nbsp;</p> </td>
                             </tr>
                         @endif		
@@ -142,7 +142,7 @@
                         @if($billDetail->BD_TERM_FLAG == 'N')
                             <tr>
                                 <td style="text-align:center; border-right: 1px  #FFF; " valign="middle"> <p><?php echo $count; $count++; ?></p> </td>
-                                <td style="text-align:left; border-right: 1px  #FFF; " valign="middle"> <p>&nbsp;{{$billDetail->BD_REMARK}}</p> </td>
+                                <td style="text-align:left; border-right: 1px  #FFF; " valign="middle"> <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$billDetail->BD_REMARK}}</p> </td>
                                 <td style="text-align:right; " valign="middle"> <p>{{number_format($billDetail->BD_PRICE)}} -&nbsp;</p> </td>
                             </tr>
                         @endif

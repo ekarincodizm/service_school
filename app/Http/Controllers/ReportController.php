@@ -92,7 +92,7 @@ class ReportController extends Controller{
          ];
 
          $pdf =  PDF::loadView('report.bill-slip-3', $value, [], [
-            'title' => 'bill-slip ('.$bill->BILL_NO.')',
+            'title' => 'bill-slip ('.$bill->RECEIPT_NO.')',
             'author' => '',
             'margin_top' => 10,
             'margin_bottom' => 10,
@@ -108,6 +108,57 @@ class ReportController extends Controller{
         return $pdf->stream('bill-slip('.$bill->BILL_NO.').pdf');
     }
 
+    public function getBillSlipByReceiptNo($receiptRunningNo,$receiptYear, $billDetailIds){
+        ini_set('memory_limit', '128M');
+        $receiptNo = $receiptRunningNo.'/'.$receiptYear;
+        $bill = Bill::where('RECEIPT_NO', $receiptNo)->first();
+        $studentAccount = StudentAccount::find($bill->SA_ID);
+        $billDetails = BillDetail::select('BILL_DETAIL.*')
+                        ->where("BILL_ID", $bill->BILL_ID);
+
+        if($billDetailIds != 'null' && $billDetailIds != null){
+            $billDetails = $billDetails->whereRaw('BILL_DETAIL.BD_ID IN ('.$billDetailIds.')');
+        }
+
+        $billDetails =  $billDetails->leftJoin('SUBJECT', 'BILL_DETAIL.SUBJECT_ID', '=', 'SUBJECT.SUBJECT_ID')
+                        ->orderByRaw('case when BILL_DETAIL.BD_TERM_FLAG = "Y" then 1 else 0 end,case when SUBJECT.SUBJECT_ORDER is null then 1 else 0 end, SUBJECT.SUBJECT_ORDER, SUBJECT.SUBJECT_CODE')
+                        ->get();
+
+        $billPrice = 0;
+        $billPriceNoMain = 0;
+
+        foreach ($billDetails as $billDetail) {
+            $billPrice += $billDetail->BD_PRICE;
+            if($billDetail->BD_TERM_FLAG != 'Y'){
+                $billPriceNoMain += $billDetail->BD_PRICE;
+            }
+        }
+                        
+        
+         $value = [
+               'bill'=>$bill,
+               'billDetails'=>$billDetails,
+               'studentAccount'=>$studentAccount,
+               'billPrice'=>$billPrice,
+               'billPriceNoMain'=>$billPriceNoMain
+         ];
+
+         $pdf =  PDF::loadView('report.bill-slip-3', $value, [], [
+            'title' => 'bill-slip ('.$bill->RECEIPT_NO.')',
+            'author' => '',
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'format' => [228.6, 139.7],
+            'margin_right'=> 30,
+            'default_font_size' => '16'
+            // 'format' => [139.7, 228.6],
+            // 'orientation' => 'L'
+            ]);
+
+        return $pdf->stream('bill-slip('.$bill->BILL_NO.').pdf');
+    }
 
     public function getStudentCard($sid){
         ini_set('memory_limit', '128M');
