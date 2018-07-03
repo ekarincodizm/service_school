@@ -243,7 +243,7 @@ class RegisterClassController extends Controller{
 			$totalPrice = json_decode($postdata)->totalPrice;
 			//$billNumber = $this->findBillNumber();
 			$billRequest = json_decode($postdata)->bill;
-			$receiptNo = $this->findReceiptNumber();
+			$receiptNo = $this->findReceiptChargeNumber();
 
 			DB::beginTransaction();
 
@@ -647,6 +647,36 @@ class RegisterClassController extends Controller{
 			DB::commit(); 
 
 			return $seqBill->RUNNING_NO.'/'.$currentYear;
+
+		}catch ( \Exception $e ){
+			DB::rollBack ();
+			throw $e;
+		}
+	}
+
+	public function findReceiptChargeNumber(){
+		try{
+			$currentYear = DateUtil::getCurrentThaiYear();
+			//$currentMonth = DateUtil::getCurrentMonth2Digit();
+			//$currentday = DateUtil::getCurrentDay();
+			$seqBill = SeqBill::where('YEAR', '=', $currentYear)->where('INDICATOR', '=', 'O')->first();
+
+			DB::beginTransaction();
+
+			if($seqBill == null){
+				$seqBill = new SeqBill();
+				$seqBill->RUNNING_NO = 1;
+				$seqBill->YEAR = $currentYear;
+				$seqBill->INDICATOR = 'O';
+				$seqBill->save();
+			}else{
+				$seqBill->RUNNING_NO = $seqBill->RUNNING_NO+1;
+				$seqBill->save();
+			}
+
+			DB::commit(); 
+
+			return 'b'.$seqBill->RUNNING_NO.'/'.$currentYear;
 
 		}catch ( \Exception $e ){
 			DB::rollBack ();
