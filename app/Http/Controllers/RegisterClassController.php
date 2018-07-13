@@ -646,7 +646,7 @@ class RegisterClassController extends Controller{
 
 			DB::commit(); 
 
-			return $seqBill->RUNNING_NO.'/'.$currentYear;
+			return 'b'.$seqBill->RUNNING_NO.'/'.$currentYear;
 
 		}catch ( \Exception $e ){
 			DB::rollBack ();
@@ -676,7 +676,7 @@ class RegisterClassController extends Controller{
 
 			DB::commit(); 
 
-			return 'b'.$seqBill->RUNNING_NO.'/'.$currentYear;
+			return $seqBill->RUNNING_NO.'/'.$currentYear;
 
 		}catch ( \Exception $e ){
 			DB::rollBack ();

@@ -145,7 +145,7 @@ class ConfirmPaymentController extends Controller{
 
 			DB::commit(); 
 
-			return $seqBill->RUNNING_NO.'/'.$currentYear;
+			return 'b'.$seqBill->RUNNING_NO.'/'.$currentYear;
 
 		}catch ( \Exception $e ){
 			DB::rollBack ();
